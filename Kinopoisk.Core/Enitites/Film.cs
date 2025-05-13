@@ -19,6 +19,7 @@ public class Film
     public List<Genre> Genres { get; set; }
     public List<Comment> Comments { get; set; }
     public List<Rating> Ratings { get; set; }
+    public List<ActorRole> ActorRoles { get; set; }
 
     public Film()
     {
@@ -26,5 +27,6 @@ public class Film
         Actors = new();
         Comments = new();
         Ratings = new();
+        ActorRoles = new();
     }
 }
