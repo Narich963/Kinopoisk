@@ -1,4 +1,6 @@
-﻿namespace Kinopoisk.Core.Enitites;
+﻿using System.Text.Json.Serialization;
+
+namespace Kinopoisk.Core.Enitites;
 
 public class Genre
 {

@@ -1,4 +1,3 @@
-using EasyData.Services;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.DataSeeding;

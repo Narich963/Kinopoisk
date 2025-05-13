@@ -1,4 +1,5 @@
 ﻿using Kinopoisk.Core.Enitites;
+using Kinopoisk.Services.DTO;
 
 namespace Kinopoisk.WebApi.Contracts;
 
@@ -15,11 +16,11 @@ public class FilmResponse
     public double? UsersRating { get; set; }
 
     public int DirectorId { get; set; }
-    public Director? Director { get; set; }
+    public DirectorDTO? Director { get; set; }
 
-    public List<Actor> Actors { get; set; }
-    public List<Genre> Genres { get; set; }
-    public List<Comment> Comments { get; set; }
-    public List<Rating> Ratings { get; set; }
-    public List<ActorRole> ActorRoles { get; set; }
+    public List<ActorDTO> Actors { get; set; }
+    public List<GenreDTO> Genres { get; set; }
+    //public List<Comment> Comments { get; set; }
+    //public List<Rating> Ratings { get; set; }
+    public List<ActorRoleDTO> ActorRoles { get; set; }
 }

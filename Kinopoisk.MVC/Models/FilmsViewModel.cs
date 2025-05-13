@@ -1,8 +1,8 @@
 ﻿using Kinopoisk.Core.Enitites;
 
-namespace Kinopoisk.Services.DTO;
+namespace Kinopoisk.MVC.Models;
 
-public class FilmDTO
+public class FilmsViewModel
 {
     public int Id { get; set; }
     public string? Poster { get; set; }
@@ -17,9 +17,8 @@ public class FilmDTO
     public int? DirectorId { get; set; }
     public Director? Director { get; set; }
 
-    public List<ActorDTO> Actors { get; set; }
-    public List<GenreDTO> Genres { get; set; }
+    public List<Genre> Genres { get; set; }
     public List<Comment> Comments { get; set; }
     public List<Rating> Ratings { get; set; }
-    public List<ActorRoleDTO> ActorRoles { get; set; }
+    public List<ActorRole> ActorRoles { get; set; }
 }
