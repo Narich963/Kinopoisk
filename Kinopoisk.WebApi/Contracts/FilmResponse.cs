@@ -15,12 +15,10 @@ public class FilmResponse
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
 
-    public int DirectorId { get; set; }
-    public DirectorDTO? Director { get; set; }
+    public string DirectorName { get; set; }
 
-    public List<ActorDTO> Actors { get; set; }
-    public List<GenreDTO> Genres { get; set; }
+    public List<string> Genres { get; set; }
     //public List<Comment> Comments { get; set; }
     //public List<Rating> Ratings { get; set; }
-    public List<ActorRoleDTO> ActorRoles { get; set; }
+    public List<string> ActorRoles { get; set; }
 }

@@ -27,6 +27,18 @@ public class FilmsController : Controller
         return Ok(new {films = filmsResponse});
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Get(int id)
+    {
+        var result = await _filmsService.GetByIdAsync(id);
+        if (result.IsSuccess)
+        {
+            var filmResponse = _mapper.Map<FilmResponse>(result.Value);
+            return Ok(filmResponse);
+        }
+        return NotFound(new { message = result.Error });
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] FilmCreateRequest request)
     {

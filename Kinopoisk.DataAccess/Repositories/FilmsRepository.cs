@@ -21,6 +21,8 @@ public class FilmsRepository : IRepository<Film>
             .Include(f => f.Comments)
             .Include(f => f.Ratings)
             .Include(f => f.ActorRoles)
+                .ThenInclude(a => a.Actor)
+            .Include(f => f.Director)
             .ToListAsync();
         return films;
     }
@@ -31,6 +33,8 @@ public class FilmsRepository : IRepository<Film>
             .Include(f => f.Comments)
             .Include(f => f.Ratings)
             .Include(f => f.ActorRoles)
+                .ThenInclude(a => a.Actor)
+            .Include(f => f.Director)
             .FirstOrDefaultAsync(f => f.Id == id);
 
         return film == null

@@ -31,7 +31,7 @@ public class FilmsService : IFilmsService
             return Result.Failure<FilmDTO>("Id is null");
         
         var film = await _uow.FilmRepository.GetByIdAsync(id.Value);
-        var filmDto = _mapper.Map<FilmDTO>(film);
+        var filmDto = _mapper.Map<FilmDTO>(film.Value);
         return filmDto == null
             ? Result.Failure<FilmDTO>("Film not found")
             : Result.Success(filmDto);

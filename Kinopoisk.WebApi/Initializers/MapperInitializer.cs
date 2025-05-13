@@ -20,7 +20,11 @@ public class MapperInitializer : Profile
     private void CreateFilmsMap()
     {
         CreateMap<FilmDTO, Film>().ReverseMap();
-        CreateMap<FilmResponse, FilmDTO>().ReverseMap();
+        CreateMap<FilmResponse, FilmDTO>()
+            .ReverseMap()
+            .ForMember(dest => dest.DirectorName, opt => opt.MapFrom(src => src.Director.Name))
+            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(g => g.Name)))
+            .ForMember(dest => dest.ActorRoles, opt => opt.MapFrom(src => src.ActorRoles.OrderBy(ar => ar.Role).Select(ar => ar.Actor.Name)));
         CreateMap<FilmCreateRequest, FilmDTO>().ReverseMap();
     }
 }
