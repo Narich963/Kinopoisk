@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kinopoisk.Core\Kinopoisk.Core.csproj" />
+  </ItemGroup>
+
 </Project>

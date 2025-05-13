@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kinopoisk.Services\Kinopoisk.Services.csproj" />
+  </ItemGroup>
+
 </Project>
