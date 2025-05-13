@@ -6,7 +6,7 @@ public class Film
     public string? Poster { get; set; }
     public string Name { get; set; }
     public string? Description { get; set; }
-    public int PublishYear { get; set; }
+    public DateTime PublishDate { get; set; }
     public string Country { get; set; }
     public double Duration { get; set; }
     public double? IMDBRating { get; set; }
