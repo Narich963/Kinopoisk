@@ -17,7 +17,6 @@ public class FilmsRepository : IRepository<Film>
     public async Task<IEnumerable<Film>> GetAllAsync()
     {
         var films = await _context.Films
-            .Include(f => f.Actors)
             .Include(f => f.Genres)
             .Include(f => f.Comments)
             .Include(f => f.Ratings)
@@ -28,7 +27,6 @@ public class FilmsRepository : IRepository<Film>
     public async Task<Result<Film>> GetByIdAsync(int id)
     {
         var film = await _context.Films
-            .Include(f => f.Actors)
             .Include(f => f.Genres)
             .Include(f => f.Comments)
             .Include(f => f.Ratings)
