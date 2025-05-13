@@ -1,10 +1,11 @@
 ﻿using Kinopoisk.Core.Enitites;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess;
 
-public class KinopoiskContext : IdentityDbContext
+public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     public DbSet<Actor> Actors { get; set; }
     public DbSet<ActorRole> ActorRoles { get; set; }
@@ -15,7 +16,7 @@ public class KinopoiskContext : IdentityDbContext
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<User> Users { get; set; }
 
-    public KinopoiskContext(DbContextOptions opts) : base(opts)
+    public KinopoiskContext(DbContextOptions<KinopoiskContext> opts) : base(opts)
     {
         
     }

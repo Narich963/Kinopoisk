@@ -2,6 +2,7 @@
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.DataAccess.Interfaces;
+using Kinopoisk.Services.DTO;
 using Kinopoisk.Services.Interfaces;
 
 namespace Kinopoisk.Services.Services;
@@ -17,51 +18,53 @@ public class FilmsService : IFilmsService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<Film>> GetAllAsync()
+    public async Task<IEnumerable<FilmDTO>> GetAllAsync()
     {
         var films = await _uow.FilmRepository.GetAllAsync();
-        var filsmDtos = _mapper.Map<IEnumerable<Film>>(films);
+        var filsmDtos = _mapper.Map<IEnumerable<FilmDTO>>(films);
         return filsmDtos;
     }
 
-    public async Task<Result<Film>> GetByIdAsync(int? id)
+    public async Task<Result<FilmDTO>> GetByIdAsync(int? id)
     {
         if (id == null)
-            return Result.Failure<Film>("Id is null");
+            return Result.Failure<FilmDTO>("Id is null");
         
         var film = await _uow.FilmRepository.GetByIdAsync(id.Value);
-        var filmDto = _mapper.Map<Film>(film);
+        var filmDto = _mapper.Map<FilmDTO>(film);
         return filmDto == null
-            ? Result.Failure<Film>("Film not found")
+            ? Result.Failure<FilmDTO>("Film not found")
             : Result.Success(filmDto);
     }
 
-    public async Task<Result<Film>> AddAsync(Film entity)
+    public async Task<Result<FilmDTO>> AddAsync(FilmDTO dto)
     {
-        if (entity == null)
-            return Result.Failure<Film>("Entity is null");
+        if (dto == null)
+            return Result.Failure<FilmDTO>("Entity is null");
 
-        var result = await _uow.FilmRepository.AddAsync(entity);
+        var film = _mapper.Map<Film>(dto);
+        var result = await _uow.FilmRepository.AddAsync(film);
         if (result.IsSuccess)
         {
             await _uow.SaveChangesAsync();
-            return Result.Success(entity);
+            return Result.Success(dto);
         }
-        return Result.Failure<Film>(result.Error);
+        return Result.Failure<FilmDTO>(result.Error);
     }
 
-    public async Task<Result<Film>> UpdateAsync(Film entity)
+    public async Task<Result<FilmDTO>> UpdateAsync(FilmDTO dto)
     {
-        if (entity == null)
-            return Result.Failure<Film>("Entity is null");
+        if (dto == null)
+            return Result.Failure<FilmDTO>("Entity is null");
 
-        var result = await _uow.FilmRepository.UpdateAsync(entity);
+        var film = _mapper.Map<Film>(dto);
+        var result = await _uow.FilmRepository.UpdateAsync(film);
         if (result.IsSuccess)
         {
             await _uow.SaveChangesAsync();
-            return Result.Success(entity);
+            return Result.Success(dto);
         }
-        return Result.Failure<Film>(result.Error);
+        return Result.Failure<FilmDTO>(result.Error);
     }
 
     public async Task<Result> DeleteAsync(int? id)

@@ -14,7 +14,7 @@ public class FilmDTO
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
 
-    public int DirectorId { get; set; }
+    public int? DirectorId { get; set; }
     public Director? Director { get; set; }
 
     public List<Actor> Actors { get; set; }

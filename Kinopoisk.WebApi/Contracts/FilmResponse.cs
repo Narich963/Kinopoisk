@@ -1,6 +1,8 @@
-﻿namespace Kinopoisk.Core.Enitites;
+﻿using Kinopoisk.Core.Enitites;
 
-public class Film
+namespace Kinopoisk.WebApi.Contracts;
+
+public class FilmResponse
 {
     public int Id { get; set; }
     public string? Poster { get; set; }
@@ -12,7 +14,7 @@ public class Film
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
 
-    public int? DirectorId { get; set; }
+    public int DirectorId { get; set; }
     public Director? Director { get; set; }
 
     public List<Actor> Actors { get; set; }
@@ -20,13 +22,4 @@ public class Film
     public List<Comment> Comments { get; set; }
     public List<Rating> Ratings { get; set; }
     public List<ActorRole> ActorRoles { get; set; }
-
-    public Film()
-    {
-        Genres = new();
-        Actors = new();
-        Comments = new();
-        Ratings = new();
-        ActorRoles = new();
-    }
 }
