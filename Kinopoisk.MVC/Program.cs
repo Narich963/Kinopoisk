@@ -1,8 +1,10 @@
+using EasyData.Services;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.DataSeeding;
 using Kinopoisk.DataAccess.Interfaces;
 using Kinopoisk.DataAccess.Repositories;
+using Kinopoisk.MVC.Initializers;
 using Kinopoisk.Services.Interfaces;
 using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +26,7 @@ builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connec
     })
     .AddEntityFrameworkStores<KinopoiskContext>();
 
+builder.Services.AddAutoMapper(typeof(MapperInitializer));
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IRepository<Film>, FilmsRepository>();
 builder.Services.AddTransient<IFilmsService, FilmsService>();
@@ -47,12 +50,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
+
 app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
