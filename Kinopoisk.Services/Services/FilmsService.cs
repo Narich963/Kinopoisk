@@ -4,6 +4,7 @@ using Kinopoisk.Core.Enitites;
 using Kinopoisk.DataAccess.Interfaces;
 using Kinopoisk.Services.DTO;
 using Kinopoisk.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.Services.Services;
 
@@ -23,6 +24,27 @@ public class FilmsService : IFilmsService
         var films = await _uow.FilmRepository.GetAllAsync();
         var filsmDtos = _mapper.Map<IEnumerable<FilmDTO>>(films);
         return filsmDtos;
+    }
+
+    public async Task<IEnumerable<FilmDTO>> GetFilteredAsync(string? name, int? year, string? country, string? actorName, string? director)
+    {
+        var filmsQuery = _uow.FilmRepository.GetAllAsQueryable();
+
+        if (name != null)
+            filmsQuery = filmsQuery.Where(f => f.Name.ToLower().Contains(name.ToLower()));
+        if (year.HasValue)
+            filmsQuery = filmsQuery.Where(f => f.PublishDate.Year == year.Value);
+        if (country != null)
+            filmsQuery = filmsQuery.Where(f => f.Country.ToLower().Contains(country.ToLower()));
+        if (actorName != null)
+            filmsQuery = filmsQuery.Where(f => f.ActorRoles.Any(a => a.Actor.Name.ToLower().Contains(actorName.ToLower())));
+        if (director != null)
+            filmsQuery = filmsQuery.Where(f => f.Director.Name.ToLower().Contains(director.ToLower()));
+
+        var films = await filmsQuery.ToListAsync();
+
+        var filmsDtos = _mapper.Map<List<FilmDTO>>(films);
+        return filmsDtos;
     }
 
     public async Task<Result<FilmDTO>> GetByIdAsync(int? id)

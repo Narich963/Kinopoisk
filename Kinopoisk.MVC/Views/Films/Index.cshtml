@@ -1,0 +1,77 @@
+﻿@model List<FilmsViewModel>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
+
+<table id="filmsTable" class="display">
+    <thead>
+        <tr class="text-primary text-center">
+            <th>ID</th>
+            <th>Poster</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Publish Date</th>
+            <th>Country</th>
+            <th>Duration</th>
+            <th>IMDB Rating</th>
+            <th>User Rating</th>
+            <th>Director</th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        function countryNameToISO(name) {
+            const map = {
+                "USA": "us",
+                "Germany": "de",
+                "France": "fr",
+                "Russia": "ru",
+                "Japan": "jp",
+                "Kyrgyzstan": "kg",
+                "Kazakhstan": "kz"
+            };
+            return map[name] ? map[name].toLowerCase() : '';
+        }
+        $(document).ready(function(){
+            $('#filmsTable').DataTable({
+                ajax:{
+                    url: '@Url.Action("GetFilms", "Films")',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'poster', render: function(data) { return '<img src="' + data + '" alt="Poster" style="width:100px;height:auto;">'; } },
+                    { data: 'name' },
+                    { data: 'description' },
+                    { 
+                        data: 'publishDate',
+                        render: function(data) {
+                            return new Date(data).toLocaleDateString();
+                        }
+                    },
+                    { 
+                        data: 'country',
+                        render: function(data) {
+                            const isoCode = countryNameToISO(data);
+                            return `<img src="https://flagcdn.com/24x18/${isoCode}.png" alt="${data} flag" style="margin-right:5px;">${data}`;
+                        }
+                    },
+                    { 
+                        data: 'duration',
+                        render: function (data) {
+                            const hours = Math.floor(data / 60);
+                            const minutes = Math.round(data % 60);
+                            return `${hours}h ${minutes}min`;
+                        }
+                    },
+                    { data: 'imdbRating'},
+                    { data: 'usersRating' },
+                    { data: 'director.name' }
+                ]
+            });
+        });
+    </script>
+}

@@ -17,10 +17,18 @@ public class FilmsController : Controller
         _mapper = mapper;
         _logger = logger;
     }
+
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var filmDtos = await _filmsService.GetAllAsync();
-        var filmsResponse = _mapper.Map<IEnumerable<FilmsViewModel>>(filmDtos);
-        return View(filmsResponse);
+        return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetFilms(string? name, int? year, string? country, string? actorName, string? director)
+    {
+        var filmDtos = await _filmsService.GetFilteredAsync(name, year, country, actorName, director);
+        var filmsViewModel = _mapper.Map<IEnumerable<FilmsViewModel>>(filmDtos);
+        return Json(filmsViewModel);
     }
 }

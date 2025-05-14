@@ -20,5 +20,5 @@ public class FilmsViewModel
     public List<Genre> Genres { get; set; }
     public List<Comment> Comments { get; set; }
     public List<Rating> Ratings { get; set; }
-    public List<ActorRole> ActorRoles { get; set; }
+    //public List<ActorRole> ActorRoles { get; set; }
 }

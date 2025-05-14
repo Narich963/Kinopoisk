@@ -26,6 +26,20 @@ public class FilmsRepository : IRepository<Film>
             .ToListAsync();
         return films;
     }
+
+    public IQueryable<Film> GetAllAsQueryable()
+    {
+        var films = _context.Films
+            .Include(f => f.Genres)
+            .Include(f => f.Comments)
+            .Include(f => f.Ratings)
+            .Include(f => f.ActorRoles)
+                .ThenInclude(a => a.Actor)
+            .Include(f => f.Director)
+            .AsQueryable();
+        return films;
+    }
+
     public async Task<Result<Film>> GetByIdAsync(int id)
     {
         var film = await _context.Films

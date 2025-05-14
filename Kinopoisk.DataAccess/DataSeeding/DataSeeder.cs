@@ -162,7 +162,7 @@ public static class DataSeeder
                 PublishDate = new DateTime(2010, 7, 16),
                 IMDBRating = 8.8,
                 UsersRating = 9.0,
-                Poster = "inception.jpg",
+                Poster = "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX1000_.jpg",
                 DirectorId = nolan?.Id,
                 Genres = [actionGenre, scifiGenre, dramaGenre]
             },
@@ -175,7 +175,7 @@ public static class DataSeeder
                 PublishDate = new DateTime(2014, 11, 7),
                 IMDBRating = 8.6,
                 UsersRating = 8.8,
-                Poster = "interstellar.jpg",
+                Poster = "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
                 DirectorId = nolan?.Id,
                 Genres = [scifiGenre, dramaGenre]
             },
@@ -188,7 +188,7 @@ public static class DataSeeder
                 PublishDate = new DateTime(1999, 3, 31),
                 IMDBRating = 8.7,
                 UsersRating = 9.2,
-                Poster = "matrix.jpg",
+                Poster = "https://m.media-amazon.com/images/M/MV5BN2NmN2VhMTQtMDNiOS00NDlhLTliMjgtODE2ZTY0ODQyNDRhXkEyXkFqcGc@._V1_.jpg",
                 DirectorId = wachowski?.Id,
                 Genres = [actionGenre, scifiGenre, thrillerGenre]
             },
@@ -201,7 +201,7 @@ public static class DataSeeder
                 PublishDate = new DateTime(1999, 10, 15),
                 IMDBRating = 8.8,
                 UsersRating = 8.5,
-                Poster = "fightclub.jpg",
+                Poster = "https://m.media-amazon.com/images/M/MV5BOTgyOGQ1NDItNGU3Ny00MjU3LTg2YWEtNmEyYjBiMjI1Y2M5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
                 DirectorId = fincher?.Id,
                 Genres = [dramaGenre, thrillerGenre]
             }
