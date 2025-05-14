@@ -59,21 +59,17 @@
         </div>
     </div>
     <div class="mt-5">
-        <h4 class="mb-4">Comments: </h4>
+        <div class="row d-flex justify-content-between">
+            <h4 class="mb-4 col">Comments: </h4>
+            <button class="btn btn-primary mb-3 col-1" data-bs-toggle="modal" data-bs-target="#addCommentModal">
+                Add Comment
+            </button>
+        </div>
 
         @if (Model.Comments != null && Model.Comments.Any())
         {
-            <div class="list-group">
-                @foreach (var comment in Model.Comments)
-                {
-                    <div class="list-group-item list-group-item-action mb-2 rounded shadow-sm">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1 text-primary fw-bold">@comment.User.UserName</h6>
-                            <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
-                        </div>
-                        <p class="mb-1">@comment.Text</p>
-                    </div>
-                }
+            <div id="comments-container" class="list-group" data-film-id="@Model.Id">
+
             </div>
         }
         else
@@ -81,6 +77,92 @@
             <p class="text-muted">There are no comments yet!</p>
         }
     </div>
-
 </div>
 
+<div class="modal fade" id="addCommentModal" tabindex="-1" aria-labelledby="addCommentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addCommentForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCommentModalLabel">Add Comment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="FilmId" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label for="Text" class="form-label">Comment</label>
+                        <textarea name="Text" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#addCommentForm').submit(function (e){
+                e.preventDefault();
+
+                const form = $(this);
+                const formData = form.serialize();
+
+                $.ajax({
+                    url: '/Comments/AddComment',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            $('#addCommentModal').modal('hide');
+                            form[0].reset();
+                            loadComments();
+                        } else {
+                            alert('Failed to add comment');
+                        }
+                    },
+                    error: function () {
+                        alert('Failed to add comment');
+                    }
+                });
+            })
+            function loadComments(){
+                const filmId = @Model.Id;
+                
+                $.ajax({
+                    url: '/Comments/GetComments',
+                    type: 'GET',
+                    data: { filmId: filmId },
+                    success: function (comments) {
+                        const container = $('#comments-container');
+                        container.empty();
+
+                        if (comments.length === 0) {
+                            container.replaceWith('<p class="text-muted">There are no comments yet!</p>');
+                            return;
+                        }
+
+                        comments.forEach(comment => {
+                            const item = `
+                                <div class="list-group-item list-group-item-action mb-2 rounded shadow-sm">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1 text-primary fw-bold">${comment.user.userName}</h6>
+                                        <small class="text-muted">${new Date(comment.createdAt).toLocaleString()}</small>
+                                    </div>
+                                    <p class="mb-1">${comment.text}</p>
+                                </div>`;
+                            container.append(item);
+                        });
+                    },
+                    error: function () {
+                        console.error('Failed to load comments');
+                    }
+                });
+            }
+            loadComments();
+        });
+    </script>
+}

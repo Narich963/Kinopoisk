@@ -1,0 +1,10 @@
+﻿using CSharpFunctionalExtensions;
+using Kinopoisk.Services.DTO;
+using System.Security.Claims;
+
+namespace Kinopoisk.Services.Interfaces;
+
+public interface IUserService
+{
+    Task<Result<UserDTO>> GetUserAsync(ClaimsPrincipal principal);
+}
