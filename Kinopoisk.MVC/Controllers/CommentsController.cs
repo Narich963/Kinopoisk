@@ -59,7 +59,6 @@ public class CommentsController : Controller
             _logger.LogError(result.Error);
             return BadRequest(result.Error);
         }
-        var addedCommentVm = _mapper.Map<CommentViewModel>(result.Value);
-        return Ok();
+        return Ok(new {success = true});
     }
 }

@@ -31,6 +31,7 @@ builder.Services.AddTransient<IFilmRepository, FilmsRepository>();
 builder.Services.AddTransient<IFilmsService, FilmsService>();
 builder.Services.AddTransient<ICommentsRepository, CommentsRepository>();
 builder.Services.AddTransient<ICommentsService, CommentsService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 var app = builder.Build();
 

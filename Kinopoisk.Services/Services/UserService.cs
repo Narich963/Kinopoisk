@@ -27,4 +27,12 @@ public class UserService : IUserService
         var userDto = _mapper.Map<UserDTO>(user);
         return Result.Success(userDto);
     }
+
+    public async Task<bool> IsExistingUser(string login)
+    {
+        var user = await _uow.UserManager.FindByNameAsync(login)
+            ?? await _uow.UserManager.FindByEmailAsync(login);
+
+        return user != null;
+    }
 }
