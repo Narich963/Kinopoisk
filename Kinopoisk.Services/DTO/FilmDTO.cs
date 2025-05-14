@@ -15,11 +15,11 @@ public class FilmDTO
     public double? UsersRating { get; set; }
 
     public int? DirectorId { get; set; }
-    public Director? Director { get; set; }
+    public DirectorDTO? Director { get; set; }
 
-    public List<ActorDTO> Actors { get; set; }
+    //public List<ActorDTO> Actors { get; set; }
     public List<GenreDTO> Genres { get; set; }
-    public List<Comment> Comments { get; set; }
+    //public List<Comment> Comments { get; set; }
     //public List<RatingDTO> Ratings { get; set; }
-    public List<ActorRole> ActorRoles { get; set; }
+    public List<ActorRoleDTO> ActorRoles { get; set; }
 }

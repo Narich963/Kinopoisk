@@ -55,23 +55,22 @@
                     { 
                         data: 'country',
                         render: function(data) {
-                            const isoCode = countryNameToISO(data);
-                            return `<img src="https://flagcdn.com/24x18/${isoCode}.png" alt="${data} flag" style="margin-right:5px;">${data}`;
+                            return `<img src="${data}" style="margin-right:5px;">`;
                         }
                     },
-                    { 
-                        data: 'duration',
-                        render: function (data) {
-                            const hours = Math.floor(data / 60);
-                            const minutes = Math.round(data % 60);
-                            return `${hours}h ${minutes}min`;
-                        }
-                    },
+                    { data: 'duration' },
                     { data: 'imdbRating'},
                     { data: 'usersRating' },
                     { data: 'director.name' }
-                ]
+                ],
+                createdRow: function (row, data) {
+                    $(row).css('cursor', 'pointer');
+                    $(row).on('click', function () {
+                        window.location.href = '/Films/Details/' + data.id;
+                    });
+                }
             });
         });
+
     </script>
 }

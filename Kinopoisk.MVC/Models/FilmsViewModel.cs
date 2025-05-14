@@ -10,15 +10,15 @@ public class FilmsViewModel
     public string? Description { get; set; }
     public DateTime PublishDate { get; set; }
     public string Country { get; set; }
-    public double Duration { get; set; }
+    public string Duration { get; set; }
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
 
     public int? DirectorId { get; set; }
-    public Director? Director { get; set; }
+    public DirectorViewModel? Director { get; set; }
 
-    public List<Genre> Genres { get; set; }
-    public List<Comment> Comments { get; set; }
-    public List<Rating> Ratings { get; set; }
-    //public List<ActorRole> ActorRoles { get; set; }
+    public List<string> Genres { get; set; }
+    //public List<Comment> Comments { get; set; }
+    //public List<Rating> Ratings { get; set; }
+    public List<string> Actors { get; set; }
 }
