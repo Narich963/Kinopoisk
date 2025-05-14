@@ -5,7 +5,8 @@ namespace Kinopoisk.DataAccess.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    public IRepository<Film> FilmRepository { get; }
+    public IFilmRepository FilmRepository { get; }
+    public ICommentsRepository CommentsRepository { get; }
     public UserManager<User> UserManager { get; }
     public Task SaveChangesAsync();
 }

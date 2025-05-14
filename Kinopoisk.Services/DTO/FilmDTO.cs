@@ -19,7 +19,7 @@ public class FilmDTO
 
     //public List<ActorDTO> Actors { get; set; }
     public List<GenreDTO> Genres { get; set; }
-    //public List<Comment> Comments { get; set; }
+    public List<CommentDTO> Comments { get; set; }
     //public List<RatingDTO> Ratings { get; set; }
     public List<ActorRoleDTO> ActorRoles { get; set; }
 }

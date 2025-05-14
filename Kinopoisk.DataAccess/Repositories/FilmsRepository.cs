@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class FilmsRepository : IRepository<Film>
+public class FilmsRepository : IFilmRepository
 {
     private readonly KinopoiskContext _context;
 
@@ -19,6 +19,7 @@ public class FilmsRepository : IRepository<Film>
         var films = await _context.Films
             .Include(f => f.Genres)
             .Include(f => f.Comments)
+                .ThenInclude(c => c.User)
             .Include(f => f.Ratings)
             .Include(f => f.ActorRoles)
                 .ThenInclude(a => a.Actor)
@@ -32,6 +33,7 @@ public class FilmsRepository : IRepository<Film>
         var films = _context.Films
             .Include(f => f.Genres)
             .Include(f => f.Comments)
+                .ThenInclude(c => c.User)
             .Include(f => f.Ratings)
             .Include(f => f.ActorRoles)
                 .ThenInclude(a => a.Actor)
@@ -45,6 +47,7 @@ public class FilmsRepository : IRepository<Film>
         var film = await _context.Films
             .Include(f => f.Genres)
             .Include(f => f.Comments)
+                .ThenInclude(c => c.User)
             .Include(f => f.Ratings)
             .Include(f => f.ActorRoles)
                 .ThenInclude(a => a.Actor)

@@ -10,6 +10,7 @@ public class MapperInitializer : Profile
     public MapperInitializer()
     {
         CreateFilmsMap();
+        CreateCommentsMap();
 
         CreateMap<ActorDTO, Actor>().ReverseMap();
         CreateMap<ActorRoleDTO, ActorRole>().ReverseMap();
@@ -31,6 +32,12 @@ public class MapperInitializer : Profile
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => $"{Math.Floor(src.Duration / 60)}h {src.Duration % 60}min"))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => CountryToFlagLink(src.Country)))
             .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.ActorRoles.OrderBy(ar => ar.Role).Select(ar => ar.Actor.Name)));
+    }
+    private void CreateCommentsMap()
+    {
+        CreateMap<CommentDTO, Comment>().ReverseMap();
+        CreateMap<CommentViewModel, CommentDTO>()
+            .ReverseMap();
     }
     private string CountryToFlagLink(string country)
     {

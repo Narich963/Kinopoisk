@@ -58,4 +58,29 @@
             </div>
         </div>
     </div>
+    <div class="mt-5">
+        <h4 class="mb-4">Comments: </h4>
+
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            <div class="list-group">
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="list-group-item list-group-item-action mb-2 rounded shadow-sm">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1 text-primary fw-bold">@comment.User.UserName</h6>
+                            <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                        </div>
+                        <p class="mb-1">@comment.Text</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">There are no comments yet!</p>
+        }
+    </div>
+
 </div>
+

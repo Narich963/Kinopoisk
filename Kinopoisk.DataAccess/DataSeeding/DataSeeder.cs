@@ -26,6 +26,8 @@ public static class DataSeeder
         await SeedUsers(userManager);
 
         await SeedActorRoles(context);
+
+        await SeedComments(context, userManager);
     }
     private async static Task<List<Genre>> SeedGenres(KinopoiskContext context)
     {
@@ -211,5 +213,54 @@ public static class DataSeeder
         await context.SaveChangesAsync();
         return films;
     }
-    
+    private async static Task SeedComments(KinopoiskContext context, UserManager<User> userManager)
+    {
+        var films = await context.Films.ToListAsync();
+        var users = await userManager.Users.ToListAsync();
+
+        var comments = new List<Comment>
+    {
+        new()
+        {
+            Text = "This movie blew my mind!",
+            CreatedAt = DateTime.UtcNow.AddDays(-3),
+            FilmId = films.First(f => f.Name == "Inception").Id,
+            UserId = users.First(u => u.UserName == "testuser").Id
+        },
+        new()
+        {
+            Text = "A true masterpiece!",
+            CreatedAt = DateTime.UtcNow.AddDays(-2),
+            FilmId = films.First(f => f.Name == "Interstellar").Id,
+            UserId = users.First(u => u.UserName == "john_doe").Id
+        },
+        new()
+        {
+            Text = "Red pill or blue pill?",
+            CreatedAt = DateTime.UtcNow.AddDays(-5),
+            FilmId = films.First(f => f.Name == "The Matrix").Id,
+            UserId = users.First(u => u.UserName == "alice").Id
+        },
+        new()
+        {
+            Text = "First rule of Fight Club...",
+            CreatedAt = DateTime.UtcNow.AddDays(-4),
+            FilmId = films.First(f => f.Name == "Fight Club").Id,
+            UserId = users.First(u => u.UserName == "bob").Id
+        },
+        new()
+        {
+            Text = "Loved the visuals and soundtrack.",
+            CreatedAt = DateTime.UtcNow.AddDays(-1),
+            FilmId = films.First(f => f.Name == "Interstellar").Id,
+            UserId = users.First(u => u.UserName == "charlie").Id
+        }
+    };
+
+        if (!await context.Comments.AnyAsync())
+        {
+            await context.Comments.AddRangeAsync(comments);
+            await context.SaveChangesAsync();
+        }
+    }
 }
