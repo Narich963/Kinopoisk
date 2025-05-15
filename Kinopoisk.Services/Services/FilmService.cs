@@ -9,12 +9,12 @@ using System.Linq.Expressions;
 
 namespace Kinopoisk.Services.Services;
 
-public class FilmService : IFilmService
+public class FilmService : BaseService<Film>, IFilmService
 {
     private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
 
-    public FilmService(IUnitOfWork uow, IMapper mapper)
+    public FilmService(IUnitOfWork uow, IMapper mapper) : base(uow.FilmRepository)
     {
         _uow = uow;
         _mapper = mapper;
