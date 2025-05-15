@@ -10,7 +10,7 @@ public class CommentRepository : Repository<Comment>, ICommentRepository
     private readonly KinopoiskContext _context;
     public CommentRepository(KinopoiskContext context) : base(context)
     {
-        
+        _context = context;
     }
 
     public async Task<IEnumerable<Comment>> GetAllAsync()

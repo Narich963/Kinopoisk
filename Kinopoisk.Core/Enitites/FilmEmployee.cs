@@ -2,16 +2,16 @@
 
 namespace Kinopoisk.Core.Enitites;
 
-public class Actor
+public class FilmEmployee
 {
     public int Id { get; set; }
 
     [MaxLength(50)]
     public string Name { get; set; }
 
-    public List<ActorRole> ActorRoles { get; set; }
+    public List<FilmEmployeeRole> ActorRoles { get; set; }
 
-    public Actor()
+    public FilmEmployee()
     {
         ActorRoles = new();
     }

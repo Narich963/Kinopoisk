@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kinopoisk.MVC.Controllers;
 
-public class CommentController : Controller
+public class CommentsController : Controller
 {
-    private readonly ILogger<CommentController> _logger;
+    private readonly ILogger<CommentsController> _logger;
     private readonly ICommentService _commentsService;
     private readonly IUserService _userService;
     private readonly IMapper _mapper;
 
-    public CommentController(ILogger<CommentController> logger, ICommentService commentsService, IMapper mapper, IUserService userService)
+    public CommentsController(ILogger<CommentsController> logger, ICommentService commentsService, IMapper mapper, IUserService userService)
     {
         _logger = logger;
         _commentsService = commentsService;

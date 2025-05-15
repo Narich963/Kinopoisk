@@ -37,9 +37,9 @@ public class FilmService : IFilmService
         if (country != null)
             filmsQuery = filmsQuery.Where(f => f.Country.ToLower().Contains(country.ToLower()));
         if (actorName != null)
-            filmsQuery = filmsQuery.Where(f => f.ActorRoles.Any(a => a.Actor.Name.ToLower().Contains(actorName.ToLower())));
+            filmsQuery = filmsQuery.Where(f => f.Employees.Any(a => a.FilmEmployee.Name.ToLower().Contains(actorName.ToLower())));
         if (director != null)
-            filmsQuery = filmsQuery.Where(f => f.Director.Name.ToLower().Contains(director.ToLower()));
+            filmsQuery = filmsQuery.Where(f => f.Employees.Any(e => e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(director.ToLower())));
 
         var films = await filmsQuery.ToListAsync();
 

@@ -14,8 +14,7 @@ public class FilmsViewModel
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
 
-    public int? DirectorId { get; set; }
-    public DirectorViewModel? Director { get; set; }
+    public string DirectorName { get; set; }
 
     public List<string> Genres { get; set; }
     public List<CommentViewModel> Comments { get; set; }

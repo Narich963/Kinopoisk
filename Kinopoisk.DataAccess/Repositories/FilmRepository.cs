@@ -11,7 +11,7 @@ public class FilmRepository : Repository<Film>, IFilmRepository
 
     public FilmRepository(KinopoiskContext context) : base(context)
     {
-        
+        _context = context;
     }
 
     public async Task<IEnumerable<Film>> GetAllAsync()
@@ -21,9 +21,8 @@ public class FilmRepository : Repository<Film>, IFilmRepository
             .Include(f => f.Comments)
                 .ThenInclude(c => c.User)
             .Include(f => f.Ratings)
-            .Include(f => f.ActorRoles)
-                .ThenInclude(a => a.Actor)
-            .Include(f => f.Director)
+            .Include(f => f.Employees)
+                .ThenInclude(a => a.FilmEmployee)
             .ToListAsync();
         return films;
     }
@@ -35,9 +34,8 @@ public class FilmRepository : Repository<Film>, IFilmRepository
             .Include(f => f.Comments)
                 .ThenInclude(c => c.User)
             .Include(f => f.Ratings)
-            .Include(f => f.ActorRoles)
-                .ThenInclude(a => a.Actor)
-            .Include(f => f.Director)
+            .Include(f => f.Employees)
+                .ThenInclude(a => a.FilmEmployee)
             .AsQueryable();
         return films;
     }
@@ -49,9 +47,8 @@ public class FilmRepository : Repository<Film>, IFilmRepository
             .Include(f => f.Comments)
                 .ThenInclude(c => c.User)
             .Include(f => f.Ratings)
-            .Include(f => f.ActorRoles)
-                .ThenInclude(a => a.Actor)
-            .Include(f => f.Director)
+            .Include(f => f.Employees)
+                .ThenInclude(a => a.FilmEmployee)
             .FirstOrDefaultAsync(f => f.Id == id);
 
         return film == null

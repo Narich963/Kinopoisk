@@ -14,12 +14,9 @@ public class FilmDTO
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
 
-    public int? DirectorId { get; set; }
-    public DirectorDTO? Director { get; set; }
-
     //public List<ActorDTO> Actors { get; set; }
     public List<GenreDTO> Genres { get; set; }
     public List<CommentDTO> Comments { get; set; }
     //public List<RatingDTO> Ratings { get; set; }
-    public List<ActorRoleDTO> ActorRoles { get; set; }
+    public List<FilmEmployeeRoleDTO> Employees { get; set; }
 }

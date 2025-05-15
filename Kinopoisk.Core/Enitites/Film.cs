@@ -18,19 +18,16 @@ public class Film
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
 
-    public int? DirectorId { get; set; }
-    public Director? Director { get; set; }
-
     public List<Genre> Genres { get; set; }
     public List<Comment> Comments { get; set; }
     public List<Rating> Ratings { get; set; }
-    public List<ActorRole> ActorRoles { get; set; }
+    public List<FilmEmployeeRole> Employees { get; set; }
 
     public Film()
     {
         Genres = new();
         Comments = new();
         Ratings = new();
-        ActorRoles = new();
+        Employees = new();
     }
 }

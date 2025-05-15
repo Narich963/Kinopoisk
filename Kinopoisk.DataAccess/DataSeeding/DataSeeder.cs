@@ -18,13 +18,12 @@ public static class DataSeeder
             return;
 
         var genres = await SeedGenres(context); 
-        var directors = await SeedDirectors(context);
-        var actors = await SeedActors(context);
+        var actors = await SeedActorsAndDirectors(context);
         var films = await SeedFilms(context);
         
         await SeedUsers(userManager);
 
-        await SeedActorRoles(context);
+        await SeedFilmEmployeeRoles(context);
 
         await SeedComments(context, userManager);
     }
@@ -45,12 +44,12 @@ public static class DataSeeder
         await context.SaveChangesAsync();
         return genres;
     }
-    private async static Task<List<Actor>> SeedActors(KinopoiskContext context)
+    private async static Task<List<FilmEmployee>> SeedActorsAndDirectors(KinopoiskContext context)
     {
-        if (context.Actors.Any())
-            return new List<Actor>();
+        if (context.FilmEmployees.Any())
+            return new List<FilmEmployee>();
 
-        var actors = new List<Actor>
+        var actors = new List<FilmEmployee>
         {
             new() { Name = "Leonardo DiCaprio" },
             new() { Name = "Matthew McConaughey" },
@@ -60,40 +59,51 @@ public static class DataSeeder
             new() { Name = "Joseph Gordon-Levitt" },
             new() { Name = "Elliot Page" },
             new() { Name = "Anne Hathaway" },
-            new() { Name = "Hugo Weaving" }
+            new() { Name = "Hugo Weaving" },
+            new() { Name = "Lana Wachowski" },
+            new() { Name = "David Fincher" },
+            new() { Name = "Christopher Nolan" }
         };
 
-        await context.Actors.AddRangeAsync(actors);
+        await context.FilmEmployees.AddRangeAsync(actors);
         await context.SaveChangesAsync();
         return actors;
     }
-    private async static Task SeedActorRoles(KinopoiskContext context)
+    private async static Task SeedFilmEmployeeRoles(KinopoiskContext context)
     {
         var interstellar = context.Films.FirstOrDefault(f => f.Name == "Interstellar");
         var inception = context.Films.FirstOrDefault(f => f.Name == "Inception");
         var theMatrix = context.Films.FirstOrDefault(f => f.Name == "The Matrix");
         var fightClub = context.Films.FirstOrDefault(f => f.Name == "Fight Club");
 
-        var actorRoles = new List<ActorRole>
+        var nolan = context.FilmEmployees.FirstOrDefault(f => f.Name == "Christopher Nolan");
+        var wachowski = context.FilmEmployees.FirstOrDefault(f => f.Name == "Lana Wachowski");
+        var fincher = context.FilmEmployees.FirstOrDefault(f => f.Name == "David Fincher");
+
+        var filmEmployeeRoles = new List<FilmEmployeeRole>
         {
             // Inception (2010)
-            new() { Actor = context.Actors.First(a => a.Name == "Leonardo DiCaprio"), Film = inception, Role = 0 },
-            new() { Actor = context.Actors.First(a => a.Name == "Joseph Gordon-Levitt"), Film = inception, Role = 2 },
-            new() { Actor = context.Actors.First(a => a.Name == "Elliot Page"), Film = inception    , Role = 1 },
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Leonardo DiCaprio"), Film = inception, Role = 0, IsDirector = false },
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Joseph Gordon-Levitt"), Film = inception, Role = 2, IsDirector = false },
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Elliot Page"), Film = inception    , Role = 1 , IsDirector = false},
+            new() { FilmEmployee = nolan, Film = inception, Role = 0, IsDirector = true },
 
             // Interstellar (2014)
-            new() { Actor = context.Actors.First(a => a.Name == "Matthew McConaughey"), Film = interstellar, Role = 0 },
-            new() { Actor = context.Actors.First(a => a.Name == "Anne Hathaway"), Film = interstellar, Role = 1 },
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Matthew McConaughey"), Film = interstellar, Role = 0, IsDirector = false },
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Anne Hathaway"), Film = interstellar, Role = 1 , IsDirector = false},
+            new() { FilmEmployee = nolan, Film = interstellar, Role = 0, IsDirector = true },
 
             // The Matrix (1999)
-            new() { Actor = context.Actors.First(a => a.Name == "Keanu Reeves"), Film = theMatrix, Role = 0 },
-            new() { Actor = context.Actors.First(a => a.Name == "Hugo Weaving"), Film = theMatrix, Role = 1 },
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Keanu Reeves"), Film = theMatrix, Role = 0 , IsDirector = false},
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Hugo Weaving"), Film = theMatrix, Role = 1 , IsDirector = false},
+            new() { FilmEmployee = wachowski, Film = theMatrix, Role = 0 , IsDirector = true},
 
             // Fight Club (1999)
-            new() { Actor = context.Actors.First(a => a.Name == "Brad Pitt"), Film = fightClub, Role = 0 },
-            new() { Actor = context.Actors.First(a => a.Name == "Edward Norton"), Film = fightClub, Role = 0 }
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Brad Pitt"), Film = fightClub, Role = 0 , IsDirector = false},
+            new() { FilmEmployee = context.FilmEmployees.First(a => a.Name == "Edward Norton"), Film = fightClub, Role = 0 , IsDirector = false},
+            new() { FilmEmployee = fincher, Film = fightClub, Role = 0 , IsDirector = true}
         };
-        await context.ActorRoles.AddRangeAsync(actorRoles);
+        await context.FilmEmployeeRoles.AddRangeAsync(filmEmployeeRoles);
         await context.SaveChangesAsync();
     }
     private async static Task SeedUsers(UserManager<User> userManager)
@@ -121,31 +131,10 @@ public static class DataSeeder
             }
         }
     }
-    private async static Task<List<Director>> SeedDirectors(KinopoiskContext context)
-    {
-        if (context.Directors.Any())
-            return new List<Director>();
-
-        var directors = new List<Director>
-        {
-            new() { Name = "Christopher Nolan" },
-            new() { Name = "Lana Wachowski" },
-            new() { Name = "David Fincher" },
-            new() { Name = "Quentin Tarantino" }
-        };
-
-        await context.Directors.AddRangeAsync(directors);
-        await context.SaveChangesAsync();
-        return directors;
-    }
     private async static Task<List<Film>> SeedFilms(KinopoiskContext context)
     {
         if (context.Films.Any())
             return new List<Film>();
-
-        var nolan = await context.Directors.FirstOrDefaultAsync(d => d.Name == "Christopher Nolan");
-        var wachowski = await context.Directors.FirstOrDefaultAsync(d => d.Name == "Lana Wachowski");
-        var fincher = await context.Directors.FirstOrDefaultAsync(d => d.Name == "David Fincher");
 
         var actionGenre = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Action");
         var scifiGenre = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Sci-Fi");
@@ -164,7 +153,6 @@ public static class DataSeeder
                 IMDBRating = 8.8,
                 UsersRating = 9.0,
                 Poster = "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX1000_.jpg",
-                DirectorId = nolan?.Id,
                 Genres = [actionGenre, scifiGenre, dramaGenre]
             },
             new()
@@ -177,7 +165,6 @@ public static class DataSeeder
                 IMDBRating = 8.6,
                 UsersRating = 8.8,
                 Poster = "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-                DirectorId = nolan?.Id,
                 Genres = [scifiGenre, dramaGenre]
             },
             new()
@@ -190,7 +177,6 @@ public static class DataSeeder
                 IMDBRating = 8.7,
                 UsersRating = 9.2,
                 Poster = "https://m.media-amazon.com/images/M/MV5BN2NmN2VhMTQtMDNiOS00NDlhLTliMjgtODE2ZTY0ODQyNDRhXkEyXkFqcGc@._V1_.jpg",
-                DirectorId = wachowski?.Id,
                 Genres = [actionGenre, scifiGenre, thrillerGenre]
             },
             new()
@@ -203,7 +189,6 @@ public static class DataSeeder
                 IMDBRating = 8.8,
                 UsersRating = 8.5,
                 Poster = "https://m.media-amazon.com/images/M/MV5BOTgyOGQ1NDItNGU3Ny00MjU3LTg2YWEtNmEyYjBiMjI1Y2M5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-                DirectorId = fincher?.Id,
                 Genres = [dramaGenre, thrillerGenre]
             }
         };

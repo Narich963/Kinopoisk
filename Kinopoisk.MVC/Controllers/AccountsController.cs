@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kinopoisk.MVC.Controllers;
 
-public class AccountController : Controller
+public class AccountsController : Controller
 {
     private readonly SignInManager<User> _signInManager;
     private readonly IUserService _userService;
 
-    public AccountController(SignInManager<User> signInManager, IUserService userService)
+    public AccountsController(SignInManager<User> signInManager, IUserService userService)
     {
         _signInManager = signInManager;
         _userService = userService;

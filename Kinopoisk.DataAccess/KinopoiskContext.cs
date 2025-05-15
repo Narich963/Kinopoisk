@@ -7,9 +7,8 @@ namespace Kinopoisk.DataAccess;
 
 public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
-    public DbSet<Actor> Actors { get; set; }
-    public DbSet<ActorRole> ActorRoles { get; set; }
-    public DbSet<Director> Directors { get; set; }
+    public DbSet<FilmEmployee> FilmEmployees { get; set; }
+    public DbSet<FilmEmployeeRole> FilmEmployeeRoles { get; set; }
     public DbSet<Film> Films { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Comment> Comments { get; set; }
@@ -25,8 +24,8 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<ActorRole>()
-            .HasKey(ar => new { ar.ActorId, ar.FilmId });
+        builder.Entity<FilmEmployeeRole>()
+            .HasKey(ar => new { ar.FilmEmployeeID, ar.FilmId });
 
         builder.Entity<Comment>()
             .HasKey(c => new { c.UserId, c.FilmId });

@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kinopoisk.MVC.Controllers;
 
-public class FilmController : Controller
+public class FilmsController : Controller
 {
     private readonly IFilmService _filmsService;
     private readonly IMapper _mapper;
-    private readonly ILogger<FilmController> _logger;
+    private readonly ILogger<FilmsController> _logger;
 
-    public FilmController(IFilmService filmsService, IMapper mapper, ILogger<FilmController> logger)
+    public FilmsController(IFilmService filmsService, IMapper mapper, ILogger<FilmsController> logger)
     {
         _filmsService = filmsService;
         _mapper = mapper;

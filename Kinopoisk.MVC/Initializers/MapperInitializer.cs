@@ -12,15 +12,13 @@ public class MapperInitializer : Profile
         CreateFilmsMap();
         CreateCommentsMap();
 
-        CreateMap<ActorDTO, Actor>().ReverseMap();
-        CreateMap<ActorRoleDTO, ActorRole>().ReverseMap();
-        CreateMap<DirectorDTO, Director>().ReverseMap();
+        CreateMap<FilmEmployeeDTO, FilmEmployee>().ReverseMap();
+        CreateMap<FilmEmployeeRoleDTO, FilmEmployeeRole>().ReverseMap();
         CreateMap<GenreDTO, Genre>().ReverseMap();
         CreateMap<UserDTO, User>().ReverseMap();
 
-        CreateMap<ActorRoleViewModel, ActorRoleDTO>().ReverseMap();
-        CreateMap<ActorViewModel, ActorDTO>().ReverseMap();
-        CreateMap<DirectorViewModel, DirectorDTO>().ReverseMap();
+        CreateMap<FilmEmployeeRoleViewModel, FilmEmployeeRoleDTO>().ReverseMap();
+        CreateMap<FilmEmployeeViewModel, FilmEmployeeDTO>().ReverseMap();
         CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
     }
     private void CreateFilmsMap()
@@ -31,7 +29,8 @@ public class MapperInitializer : Profile
             .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(g => g.Name)))
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => $"{Math.Floor(src.Duration / 60)}h {src.Duration % 60}min"))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => CountryToFlagLink(src.Country)))
-            .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.ActorRoles.OrderBy(ar => ar.Role).Select(ar => ar.Actor.Name)));
+            .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Employees.Where(ar => !ar.IsDirector).OrderBy(ar => ar.Role).Select(ar => ar.FilmEmployee.Name)))
+            .ForMember(dest => dest.DirectorName, opt => opt.MapFrom(src => src.Employees.FirstOrDefault(e => e.IsDirector).FilmEmployee.Name));
     }
     private void CreateCommentsMap()
     {
