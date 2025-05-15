@@ -9,12 +9,12 @@ public class FilmDTO
     public string Name { get; set; }
     public string? Description { get; set; }
     public DateTime PublishDate { get; set; }
-    public string Country { get; set; }
     public double Duration { get; set; }
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
+    public int CountryId { get; set; }
 
-    //public List<ActorDTO> Actors { get; set; }
+    public CountryDTO Country { get; set; }
     public List<GenreDTO> Genres { get; set; }
     public List<CommentDTO> Comments { get; set; }
     //public List<RatingDTO> Ratings { get; set; }

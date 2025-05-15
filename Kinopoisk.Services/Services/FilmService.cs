@@ -35,7 +35,7 @@ public class FilmService : IFilmService
         if (year.HasValue)
             filmsQuery = filmsQuery.Where(f => f.PublishDate.Year == year.Value);
         if (country != null)
-            filmsQuery = filmsQuery.Where(f => f.Country.ToLower().Contains(country.ToLower()));
+            filmsQuery = filmsQuery.Where(f => f.Country.Name.ToLower().Contains(country.ToLower()));
         if (actorName != null)
             filmsQuery = filmsQuery.Where(f => f.Employees.Any(a => a.FilmEmployee.Name.ToLower().Contains(actorName.ToLower())));
         if (director != null)

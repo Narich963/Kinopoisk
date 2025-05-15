@@ -13,11 +13,12 @@ public class Film
     [MaxLength(50)]
     public string? Description { get; set; }
     public DateTime PublishDate { get; set; }
-    public string Country { get; set; }
     public double Duration { get; set; }
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }
 
+    public int CountryId { get; set; }
+    public Country? Country { get; set; }
     public List<Genre> Genres { get; set; }
     public List<Comment> Comments { get; set; }
     public List<Rating> Ratings { get; set; }

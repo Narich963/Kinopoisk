@@ -10,6 +10,7 @@ public class FilmsViewModel
     public string? Description { get; set; }
     public DateTime PublishDate { get; set; }
     public string Country { get; set; }
+    public string CountryFlagLink { get; set; }
     public string Duration { get; set; }
     public double? IMDBRating { get; set; }
     public double? UsersRating { get; set; }

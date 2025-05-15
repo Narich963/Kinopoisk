@@ -23,6 +23,7 @@ public class FilmRepository : Repository<Film>, IFilmRepository
             .Include(f => f.Ratings)
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
+            .Include(f => f.Country)
             .ToListAsync();
         return films;
     }
@@ -36,6 +37,7 @@ public class FilmRepository : Repository<Film>, IFilmRepository
             .Include(f => f.Ratings)
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
+            .Include(f => f.Country)
             .AsQueryable();
         return films;
     }
@@ -49,6 +51,7 @@ public class FilmRepository : Repository<Film>, IFilmRepository
             .Include(f => f.Ratings)
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
+            .Include(f => f.Country)
             .FirstOrDefaultAsync(f => f.Id == id);
 
         return film == null

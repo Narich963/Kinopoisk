@@ -17,6 +17,8 @@ public static class DataSeeder
         if (await context.Films.AnyAsync())
             return;
 
+        await SeedCountries(context);
+
         var genres = await SeedGenres(context); 
         var actors = await SeedActorsAndDirectors(context);
         var films = await SeedFilms(context);
@@ -141,13 +143,15 @@ public static class DataSeeder
         var dramaGenre = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Drama");
         var thrillerGenre = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Thriller");
 
+        var usa = await context.Countries.FirstOrDefaultAsync(c => c.Name == "USA");
+
         var films = new List<Film>
         {
             new()
             {
                 Name = "Inception",
                 Description = "A mind-bending thriller",
-                Country = "USA",
+                Country = usa,
                 Duration = 148,
                 PublishDate = new DateTime(2010, 7, 16),
                 IMDBRating = 8.8,
@@ -159,7 +163,7 @@ public static class DataSeeder
             {
                 Name = "Interstellar",
                 Description = "Exploring space and time",
-                Country = "USA",
+                Country = usa,
                 Duration = 169,
                 PublishDate = new DateTime(2014, 11, 7),
                 IMDBRating = 8.6,
@@ -171,7 +175,7 @@ public static class DataSeeder
             {
                 Name = "The Matrix",
                 Description = "Reality vs illusion",
-                Country = "USA",
+                Country = usa,
                 Duration = 136,
                 PublishDate = new DateTime(1999, 3, 31),
                 IMDBRating = 8.7,
@@ -183,7 +187,7 @@ public static class DataSeeder
             {
                 Name = "Fight Club",
                 Description = "Underground fight club",
-                Country = "USA",
+                Country = usa,
                 Duration = 139,
                 PublishDate = new DateTime(1999, 10, 15),
                 IMDBRating = 8.8,
@@ -246,5 +250,20 @@ public static class DataSeeder
             await context.Comments.AddRangeAsync(comments);
             await context.SaveChangesAsync();
         }
+    }
+    private async static Task SeedCountries(KinopoiskContext context)
+    {
+        if (context.Countries.Any())
+            return;
+        var countries = new List<Country>
+        {
+            new() { Name = "USA", IsoCode = "us" },
+            new() { Name = "UK", IsoCode = "gb" },
+            new() { Name = "Canada", IsoCode = "ca" },
+            new() { Name = "Australia", IsoCode = "au" },
+            new() { Name = "Germany", IsoCode = "de" }
+        };
+        await context.AddRangeAsync(countries);
+        await context.SaveChangesAsync();
     }
 }
