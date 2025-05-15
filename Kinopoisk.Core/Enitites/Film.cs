@@ -1,10 +1,16 @@
-﻿namespace Kinopoisk.Core.Enitites;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Kinopoisk.Core.Enitites;
 
 public class Film
 {
     public int Id { get; set; }
     public string? Poster { get; set; }
+
+    [MaxLength(50)]
     public string Name { get; set; }
+
+    [MaxLength(50)]
     public string? Description { get; set; }
     public DateTime PublishDate { get; set; }
     public string Country { get; set; }

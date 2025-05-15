@@ -1,7 +1,10 @@
-﻿namespace Kinopoisk.Core.Enitites;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Kinopoisk.Core.Enitites;
 
 public class Comment
 {
+    [MaxLength(250)]
     public string Text { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
