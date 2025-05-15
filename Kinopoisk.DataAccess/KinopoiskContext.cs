@@ -24,5 +24,11 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<ActorRole>()
+            .HasKey(ar => new { ar.ActorId, ar.FilmId });
+
+        builder.Entity<Comment>()
+            .HasKey(c => new { c.UserId, c.FilmId });
     }
 }

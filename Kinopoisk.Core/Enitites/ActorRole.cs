@@ -1,11 +1,11 @@
-﻿using Kinopoisk.Core.Enums;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Kinopoisk.Core.Enitites;
 
 public class ActorRole
 {
-    public int Id { get; set; }
-    public FilmRole Role { get; set; }
+    public int Role { get; set; }
 
     public int ActorId { get; set; }
     public Actor? Actor { get; set; }

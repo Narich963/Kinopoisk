@@ -1,5 +1,4 @@
 ﻿using Kinopoisk.Core.Enitites;
-using Kinopoisk.Core.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -78,21 +77,21 @@ public static class DataSeeder
         var actorRoles = new List<ActorRole>
         {
             // Inception (2010)
-            new() { Actor = context.Actors.First(a => a.Name == "Leonardo DiCaprio"), Film = inception, Role = FilmRole.Main },
-            new() { Actor = context.Actors.First(a => a.Name == "Joseph Gordon-Levitt"), Film = inception, Role = FilmRole.Secondary },
-            new() { Actor = context.Actors.First(a => a.Name == "Elliot Page"), Film = inception    , Role = FilmRole.Secondary },
+            new() { Actor = context.Actors.First(a => a.Name == "Leonardo DiCaprio"), Film = inception, Role = 0 },
+            new() { Actor = context.Actors.First(a => a.Name == "Joseph Gordon-Levitt"), Film = inception, Role = 2 },
+            new() { Actor = context.Actors.First(a => a.Name == "Elliot Page"), Film = inception    , Role = 1 },
 
             // Interstellar (2014)
-            new() { Actor = context.Actors.First(a => a.Name == "Matthew McConaughey"), Film = interstellar, Role = FilmRole.Main },
-            new() { Actor = context.Actors.First(a => a.Name == "Anne Hathaway"), Film = interstellar, Role = FilmRole.Secondary },
+            new() { Actor = context.Actors.First(a => a.Name == "Matthew McConaughey"), Film = interstellar, Role = 0 },
+            new() { Actor = context.Actors.First(a => a.Name == "Anne Hathaway"), Film = interstellar, Role = 1 },
 
             // The Matrix (1999)
-            new() { Actor = context.Actors.First(a => a.Name == "Keanu Reeves"), Film = theMatrix, Role = FilmRole.Main },
-            new() { Actor = context.Actors.First(a => a.Name == "Hugo Weaving"), Film = theMatrix, Role = FilmRole.Secondary },
+            new() { Actor = context.Actors.First(a => a.Name == "Keanu Reeves"), Film = theMatrix, Role = 0 },
+            new() { Actor = context.Actors.First(a => a.Name == "Hugo Weaving"), Film = theMatrix, Role = 1 },
 
             // Fight Club (1999)
-            new() { Actor = context.Actors.First(a => a.Name == "Brad Pitt"), Film = fightClub, Role = FilmRole.Main },
-            new() { Actor = context.Actors.First(a => a.Name == "Edward Norton"), Film = fightClub, Role = FilmRole.Main }
+            new() { Actor = context.Actors.First(a => a.Name == "Brad Pitt"), Film = fightClub, Role = 0 },
+            new() { Actor = context.Actors.First(a => a.Name == "Edward Norton"), Film = fightClub, Role = 0 }
         };
         await context.ActorRoles.AddRangeAsync(actorRoles);
         await context.SaveChangesAsync();
