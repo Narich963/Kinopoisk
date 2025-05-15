@@ -5,6 +5,7 @@ using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Kinopoisk.Services.Services;
 
@@ -26,24 +27,42 @@ public class FilmService : IFilmService
         return filsmDtos;
     }
 
-    public async Task<IEnumerable<FilmDTO>> GetFilteredAsync(string? name, int? year, string? country, string? actorName, string? director)
+    public async Task<IEnumerable<FilmDTO>> GetFilteredAsync(FilmsFilterDTO model)
     {
         var filmsQuery = _uow.FilmRepository.GetAllAsQueryable();
 
-        if (name != null)
-            filmsQuery = filmsQuery.Where(f => f.Name.ToLower().Contains(name.ToLower()));
-        if (year.HasValue)
-            filmsQuery = filmsQuery.Where(f => f.PublishDate.Year == year.Value);
-        if (country != null)
-            filmsQuery = filmsQuery.Where(f => f.Country.Name.ToLower().Contains(country.ToLower()));
-        if (actorName != null)
-            filmsQuery = filmsQuery.Where(f => f.Employees.Any(a => a.FilmEmployee.Name.ToLower().Contains(actorName.ToLower())));
-        if (director != null)
-            filmsQuery = filmsQuery.Where(f => f.Employees.Any(e => e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(director.ToLower())));
+        if (model.Name != null)
+            filmsQuery = filmsQuery.Where(f => f.Name.ToLower().Contains(model.Name.ToLower()));
+        if (model.Year.HasValue)
+            filmsQuery = filmsQuery.Where(f => f.PublishDate.Year == model.Year.Value);
+        if (model.Country != null)
+            filmsQuery = filmsQuery.Where(f => f.Country.Name.ToLower().Contains(model.Country.ToLower()));
+        if (model.ActorName != null)
+            filmsQuery = filmsQuery.Where(f => f.Employees.Any(a => a.FilmEmployee.Name.ToLower().Contains(model.ActorName.ToLower())));
+        if (model.Director != null)
+            filmsQuery = filmsQuery.Where(f => f.Employees.Any(e => e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(model.Director.ToLower())));
 
-        var films = await filmsQuery.ToListAsync();
+        Expression<Func<Film, object>> selectorKey = model.SortField switch
+        {
+            "Name" => f => f.Name,
+            "PublishDate" => f => f.PublishDate,
+            "Duration" => f => f.Duration,
+            "IMDBRating" => f => f.IMDBRating,
+            "UsersRating" => f => f.UsersRating,
+            _ => f => f.Id
+        };
+
+        filmsQuery = model.IsAscending
+            ? filmsQuery.OrderBy(selectorKey)
+            : filmsQuery.OrderByDescending(selectorKey);
+
+        var films = await filmsQuery
+            .Skip((model.Page - 1) * model.PageSize)
+            .Take(model.PageSize)
+            .ToListAsync();
 
         var filmsDtos = _mapper.Map<List<FilmDTO>>(films);
+
         return filmsDtos;
     }
 

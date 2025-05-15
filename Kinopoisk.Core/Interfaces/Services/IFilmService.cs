@@ -4,6 +4,5 @@ namespace Kinopoisk.Services.Interfaces;
 
 public interface IFilmService : IService<FilmDTO>
 {
-    Task<IEnumerable<FilmDTO>> GetFilteredAsync(string? name, int? year, string? country, string? actorName,
-        string? director);
+    Task<IEnumerable<FilmDTO>> GetFilteredAsync(FilmsFilterDTO dto);
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Kinopoisk.Core.DTO;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,9 @@ public class FilmsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetFilms(string? name, int? year, string? country, string? actorName, string? director)
+    public async Task<IActionResult> GetFilms(FilmsFilterDTO dto)
     {
-        var filmDtos = await _filmsService.GetFilteredAsync(name, year, country, actorName, director);
+        var filmDtos = await _filmsService.GetFilteredAsync(dto);
         var filmsViewModel = _mapper.Map<List<FilmsViewModel>>(filmDtos);
         return Json(filmsViewModel);
     }
