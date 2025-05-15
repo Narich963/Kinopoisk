@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class CommentRepository : ICommentRepository
+public class CommentRepository : Repository<Comment>, ICommentRepository
 {
     private readonly KinopoiskContext _context;
-    public CommentRepository(KinopoiskContext context)
+    public CommentRepository(KinopoiskContext context) : base(context)
     {
-        _context = context;
+        
     }
 
     public async Task<IEnumerable<Comment>> GetAllAsync()
@@ -30,37 +30,6 @@ public class CommentRepository : ICommentRepository
             .ToListAsync();
 
         return comments;
-    }
-
-    public async Task<Result<Comment>> AddAsync(Comment entity)
-    {
-        if (entity == null)
-            return Result.Failure<Comment>("Comment is null");
-
-        await _context.AddAsync(entity);
-        await _context.SaveChangesAsync();
-        return Result.Success(entity);
-    }
-
-    public async Task<Result<Comment>> UpdateAsync(Comment entity)
-    {
-        if (entity == null)
-            return Result.Failure<Comment>("Comment is null");
-
-        _context.Update(entity);
-        await _context.SaveChangesAsync();
-        return Result.Success(entity);
-    }
-
-    public async Task<Result> DeleteAsync(int id)
-    {
-        var comment = await _context.Comments.FindAsync(id);
-        if (comment == null)
-            return Result.Failure("Comment not found");
-        
-        _context.Comments.Remove(comment);
-        await _context.SaveChangesAsync();
-        return Result.Success("The comment is deleted.");
     }
 
     public Task<Result<Comment>> GetByIdAsync(int id)

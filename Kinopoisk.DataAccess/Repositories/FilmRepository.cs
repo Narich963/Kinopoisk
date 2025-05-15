@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class FilmRepository : IFilmRepository
+public class FilmRepository : Repository<Film>, IFilmRepository
 {
     private readonly KinopoiskContext _context;
 
-    public FilmRepository(KinopoiskContext context)
+    public FilmRepository(KinopoiskContext context) : base(context)
     {
-        _context = context;
+        
     }
 
     public async Task<IEnumerable<Film>> GetAllAsync()
@@ -57,38 +57,5 @@ public class FilmRepository : IFilmRepository
         return film == null
             ? Result.Failure<Film>("Film not found")
             : Result.Success(film);
-    }
-
-    public async Task<Result<Film>> AddAsync(Film entity)
-    {
-        var result = await _context.Films.AddAsync(entity);
-        if (result.State == EntityState.Added)
-        {
-            await _context.SaveChangesAsync();
-            return Result.Success(entity);
-        }
-        return Result.Failure<Film>("Failed to add film");
-    }
-
-    public async Task<Result<Film>> UpdateAsync(Film entity)
-    {
-        var result = _context.Films.Update(entity);
-        if (result.State == EntityState.Modified)
-        {
-            await _context.SaveChangesAsync();
-            return Result.Success(entity);
-        }
-        return Result.Failure<Film>("Failed to update film");
-    }
-
-    public async Task<Result> DeleteAsync(int id)
-    {
-        var film = await _context.Films.FindAsync(id);
-        if (film == null)
-            return Result.Failure("Film not found");
-
-        _context.Remove(film);
-        await _context.SaveChangesAsync();
-        return Result.Success();
     }
 }
