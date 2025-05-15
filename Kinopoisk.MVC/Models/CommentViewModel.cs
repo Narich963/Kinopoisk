@@ -1,4 +1,5 @@
-﻿using Kinopoisk.Services.DTO;
+﻿
+using Kinopoisk.Core.DTO;
 
 namespace Kinopoisk.MVC.Models;
 

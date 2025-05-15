@@ -1,6 +1,6 @@
 using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.DataAccess;
-using Kinopoisk.DataAccess.Interfaces;
 using Kinopoisk.DataAccess.Repositories;
 using Kinopoisk.Services.Interfaces;
 using Kinopoisk.Services.Services;

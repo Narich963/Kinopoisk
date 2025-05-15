@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Kinopoisk.DataAccess.Interfaces;
+namespace Kinopoisk.Core.Interfaces.Repositories;
 
 public interface IRepository<T>
 {

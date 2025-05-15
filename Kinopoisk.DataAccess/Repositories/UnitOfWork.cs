@@ -1,5 +1,5 @@
 ﻿using Kinopoisk.Core.Enitites;
-using Kinopoisk.DataAccess.Interfaces;
+using Kinopoisk.Core.Interfaces.Repositories;
 using Microsoft.AspNetCore.Identity;
 
 namespace Kinopoisk.DataAccess.Repositories;

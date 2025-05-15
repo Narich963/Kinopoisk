@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using CSharpFunctionalExtensions;
+using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
-using Kinopoisk.DataAccess.Interfaces;
-using Kinopoisk.Services.DTO;
+using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Services.Interfaces;
 
 namespace Kinopoisk.Services.Services;

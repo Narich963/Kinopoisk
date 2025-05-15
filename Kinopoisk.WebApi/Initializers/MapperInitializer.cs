@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
-using Kinopoisk.Services.DTO;
 using Kinopoisk.WebApi.Contracts;
 
 namespace Kinopoisk.WebApi.Initializers;

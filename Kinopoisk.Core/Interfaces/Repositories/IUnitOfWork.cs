@@ -1,7 +1,7 @@
 ﻿using Kinopoisk.Core.Enitites;
 using Microsoft.AspNetCore.Identity;
 
-namespace Kinopoisk.DataAccess.Interfaces;
+namespace Kinopoisk.Core.Interfaces.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {

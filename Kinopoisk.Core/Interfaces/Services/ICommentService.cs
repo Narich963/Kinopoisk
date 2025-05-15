@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Kinopoisk.Services.DTO;
+using Kinopoisk.Core.DTO;
 
 namespace Kinopoisk.Services.Interfaces;
 

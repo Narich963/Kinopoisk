@@ -1,6 +1,6 @@
 ﻿using Kinopoisk.Core.Enitites;
 
-namespace Kinopoisk.Services.DTO;
+namespace Kinopoisk.Core.DTO;
 
 public class CommentDTO
 {

@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Kinopoisk.DataAccess.Interfaces;
+using Kinopoisk.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;

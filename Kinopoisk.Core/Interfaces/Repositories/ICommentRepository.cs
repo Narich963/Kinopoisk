@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Kinopoisk.Core.Enitites;
 
-namespace Kinopoisk.DataAccess.Interfaces;
+namespace Kinopoisk.Core.Interfaces.Repositories;
 
 public interface ICommentRepository : IRepository<Comment>
 {

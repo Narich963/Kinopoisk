@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.MVC.Models;
-using Kinopoisk.Services.DTO;
 
 namespace Kinopoisk.MVC.Initializers;
 

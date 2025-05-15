@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Kinopoisk.Core.DTO;
 using Kinopoisk.MVC.Models;
-using Kinopoisk.Services.DTO;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

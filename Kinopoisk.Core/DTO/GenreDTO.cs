@@ -1,4 +1,4 @@
-﻿namespace Kinopoisk.Services.DTO;
+﻿namespace Kinopoisk.Core.DTO;
 
 public class GenreDTO
 {
