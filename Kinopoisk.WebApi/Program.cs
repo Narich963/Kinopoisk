@@ -20,9 +20,9 @@ builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connec
     .AddEntityFrameworkStores<KinopoiskContext>();
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<IRepository<Film>, FilmsRepository>();
+builder.Services.AddTransient<IRepository<Film>, FilmRepository>();
 builder.Services.AddAutoMapper(typeof(MapperInitializer));
-builder.Services.AddTransient<IFilmsService, FilmsService>();
+builder.Services.AddTransient<IFilmService, FilmService>();
 
 var app = builder.Build();
 

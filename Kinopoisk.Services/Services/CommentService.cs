@@ -7,12 +7,12 @@ using Kinopoisk.Services.Interfaces;
 
 namespace Kinopoisk.Services.Services;
 
-public class CommentsService : ICommentsService
+public class CommentService : ICommentService
 {
     private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
 
-    public CommentsService(IUnitOfWork uow, IMapper mapper)
+    public CommentService(IUnitOfWork uow, IMapper mapper)
     {
         _uow = uow;
         _mapper = mapper;

@@ -9,9 +9,9 @@ public class UnitOfWork : IUnitOfWork
     private readonly KinopoiskContext _context;
     private UserManager<User> _userManager;
     private IFilmRepository _filmRepository;
-    private ICommentsRepository _commentsRepository;
+    private ICommentRepository _commentsRepository;
 
-    public UnitOfWork(KinopoiskContext context, IFilmRepository filmRepository, UserManager<User> userManager, ICommentsRepository commentsRepository)
+    public UnitOfWork(KinopoiskContext context, IFilmRepository filmRepository, UserManager<User> userManager, ICommentRepository commentsRepository)
     {
         _context = context;
         _filmRepository = filmRepository;
@@ -20,7 +20,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public IFilmRepository FilmRepository => _filmRepository;
-    public ICommentsRepository CommentsRepository => _commentsRepository;
+    public ICommentRepository CommentsRepository => _commentsRepository;
     public UserManager<User> UserManager => _userManager;
 
     public void Dispose()

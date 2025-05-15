@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class CommentsRepository : ICommentsRepository
+public class CommentRepository : ICommentRepository
 {
     private readonly KinopoiskContext _context;
-    public CommentsRepository(KinopoiskContext context)
+    public CommentRepository(KinopoiskContext context)
     {
         _context = context;
     }

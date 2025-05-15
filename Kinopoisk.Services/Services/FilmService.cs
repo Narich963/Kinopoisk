@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.Services.Services;
 
-public class FilmsService : IFilmsService
+public class FilmService : IFilmService
 {
     private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
 
-    public FilmsService(IUnitOfWork uow, IMapper mapper)
+    public FilmService(IUnitOfWork uow, IMapper mapper)
     {
         _uow = uow;
         _mapper = mapper;

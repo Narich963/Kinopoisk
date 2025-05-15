@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class FilmsRepository : IFilmRepository
+public class FilmRepository : IFilmRepository
 {
     private readonly KinopoiskContext _context;
 
-    public FilmsRepository(KinopoiskContext context)
+    public FilmRepository(KinopoiskContext context)
     {
         _context = context;
     }

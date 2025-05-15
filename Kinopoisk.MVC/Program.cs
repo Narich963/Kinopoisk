@@ -27,10 +27,10 @@ builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connec
 
 builder.Services.AddAutoMapper(typeof(MapperInitializer));
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<IFilmRepository, FilmsRepository>();
-builder.Services.AddTransient<IFilmsService, FilmsService>();
-builder.Services.AddTransient<ICommentsRepository, CommentsRepository>();
-builder.Services.AddTransient<ICommentsService, CommentsService>();
+builder.Services.AddTransient<IFilmRepository, FilmRepository>();
+builder.Services.AddTransient<IFilmService, FilmService>();
+builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IUserService, UserService>();
 
 var app = builder.Build();

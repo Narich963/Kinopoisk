@@ -8,12 +8,12 @@ namespace Kinopoisk.WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class FilmsController : Controller
+public class FilmController : Controller
 {
-    private readonly IFilmsService _filmsService;
+    private readonly IFilmService _filmsService;
     private readonly IMapper _mapper;
 
-    public FilmsController(IFilmsService filmsService, IMapper mapper)
+    public FilmController(IFilmService filmsService, IMapper mapper)
     {
         _filmsService = filmsService;
         _mapper = mapper;
