@@ -1,17 +1,22 @@
-﻿@model FilmsViewModel
+﻿@page
+@model Kinopoisk.MVC.Pages.Films.DetailsModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
 
 <div class="container mt-5">
     <div class="row">
         <div class="col-3">
-            <img src="@Model.Poster" class="w-100 h-auto"/>
+            <img src="@Model.Film.Poster" class="w-100 h-auto"/>
         </div>
         <div class="col ms-3 w-100">
             <div class="row d-flex justify-content-between">
-                <h1 class="fw-bolder col">@Model.Name (@Model.PublishDate.Year)</h1>
-                <h2 class="text-warning fw-bolder col text-end me-5">@Model.UsersRating?.ToString("0.0")</h2>
+                <h1 class="fw-bolder col">@Model.Film.Name (@Model.Film.PublishDate.Year)</h1>
+                <h2 class="text-warning fw-bolder col text-end me-5">@Model.Film.UsersRating?.ToString("0.0")</h2>
             </div>
 
-            <h4 class="mt-3">@Model.Description</h4>
+            <h4 class="mt-3">@Model.Film.Description</h4>
 
             <p class="fw-bolder mt-3">About film:</p>
             <div class="row">
@@ -19,37 +24,37 @@
                     <table>
                         <tr class="mb-5">
                             <td><strong class="text-secondary">Publish year:</strong></td>
-                            <td class="ms-1">@Model.PublishDate.Year</td>
+                            <td class="ms-1">@Model.Film.PublishDate.Year</td>
                         </tr>
                         <tr class="mb-5">
-                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Country):</strong></td>
-                            <td class="ms-1"><img src="@Model.CountryFlagLink" style="margin-right:5px;">@Model.Country</td>
+                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.Country):</strong></td>
+                            <td class="ms-1"><img src="@Model.Film.CountryFlagLink" style="margin-right:5px;">@Model.Film.Country</td>
                         </tr>
                         <tr class="mb-5">
-                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Genres):</strong></td>
-                            <td class="ms-1">@string.Join(", ", Model.Genres)</td>
+                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.Genres):</strong></td>
+                            <td class="ms-1">@string.Join(", ", Model.Film.Genres)</td>
                         </tr>
                         <tr class="mb-5">
-                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Description):</strong></td>
-                            <td class="ms-1">@Model.Description</td>
+                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.Description):</strong></td>
+                            <td class="ms-1">@Model.Film.Description</td>
                         </tr>
                         <tr class="mb-5">
-                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Duration):</strong></td>
-                            <td class="ms-1">@Model.Duration</td>
+                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.Duration):</strong></td>
+                            <td class="ms-1">@Model.Film.Duration</td>
                         </tr>
                         <tr class="mb-5">
-                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.IMDBRating):</strong></td>
-                            <td class="ms-1">@Model.IMDBRating</td>
+                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.IMDBRating):</strong></td>
+                            <td class="ms-1">@Model.Film.IMDBRating</td>
                         </tr>
                         <tr class="mb-5">
-                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.DirectorName):</strong></td>
-                            <td class="ms-1">@Model.DirectorName</td>
+                            <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.DirectorName):</strong></td>
+                            <td class="ms-1">@Model.Film.DirectorName</td>
                         </tr>
                     </table>
                 </div>
                 <div class="col">
                     <h4><strong>Starring ></strong></h4>
-                    @foreach (var actor in Model.Actors)
+                    @foreach (var actor in Model.Film.Actors)
                     {
                         <b>@actor</b>
                         <br />
@@ -66,9 +71,9 @@
             </button>
         </div>
 
-        @if (Model.Comments != null && Model.Comments.Any())
+        @if (Model.Film.Comments != null && Model.Film.Comments.Any())
         {
-            <div id="comments-container" class="list-group" data-film-id="@Model.Id">
+            <div id="comments-container" class="list-group" data-film-id="@Model.Film.Id">
 
             </div>
         }
@@ -82,16 +87,16 @@
 <div class="modal fade" id="addCommentModal" tabindex="-1" aria-labelledby="addCommentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="addCommentForm">
+            <form id="addCommentForm" method="post" asp-page-handler="AddComment">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addCommentModalLabel">Add Comment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="FilmId" value="@Model.Id" />
+                    <input type="hidden" name="Comment.FilmId" value="@Model.Film.Id" />
                     <div class="mb-3">
                         <label for="Text" class="form-label">Comment</label>
-                        <textarea name="Text" class="form-control" required></textarea>
+                        <textarea name="Comment.Text" class="form-control" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -112,7 +117,7 @@
                 const formData = form.serialize();
 
                 $.ajax({
-                    url: '/Comments/AddComment',
+                    url: '/Films/Details?id=' + @Model.Film.Id + '&handler=AddComment',
                     type: 'POST',
                     data: formData,
                     success: function (response) {
@@ -128,12 +133,12 @@
                         alert('Failed to add comment');
                     }
                 });
-            })
+            });
             function loadComments(){
-                const filmId = @Model.Id;
+                const filmId = @Model.Film.Id;
                 
                 $.ajax({
-                    url: '/Comments/GetComments',
+                    url: '/Films/Details?handler=GetComments',
                     type: 'GET',
                     data: { filmId: filmId },
                     success: function (comments) {

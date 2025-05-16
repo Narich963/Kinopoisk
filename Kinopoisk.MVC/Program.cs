@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -54,9 +55,11 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+app.MapRazorPages();
+
+app.MapGet("/", () =>
+{
+    return Results.Redirect("/Home/Index");
+});
 
 app.Run();

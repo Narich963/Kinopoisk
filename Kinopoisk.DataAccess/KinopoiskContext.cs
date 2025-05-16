@@ -28,9 +28,6 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
         builder.Entity<FilmEmployeeRole>()
             .HasKey(ar => new { ar.FilmEmployeeID, ar.FilmId });
 
-        builder.Entity<Comment>()
-            .HasKey(c => new { c.UserId, c.FilmId });
-
         builder.Entity<Rating>()
             .HasKey(r => new { r.UserId, r.FilmId });
     }

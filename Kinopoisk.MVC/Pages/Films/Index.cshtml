@@ -1,4 +1,8 @@
-﻿@model List<FilmsViewModel>
+﻿@page
+@model Kinopoisk.MVC.Pages.Films.IndexModel
+@{
+    Layout = "_Layout";
+}
 
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
 
@@ -23,22 +27,10 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
-        function countryNameToISO(name) {
-            const map = {
-                "USA": "us",
-                "Germany": "de",
-                "France": "fr",
-                "Russia": "ru",
-                "Japan": "jp",
-                "Kyrgyzstan": "kg",
-                "Kazakhstan": "kz"
-            };
-            return map[name] ? map[name].toLowerCase() : '';
-        }
         $(document).ready(function(){
             $('#filmsTable').DataTable({
                 ajax:{
-                    url: '@Url.Action("GetFilms", "Films")',
+                    url: '/Films/Index?handler=GetFilms',
                     dataSrc: ''
                 },
                 columns: [
@@ -46,13 +38,13 @@
                     { data: 'poster', render: function(data) { return '<img src="' + data + '" alt="Poster" style="width:100px;height:auto;">'; } },
                     { data: 'name' },
                     { data: 'description' },
-                    { 
+                    {
                         data: 'publishDate',
                         render: function(data) {
                             return new Date(data).toLocaleDateString();
                         }
                     },
-                    { 
+                    {
                         data: 'countryFlagLink',
                         render: function(data) {
                             return `<img src="${data}" style="margin-right:5px;">`;
@@ -66,7 +58,7 @@
                 createdRow: function (row, data) {
                     $(row).css('cursor', 'pointer');
                     $(row).on('click', function () {
-                        window.location.href = '/Films/Details/' + data.id;
+                        window.location.href = '/Films/Details?id=' + data.id;
                     });
                 }
             });

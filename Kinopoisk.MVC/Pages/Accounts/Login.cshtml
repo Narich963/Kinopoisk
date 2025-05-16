@@ -1,4 +1,9 @@
-﻿@model LoginViewModel
+﻿@page
+@model Kinopoisk.MVC.Pages.Accounts.LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -6,17 +11,17 @@
             <div class="card shadow-lg rounded-4 border-0">
                 <div class="card-body p-5">
                     <h2 class="text-center mb-4 fw-bold">Login</h2>
-                    <form asp-action="Login" method="post">
+                    <form method="post">
                         <div class="form-group mb-3">
-                            <label asp-for="Login" class="form-label"></label>
-                            <input asp-for="Login" class="form-control rounded-3" />
-                            <span asp-validation-for="Login" class="text-danger small"></span>
+                            <label asp-for="LoginViewModel.Login" class="form-label"></label>
+                            <input asp-for="LoginViewModel.Login" class="form-control rounded-3" />
+                            <span asp-validation-for="LoginViewModel.Login" class="text-danger small"></span>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="Password" class="form-label"></label>
-                            <input asp-for="Password" class="form-control rounded-3" />
-                            <span asp-validation-for="Password" class="text-danger small"></span>
+                            <label asp-for="LoginViewModel.Password" class="form-label"></label>
+                            <input asp-for="LoginViewModel.Password" class="form-control rounded-3" />
+                            <span asp-validation-for="LoginViewModel.Password" class="text-danger small"></span>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 rounded-3 fw-semibold">Login</button>
