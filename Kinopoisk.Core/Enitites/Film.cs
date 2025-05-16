@@ -15,7 +15,6 @@ public class Film
     public DateTime PublishDate { get; set; }
     public double Duration { get; set; }
     public double? IMDBRating { get; set; }
-    public double? UsersRating { get; set; }
 
     public int CountryId { get; set; }
     public Country? Country { get; set; }

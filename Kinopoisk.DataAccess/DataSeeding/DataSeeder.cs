@@ -28,6 +28,8 @@ public static class DataSeeder
         await SeedFilmEmployeeRoles(context);
 
         await SeedComments(context, userManager);
+
+        await SeedRating(context);
     }
     private async static Task<List<Genre>> SeedGenres(KinopoiskContext context)
     {
@@ -155,7 +157,6 @@ public static class DataSeeder
                 Duration = 148,
                 PublishDate = new DateTime(2010, 7, 16),
                 IMDBRating = 8.8,
-                UsersRating = 9.0,
                 Poster = "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX1000_.jpg",
                 Genres = [actionGenre, scifiGenre, dramaGenre]
             },
@@ -167,7 +168,6 @@ public static class DataSeeder
                 Duration = 169,
                 PublishDate = new DateTime(2014, 11, 7),
                 IMDBRating = 8.6,
-                UsersRating = 8.8,
                 Poster = "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
                 Genres = [scifiGenre, dramaGenre]
             },
@@ -179,7 +179,6 @@ public static class DataSeeder
                 Duration = 136,
                 PublishDate = new DateTime(1999, 3, 31),
                 IMDBRating = 8.7,
-                UsersRating = 9.2,
                 Poster = "https://m.media-amazon.com/images/M/MV5BN2NmN2VhMTQtMDNiOS00NDlhLTliMjgtODE2ZTY0ODQyNDRhXkEyXkFqcGc@._V1_.jpg",
                 Genres = [actionGenre, scifiGenre, thrillerGenre]
             },
@@ -191,7 +190,6 @@ public static class DataSeeder
                 Duration = 139,
                 PublishDate = new DateTime(1999, 10, 15),
                 IMDBRating = 8.8,
-                UsersRating = 8.5,
                 Poster = "https://m.media-amazon.com/images/M/MV5BOTgyOGQ1NDItNGU3Ny00MjU3LTg2YWEtNmEyYjBiMjI1Y2M5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
                 Genres = [dramaGenre, thrillerGenre]
             }
@@ -264,6 +262,26 @@ public static class DataSeeder
             new() { Name = "Germany", IsoCode = "de" }
         };
         await context.AddRangeAsync(countries);
+        await context.SaveChangesAsync();
+    }
+    private async static Task SeedRating(KinopoiskContext context)
+    {
+        var users = await context.Users.ToListAsync();
+        var films = await context.Films.ToListAsync();
+
+        foreach (var user in users)
+        {
+            foreach (var film in films)
+            {
+                var rating = new Rating
+                {
+                    UserId = user.Id,
+                    FilmId = film.Id,
+                    Value = Math.Round(new Random().NextDouble() * 10, 1)
+                };
+                await context.Ratings.AddAsync(rating);
+            }
+        }
         await context.SaveChangesAsync();
     }
 }

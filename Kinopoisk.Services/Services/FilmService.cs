@@ -48,7 +48,6 @@ public class FilmService : BaseService<Film>, IFilmService
             "PublishDate" => f => f.PublishDate,
             "Duration" => f => f.Duration,
             "IMDBRating" => f => f.IMDBRating,
-            "UsersRating" => f => f.UsersRating,
             _ => f => f.Id
         };
 
