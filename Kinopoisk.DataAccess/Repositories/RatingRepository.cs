@@ -1,0 +1,43 @@
+﻿using CSharpFunctionalExtensions;
+using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+namespace Kinopoisk.DataAccess.Repositories;
+
+public class RatingRepository : Repository<Rating>, IRatingRepository
+{
+    private readonly KinopoiskContext _context;
+    public RatingRepository(KinopoiskContext context) : base(context)
+    {
+    }
+
+    public async Task<Result<double>> GetFilmRating(int filmId)
+    {
+        var film = await _context.Films
+            .Include(f => f.Ratings)
+            .FirstOrDefaultAsync(f => f.Id == filmId);
+
+        if (film == null)
+            return Result.Failure<double>("Film not found");
+
+        var rating = Math.Round(film.Ratings.Sum(r => r.Value) / film.Ratings.Count, 1);
+        return Result.Success(rating);
+    }
+
+    public async Task<Result<double>> GetUserRating(int filmId, int userId)
+    {
+        var film = await _context.Films
+            .Include(f => f.Ratings)
+            .FirstOrDefaultAsync(f => f.Id == filmId);
+
+        if (film == null)
+            return Result.Failure<double>("Film not found");
+
+        var userRating = film.Ratings.FirstOrDefault(r => r.UserId == userId);
+
+        return userRating == null
+            ? Result.Success(0.0)
+            : Result.Success(userRating.Value);
+    }
+}

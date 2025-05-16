@@ -1,5 +1,6 @@
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
+using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.DataSeeding;
 using Kinopoisk.DataAccess.Repositories;
@@ -33,6 +34,8 @@ builder.Services.AddTransient<IFilmService, FilmService>();
 builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IRatingRepository, RatingRepository>();
+builder.Services.AddTransient<IRatingService, RatingService>();
 
 var app = builder.Build();
 
