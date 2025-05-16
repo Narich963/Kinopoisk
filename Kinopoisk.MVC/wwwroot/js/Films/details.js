@@ -19,6 +19,7 @@
         ],
         order: [[2, 'desc']],
         paging: true,
+
         info: true
     });
     

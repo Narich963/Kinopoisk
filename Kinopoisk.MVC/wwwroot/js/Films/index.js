@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $('#filmsTable').DataTable({
+    let dataTable = $('#filmsTable').DataTable({
         ajax: {
             url: '/Films/Index?handler=GetFilms',
             dataSrc: ''
@@ -33,4 +33,23 @@
             });
         }
     });
+
+    let filterTimeout;
+    let filterDelay = 500;
+
+    $("#filterFilmsForm input").on("input", function () {
+        clearTimeout(filterTimeout);
+
+        filterTimeout = setTimeout(function () {
+            const form = $("#filterFilmsForm");
+            const formData = form.serialize();
+            dataTable.ajax.url('/Films/Index?handler=GetFilms&' + formData).load();
+        }, filterDelay);
+    });
+
+    $('#resetFilter').on('click', function () {
+        $('#filterFilmsForm')[0].reset();
+        dataTable.ajax.url('/Films/Index?handler=GetFilms').load();
+    });
+
 });

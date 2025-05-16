@@ -18,13 +18,16 @@ public class IndexModel : PageModel
         _mapper = mapper;
     }
 
+    [BindProperty(SupportsGet = true)]
+    public FilmsFilterDTO FilterModel { get; set; } = new();
+
     public void OnGet()
     {
     }
 
-    public async Task<IActionResult> OnGetGetFilmsAsync(FilmsFilterDTO dto)
+    public async Task<IActionResult> OnGetGetFilmsAsync()
     {
-        var films = await _filmService.GetFilteredAsync(dto);
+        var films = await _filmService.GetFilteredAsync(FilterModel);
         var filmsViewModel = _mapper.Map<List<FilmsViewModel>>(films);
         return new JsonResult(filmsViewModel);
     }

@@ -6,6 +6,29 @@
 
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
 
+<form asp-page-handler="GetFilms" method="get" id="filterFilmsForm" class="mb-4 bg-light p-3 rounded shadow-sm">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <input type="text" name="FilterModel.Name" value="@Model.FilterModel.Name" class="form-control" placeholder="Film name" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="FilterModel.Year" value="@Model.FilterModel.Year" class="form-control" placeholder="Publish year" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="FilterModel.Country" value="@Model.FilterModel.Country" class="form-control" placeholder="Country" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="FilterModel.ActorName" value="@Model.FilterModel.ActorName" class="form-control" placeholder="Actors" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="FilterModel.Director" value="@Model.FilterModel.Director" class="form-control" placeholder="Director" />
+        </div>
+        <div class="col-md-3 d-flex justify-content-end">
+            <a id="resetFilter" class="btn btn-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
 <table id="filmsTable" class="display">
     <thead>
         <tr class="text-primary text-center">
