@@ -1,6 +1,7 @@
 using AutoMapper;
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Kinopoisk.Services.Services;
@@ -16,14 +17,18 @@ public class DetailsModel : PageModel
     private readonly ILogger<DetailsModel> _logger;
     private readonly ICommentService _commentsService;
     private readonly IUserService _userService;
+    private readonly IRatingService _ratingService;
 
-    public DetailsModel(IFilmService filmService, IMapper mapper, ILogger<DetailsModel> logger, ICommentService commentsService, IUserService userService)
+    public DetailsModel(IFilmService filmService, IMapper mapper, 
+        ILogger<DetailsModel> logger, ICommentService commentsService, 
+        IUserService userService, IRatingService ratingService)
     {
         _filmsService = filmService;
         _mapper = mapper;
         _logger = logger;
         _commentsService = commentsService;
         _userService = userService;
+        _ratingService = ratingService;
     }
 
     public FilmsViewModel Film { get; set; } = new();
@@ -81,5 +86,20 @@ public class DetailsModel : PageModel
             return BadRequest(result.Error);
         }
         return new JsonResult(new { success = true });
+    }
+    public async Task<IActionResult> OnGetGetRatingAsync(int? filmId)
+    {
+        if (!filmId.HasValue)
+            return BadRequest("Film ID is required.");
+
+        var ratingResult = await _ratingService.GetFilmRating(filmId.Value);
+
+        if (ratingResult.IsFailure)
+        {
+            _logger.LogError(ratingResult.Error);
+            return BadRequest(ratingResult.Error);
+        }
+
+        return new JsonResult(ratingResult.Value);
     }
 }

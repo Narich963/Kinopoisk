@@ -10,6 +10,7 @@ public class RatingRepository : Repository<Rating>, IRatingRepository
     private readonly KinopoiskContext _context;
     public RatingRepository(KinopoiskContext context) : base(context)
     {
+        _context = context;
     }
 
     public async Task<Result<double>> GetFilmRating(int filmId)
