@@ -102,4 +102,24 @@ public class DetailsModel : PageModel
 
         return new JsonResult(ratingResult.Value);
     }
+    public async Task<IActionResult> OnGetGetUserRatingAsync(int? filmId)
+    {
+        if (!filmId.HasValue)
+            return BadRequest("Film ID is required.");
+
+        var userDto = await _userService.GetUserAsync(User);
+        if (userDto.IsFailure)
+        {
+            _logger.LogError(userDto.Error);
+            return BadRequest(userDto.Error);
+        }
+
+        var ratingResult = await _ratingService.GetUserRating(filmId.Value, userDto.Value.Id);
+        if (ratingResult.IsFailure)
+        {
+            _logger.LogError(ratingResult.Error);
+            return BadRequest(ratingResult.Error);
+        }
+        return new JsonResult(ratingResult.Value);
+    }
 }

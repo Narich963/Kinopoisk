@@ -62,6 +62,20 @@
             }
         });
     }
+    function loadUserRating() {
+        $.ajax({
+            url: '/Films/Details?handler=GetUserRating',
+            type: 'GET',
+            data: { filmId: filmId },
+            success: function (response) {
+                $('#userRating').text(response);
+            },
+            error: function () {
+                alert('Failed to load user rating');
+            }
+        });
+    }
 
+    loadUserRating();
     loadRating();
 });
