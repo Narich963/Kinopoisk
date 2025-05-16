@@ -5,6 +5,8 @@
     Layout = "_Layout";
 }
 
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
+
 <div class="container mt-5">
     <div class="row">
         <div class="col-3">
@@ -71,16 +73,9 @@
             </button>
         </div>
 
-        @if (Model.Film.Comments != null && Model.Film.Comments.Any())
-        {
-            <div id="comments-container" class="list-group" data-film-id="@Model.Film.Id">
+        <div id="comments-container" class="list-group" data-film-id="@Model.Film.Id">
 
-            </div>
-        }
-        else
-        {
-            <p class="text-muted">There are no comments yet!</p>
-        }
+        </div>
     </div>
 </div>
 
@@ -107,7 +102,20 @@
     </div>
 </div>
 
-@section Scripts {
+<table id="commentsTable" class="display">
+    <thead>
+        <tr class="text-primary text-center">
+            <th>Comment</th>
+            <th>Author</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts 
+{
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script src="~/js/Films/details.js"></script>
 }

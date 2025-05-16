@@ -1,5 +1,28 @@
 ﻿$(document).ready(function () {
     const filmId = $("#comments-container").data("film-id");
+
+    let table = $('#commentsTable').DataTable({
+        ajax: {
+            url: '/Films/Details?handler=GetComments',
+            dataSrc: '',
+            data: { filmId: filmId }
+        },
+        columns: [
+            { data: 'user.userName' },
+            { data: 'text' },
+            {
+                data: 'createdAt',
+                render: function (data) {
+                    return new Date(data).toLocaleString();
+                }
+            }
+        ],
+        order: [[2, 'desc']],
+        paging: true,
+        info: true
+    });
+    
+
     $('#addCommentForm').submit(function (e) {
         e.preventDefault();
 
@@ -14,7 +37,7 @@
                 if (response.success) {
                     $('#addCommentModal').modal('hide');
                     form[0].reset();
-                    loadComments();
+                    table.ajax.reload(null, false);
                 } else {
                     alert('Failed to add comment');
                 }
@@ -24,36 +47,4 @@
             }
         });
     });
-    function loadComments() {
-        $.ajax({
-            url: '/Films/Details?handler=GetComments',
-            type: 'GET',
-            data: { filmId: filmId },
-            success: function (comments) {
-                const container = $('#comments-container');
-                container.empty();
-
-                if (comments.length === 0) {
-                    container.replaceWith('<p class="text-muted">There are no comments yet!</p>');
-                    return;
-                }
-
-                comments.forEach(comment => {
-                    const item = `
-                                <div class="list-group-item list-group-item-action mb-2 rounded shadow-sm">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1 text-primary fw-bold">${comment.user.userName}</h6>
-                                        <small class="text-muted">${new Date(comment.createdAt).toLocaleString()}</small>
-                                    </div>
-                                    <p class="mb-1">${comment.text}</p>
-                                </div>`;
-                    container.append(item);
-                });
-            },
-            error: function () {
-                console.error('Failed to load comments');
-            }
-        });
-    }
-    loadComments();
 });
