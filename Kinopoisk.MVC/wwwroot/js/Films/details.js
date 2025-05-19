@@ -49,6 +49,28 @@
         });
     });
 
+    $('#ratingForm').submit(function (e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const formData = form.serialize();
+
+        console.log(formData);
+
+        $.ajax({
+            url: '/Films/Details?handler=AddOrEditRating',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                loadRating();
+                loadUserRating();
+            },
+            error: function () {
+                alert('Failed to rate film');
+            }
+        });
+    });
+
     function loadRating() {
         $.ajax({
             url: '/Films/Details?handler=GetRating',
@@ -68,7 +90,12 @@
             type: 'GET',
             data: { filmId: filmId },
             success: function (response) {
-                $('#userRating').text(response);
+                if (response > 0) {
+                    $(`#star-${response}`).prop('checked', true);
+                }
+                else {
+                    $('#userRating').text('Rate this film!');
+                }
             },
             error: function () {
                 alert('Failed to load user rating');

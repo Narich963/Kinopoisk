@@ -277,7 +277,7 @@ public static class DataSeeder
                 {
                     UserId = user.Id,
                     FilmId = film.Id,
-                    Value = Math.Round(new Random().NextDouble() * 10, 1)
+                    Value = new Random().Next(1, 11)
                 };
                 await context.Ratings.AddAsync(rating);
             }

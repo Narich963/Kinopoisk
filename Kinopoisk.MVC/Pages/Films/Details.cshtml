@@ -6,6 +6,8 @@
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="~/css/Films/details.css" />
 
 <div class="container mt-5">
     <div class="row">
@@ -16,8 +18,27 @@
             <div class="row d-flex justify-content-between">
                 <h1 class="fw-bolder col">@Model.Film.Name (@Model.Film.PublishDate.Year)</h1>
                 <div class="col text-end me-5">
+
                     <h2 id="filmRating" class="text-warning fw-bolder "></h2>
-                    <h3 id="userRating" class="fw-semibold text-warning-emphasis"></h3>
+
+                    <div class="rating-container">
+                        <form id="ratingForm" method="post">
+                            <input type="hidden" name="Rating.FilmId" value="@Model.Film.Id" />
+
+                            <div class="star-rating">
+                                @for (int i = 10; i >= 1; i--)
+                                {
+                                    <input type="radio" id="star-@i" name="Rating.Value" value="@i"/>
+                                    <label for="star-@i" title="@i stars">
+                                        <i class="fas fa-star"></i>
+                                    </label>
+                                }
+                            </div>
+
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Rate Film</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
 

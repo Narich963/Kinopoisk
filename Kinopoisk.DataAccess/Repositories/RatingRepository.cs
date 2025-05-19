@@ -30,6 +30,7 @@ public class RatingRepository : Repository<Rating>, IRatingRepository
     {
         var film = await _context.Films
             .Include(f => f.Ratings)
+            .AsNoTracking()
             .FirstOrDefaultAsync(f => f.Id == filmId);
 
         if (film == null)

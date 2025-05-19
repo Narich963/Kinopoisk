@@ -24,6 +24,7 @@ public class MapperInitializer : Profile
         CreateMap<CountryDTO, Country>().ReverseMap();
 
         CreateMap<RatingDTO, Rating>().ReverseMap();
+        CreateMap<RatingViewModel, RatingDTO>().ReverseMap();   
     }
     private void CreateFilmsMap()
     {

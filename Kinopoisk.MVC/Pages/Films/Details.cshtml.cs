@@ -1,10 +1,9 @@
 using AutoMapper;
+using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
-using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
-using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -35,6 +34,9 @@ public class DetailsModel : PageModel
 
     [BindProperty]
     public CommentViewModel Comment { get; set; } = new();
+
+    [BindProperty]
+    public RatingViewModel Rating { get; set; } = new();
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
@@ -121,5 +123,34 @@ public class DetailsModel : PageModel
             return BadRequest(ratingResult.Error);
         }
         return new JsonResult(ratingResult.Value);
+    }
+    public async Task<IActionResult> OnPostAddOrEditRatingAsync()
+    {
+        var ratingDto = _mapper.Map<RatingDTO>(Rating);
+        var userDto = await _userService.GetUserAsync(User);
+
+        if (userDto.IsFailure)
+        {
+            _logger.LogError(userDto.Error);
+            return BadRequest(userDto.Error);
+        }
+
+        ratingDto.UserId = userDto.Value.Id;
+
+        var existResult = await _ratingService.GetUserRating(ratingDto.FilmId, ratingDto.UserId);
+
+        Result<RatingDTO> result = null;
+
+        if (existResult.IsFailure)
+            result = await _ratingService.AddAsync(ratingDto);
+        else
+            result = await _ratingService.UpdateAsync(ratingDto);
+        
+        if (result.IsFailure)
+        {
+            _logger.LogError(result.Error);
+            return BadRequest(result.Error);
+        }
+        return new JsonResult(new { success = true });
     }
 }
