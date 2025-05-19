@@ -2,6 +2,7 @@
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.MVC.Models;
+using AutoMapper.Extensions.ExpressionMapping;
 
 namespace Kinopoisk.MVC.Initializers;
 
@@ -24,7 +25,7 @@ public class MapperInitializer : Profile
         CreateMap<CountryDTO, Country>().ReverseMap();
 
         CreateMap<RatingDTO, Rating>().ReverseMap();
-        CreateMap<RatingViewModel, RatingDTO>().ReverseMap();   
+        CreateMap<RatingViewModel, RatingDTO>().ReverseMap();
     }
     private void CreateFilmsMap()
     {
@@ -36,7 +37,8 @@ public class MapperInitializer : Profile
             .ForMember(dest => dest.CountryFlagLink, opt => opt.MapFrom(src => CountryToFlagLink(src.Country.IsoCode)))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name))
             .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Employees.Where(ar => !ar.IsDirector).OrderBy(ar => ar.Role).Select(ar => ar.FilmEmployee.Name)))
-            .ForMember(dest => dest.DirectorName, opt => opt.MapFrom(src => src.Employees.FirstOrDefault(e => e.IsDirector).FilmEmployee.Name));
+            .ForMember(dest => dest.DirectorName, opt => opt.MapFrom(src => src.Employees.FirstOrDefault(e => e.IsDirector).FilmEmployee.Name))
+            .ForMember(dest => dest.UsersRating, opt => opt.MapFrom(src => src.Ratings.Count > 0 ? src.Ratings.Average(r => r.Value) : 0));
     }
     private void CreateCommentsMap()
     {

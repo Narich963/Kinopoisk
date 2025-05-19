@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class RatingRepository : Repository<Rating>, IRatingRepository
+public class RatingRepository : GenericRepository<Rating>, IRatingRepository
 {
     private readonly KinopoiskContext _context;
     public RatingRepository(KinopoiskContext context) : base(context)

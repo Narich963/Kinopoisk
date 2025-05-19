@@ -2,6 +2,7 @@
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -27,42 +28,29 @@ public class FilmService : BaseService<Film>, IFilmService
         return filsmDtos;
     }
 
-    public async Task<IEnumerable<FilmDTO>> GetFilteredAsync(FilmsFilterDTO model)
+    public async Task<PagedResult<FilmDTO>> GetPagedAsync(FilterModel<FilmDTO> model)
     {
-        var filmsQuery = _uow.FilmRepository.GetAllAsQueryable();
-
-        if (model.Name != null)
-            filmsQuery = filmsQuery.Where(f => f.Name.ToLower().Contains(model.Name.ToLower()));
-        if (model.Year.HasValue)
-            filmsQuery = filmsQuery.Where(f => f.PublishDate.Year == model.Year.Value);
-        if (model.Country != null)
-            filmsQuery = filmsQuery.Where(f => f.Country.Name.ToLower().Contains(model.Country.ToLower()));
-        if (model.ActorName != null)
-            filmsQuery = filmsQuery.Where(f => f.Employees.Any(a => a.FilmEmployee.Name.ToLower().Contains(model.ActorName.ToLower())));
-        if (model.Director != null)
-            filmsQuery = filmsQuery.Where(f => f.Employees.Any(e => e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(model.Director.ToLower())));
-
-        Expression<Func<Film, object>> selectorKey = model.SortField switch
+        var filmFilterModel = new FilterModel<Film>
         {
-            "Name" => f => f.Name,
-            "PublishDate" => f => f.PublishDate,
-            "Duration" => f => f.Duration,
-            "IMDBRating" => f => f.IMDBRating,
-            _ => f => f.Id
+            Page = model.Page,
+            PageSize = model.PageSize,
+            SortField = model.SortField,
+            IsAscending = model.IsAscending,
+            Predicates = _mapper.Map<List<Expression<Func<Film, bool>>>>(model.Predicates)
         };
 
-        filmsQuery = model.IsAscending
-            ? filmsQuery.OrderBy(selectorKey)
-            : filmsQuery.OrderByDescending(selectorKey);
+        var pagedResult = await _uow.FilmRepository.GetPagedAsync(filmFilterModel);
 
-        var films = await filmsQuery
-            .Skip((model.Page - 1) * model.PageSize)
-            .Take(model.PageSize)
-            .ToListAsync();
+        var filmDTOResult = new PagedResult<FilmDTO>
+        {
+            PageSize = pagedResult.PageSize,
+            TotalCount = pagedResult.TotalCount,
+            TotalPages = pagedResult.TotalPages,
+            CurrentPage = pagedResult.CurrentPage,
+            Items = _mapper.Map<List<FilmDTO>>(pagedResult.Items)
+        };
 
-        var filmsDtos = _mapper.Map<List<FilmDTO>>(films);
-
-        return filmsDtos;
+        return filmDTOResult;
     }
 
     public async Task<Result<FilmDTO>> GetByIdAsync(int? id)

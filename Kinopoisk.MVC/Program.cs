@@ -1,3 +1,4 @@
+using AutoMapper.Extensions.ExpressionMapping;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Core.Interfaces.Services;
@@ -27,7 +28,11 @@ builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connec
     })
     .AddEntityFrameworkStores<KinopoiskContext>();
 
-builder.Services.AddAutoMapper(typeof(MapperInitializer));
+builder.Services.AddAutoMapper(opts =>
+{
+    opts.AddExpressionMapping();
+}, typeof(MapperInitializer));
+
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IFilmRepository, FilmRepository>();
 builder.Services.AddTransient<IFilmService, FilmService>();

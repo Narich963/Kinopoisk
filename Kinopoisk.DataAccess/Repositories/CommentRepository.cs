@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class CommentRepository : Repository<Comment>, ICommentRepository
+public class CommentRepository : GenericRepository<Comment>, ICommentRepository
 {
     private readonly KinopoiskContext _context;
     public CommentRepository(KinopoiskContext context) : base(context)

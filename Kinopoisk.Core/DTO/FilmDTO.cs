@@ -17,6 +17,6 @@ public class FilmDTO
     public CountryDTO Country { get; set; }
     public List<GenreDTO> Genres { get; set; }
     public List<CommentDTO> Comments { get; set; }
-    //public List<RatingDTO> Ratings { get; set; }
+    public List<RatingDTO> Ratings { get; set; }
     public List<FilmEmployeeRoleDTO> Employees { get; set; }
 }
