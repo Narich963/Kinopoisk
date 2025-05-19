@@ -12,20 +12,15 @@ public class UnitOfWork : IUnitOfWork
     private ICommentRepository _commentsRepository;
     private IRatingRepository _ratingRepository;
 
-    public UnitOfWork(KinopoiskContext context, IFilmRepository filmRepository, 
-        UserManager<User> userManager, ICommentRepository commentsRepository, 
-        IRatingRepository ratingRepository)
+    public UnitOfWork(KinopoiskContext context, UserManager<User> userManager)
     {
         _context = context;
-        _filmRepository = filmRepository;
         _userManager = userManager;
-        _commentsRepository = commentsRepository;
-        _ratingRepository = ratingRepository;
     }
 
-    public IFilmRepository FilmRepository => _filmRepository;
-    public ICommentRepository CommentsRepository => _commentsRepository;
-    public IRatingRepository RatingRepository => _ratingRepository;
+    public IFilmRepository FilmRepository => _filmRepository ??= new FilmRepository(_context);
+    public ICommentRepository CommentsRepository => _commentsRepository ??= new CommentRepository(_context);
+    public IRatingRepository RatingRepository => _ratingRepository ??= new RatingRepository(_context);
     public UserManager<User> UserManager => _userManager;
 
     public void Dispose()
