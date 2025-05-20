@@ -4,7 +4,7 @@ using Kinopoisk.Core.Filters;
 
 namespace Kinopoisk.Services.Interfaces;
 
-public interface ICommentService : IService<CommentDTO>
+public interface ICommentService : IService<CommentDTO, CommentFilter>
 {
     Task<Result<DataTablesResult<CommentDTO>>> GetAllByFilmAsync(CommentFilter filter);
     Task<Result<CommentDTO>> GetByIdAsync(int? id);

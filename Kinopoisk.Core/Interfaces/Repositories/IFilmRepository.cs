@@ -5,8 +5,7 @@ using Kinopoisk.MVC.Models;
 
 namespace Kinopoisk.Core.Interfaces.Repositories;
 
-public interface IFilmRepository : IRepository<Film>
+public interface IFilmRepository : IRepository<Film, FilmFilter>
 {
-    Task<DataTablesResult<Film>> GetPagedAsync(FilmFilter model);
     Task<Result<Film>> GetByIdAsync(int id);
 }

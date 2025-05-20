@@ -1,11 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
+using Kinopoisk.MVC.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class RatingRepository : GenericRepository<Rating>, IRatingRepository
+public class RatingRepository : GenericRepository<Rating, DataTablesRequestModel>, IRatingRepository
 {
     private readonly KinopoiskContext _context;
     public RatingRepository(KinopoiskContext context) : base(context)

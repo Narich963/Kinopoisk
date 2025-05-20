@@ -1,5 +1,6 @@
 ﻿using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
+using Kinopoisk.MVC.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Kinopoisk.DataAccess.Repositories;
@@ -8,20 +9,36 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly KinopoiskContext _context;
     private UserManager<User> _userManager;
-    private IFilmRepository _filmRepository;
-    private ICommentRepository _commentsRepository;
-    private IRatingRepository _ratingRepository;
+    private Dictionary<Type, object> _repositories;
 
     public UnitOfWork(KinopoiskContext context, UserManager<User> userManager)
     {
         _context = context;
         _userManager = userManager;
+        _repositories = new Dictionary<Type, object>()
+        {
+            { typeof(Film), new FilmRepository(_context) },
+            { typeof(Comment), new CommentRepository(_context) },
+            { typeof(Rating), new RatingRepository(_context)}
+        };
     }
-
-    public IFilmRepository FilmRepository => _filmRepository ??= new FilmRepository(_context);
-    public ICommentRepository CommentsRepository => _commentsRepository ??= new CommentRepository(_context);
-    public IRatingRepository RatingRepository => _ratingRepository ??= new RatingRepository(_context);
     public UserManager<User> UserManager => _userManager;
+    public IRepository<TEntity, TRequest> GetRepository<TEntity, TRequest>() 
+        where TEntity : class
+        where TRequest : DataTablesRequestModel
+    {
+        var type = typeof(TEntity);
+        if (_repositories.TryGetValue(type, out var repo))
+        {
+            if (repo is IRepository<TEntity, TRequest> typedRepo)
+            {
+                return typedRepo;
+            }
+        }
+        var repository = new GenericRepository<TEntity, TRequest>(_context);
+        _repositories.Add(typeof(TEntity), repository);
+        return repository;
+    }
 
     public void Dispose()
     {

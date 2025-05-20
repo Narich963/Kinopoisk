@@ -1,13 +1,14 @@
 ﻿using Kinopoisk.Core.Enitites;
+using Kinopoisk.MVC.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Kinopoisk.Core.Interfaces.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
-    public IFilmRepository FilmRepository { get; }
-    public ICommentRepository CommentsRepository { get; }
-    public IRatingRepository RatingRepository { get; }
+    IRepository<TEntity, TRequest> GetRepository<TEntity, TRequest>() 
+        where TEntity : class 
+        where TRequest : DataTablesRequestModel;
     public UserManager<User> UserManager { get; }
     public Task SaveChangesAsync();
 }

@@ -7,21 +7,12 @@ using System.Linq.Expressions;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class CommentRepository : GenericRepository<Comment>, ICommentRepository
+public class CommentRepository : GenericRepository<Comment, CommentFilter>, ICommentRepository
 {
     private readonly KinopoiskContext _context;
     public CommentRepository(KinopoiskContext context) : base(context)
     {
         _context = context;
-    }
-
-    public async Task<IEnumerable<Comment>> GetAllAsync()
-    {
-        var comments = await _context.Comments
-            .Include(c => c.Film)
-            .Include(c => c.User)
-            .ToListAsync();
-        return comments;
     }
 
     public async Task<DataTablesResult<Comment>> GetAllByFilmAsync(CommentFilter filter)
@@ -59,7 +50,6 @@ public class CommentRepository : GenericRepository<Comment>, ICommentRepository
                 || c.User.UserName.Contains(searchValue)
                 || c.CreatedAt.ToString().ToLower().Contains(searchValue));
         }
-
 
         return await base.GetPagedAsync(filter, query);
     }

@@ -1,4 +1,5 @@
 using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.Repositories;
@@ -20,7 +21,7 @@ builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connec
     .AddEntityFrameworkStores<KinopoiskContext>();
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<IRepository<Film>, FilmRepository>();
+builder.Services.AddTransient<IRepository<Film, FilmFilter>, FilmRepository>();
 builder.Services.AddAutoMapper(typeof(MapperInitializer));
 builder.Services.AddTransient<IFilmService, FilmService>();
 

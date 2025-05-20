@@ -6,9 +6,8 @@ using Kinopoisk.MVC.Models;
 
 namespace Kinopoisk.Services.Interfaces;
 
-public interface IFilmService : IService<FilmDTO>
+public interface IFilmService : IService<FilmDTO, FilmFilter>
 {
-    Task<DataTablesResult<FilmDTO>> GetPagedAsync(FilmFilter filterModel);
     Task<Result<FilmDTO>> GetByIdAsync(int? id);
     Task<IEnumerable<FilmDTO>> GetAllAsync();
 }

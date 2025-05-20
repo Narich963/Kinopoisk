@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class FilmRepository : GenericRepository<Film>, IFilmRepository
+public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmRepository
 {
     private readonly KinopoiskContext _context;
 
@@ -17,9 +17,9 @@ public class FilmRepository : GenericRepository<Film>, IFilmRepository
         _context = context;
     }
 
-    public async Task<DataTablesResult<Film>> GetPagedAsync(FilmFilter filter)
+    public async Task<DataTablesResult<Film>> GetPagedAsync(FilmFilter filter, IQueryable<Film> query = null)
     {
-        var query = _context.Films
+        query = _context.Films
             .Include(f => f.Genres)
             .Include(f => f.Ratings)
             .Include(f => f.Employees)
@@ -120,12 +120,5 @@ public class FilmRepository : GenericRepository<Film>, IFilmRepository
             .Include(f => f.Country)
             .ToListAsync();
         return films;
-    }
-
-    private string ToPascaleCase(string str)
-    {
-        if (string.IsNullOrEmpty(str))
-            return str;
-        return char.ToUpper(str[0]) + str.Substring(1);
     }
 }

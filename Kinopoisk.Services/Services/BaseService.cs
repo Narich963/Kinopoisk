@@ -1,42 +1,73 @@
-﻿using CSharpFunctionalExtensions;
+﻿using AutoMapper;
+using CSharpFunctionalExtensions;
+using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
+using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 
 namespace Kinopoisk.Services.Services;
 
-public abstract class BaseService<T> : IService<T>
+public abstract class BaseService<TEntity, TDto, TRequest> : IService<TDto, TRequest> 
+    where TRequest : DataTablesRequestModel 
+    where TEntity : class
 {
-    protected readonly IRepository<T> _repository;
+    private readonly IUnitOfWork _uow;
+    private readonly IMapper _mapper;
+    private IRepository<TEntity, TRequest> _repository;
 
-    protected BaseService(IRepository<T> repository)
+    protected BaseService(IUnitOfWork uow, IMapper mapper)
     {
-        _repository = repository;
+        _uow = uow;
+        _mapper = mapper;
+        _repository = _uow.GetRepository<TEntity, TRequest>();
     }
 
-    public async Task<Result<T>> AddAsync(T dto)
+    public async Task<DataTablesResult<TDto>> GetPagedAsync(TRequest request)
     {
-        if (dto == null)
-            return Result.Failure<T>("Dto is null");
+        var data = await _repository.GetPagedAsync(request);
 
-        var result = await _repository.AddAsync(dto);
+        var dataTableResult = new DataTablesResult<TDto>
+        {
+            Draw = request.Draw,
+            RecordsTotal = data.RecordsTotal,
+            RecordsFiltered = data.RecordsFiltered,
+            Data = _mapper.Map<List<TDto>>(data.Data)
+        };
 
-        if (result.IsSuccess)
-            return Result.Success(result.Value);
-
-        return Result.Failure<T>(result.Error);
+        return dataTableResult;
     }
 
-    public async Task<Result<T>> UpdateAsync(T dto)
+    public async Task<Result<TDto>> AddAsync(TDto dto)
     {
         if (dto == null)
-            return Result.Failure<T>("Dto is null");
+            return Result.Failure<TDto>("Dto is null");
 
-        var result = await _repository.UpdateAsync(dto);
+        var entity = _mapper.Map<TEntity>(dto);
+
+        var result = await _repository.AddAsync(entity);
 
         if (result.IsSuccess)
-            return Result.Success(result.Value);
+        {
+            dto = _mapper.Map<TDto>(result.Value);
+            return Result.Success(dto);
+        }
+        return Result.Failure<TDto>(result.Error);
+    }
 
-        return Result.Failure<T>(result.Error);
+    public async Task<Result<TDto>> UpdateAsync(TDto dto)
+    {
+        if (dto == null)
+            return Result.Failure<TDto>("Dto is null");
+
+        var entity = _mapper.Map<TEntity>(dto);
+        var result = await _repository.UpdateAsync(entity);
+
+        if (result.IsSuccess)
+        {
+            dto = _mapper.Map<TDto>(result.Value);
+            return Result.Success(dto);
+        }
+        return Result.Failure<TDto>(result.Error);
     }
 
     public async Task<Result> DeleteAsync(int? id)
@@ -51,4 +82,5 @@ public abstract class BaseService<T> : IService<T>
 
         return Result.Failure(result.Error);
     }
+
 }

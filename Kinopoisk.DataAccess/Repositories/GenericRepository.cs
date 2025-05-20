@@ -3,11 +3,12 @@ using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.MVC.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
-public class GenericRepository<T> : IRepository<T> where T : class
+public class GenericRepository<T, TRequest> : IRepository<T, TRequest> 
+    where T : class
+    where TRequest : DataTablesRequestModel
 {
     private readonly KinopoiskContext _context;
 
@@ -31,8 +32,29 @@ public class GenericRepository<T> : IRepository<T> where T : class
         return entities;
     }
 
-    public async Task<DataTablesResult<T>> GetPagedAsync(DataTablesRequestModel model, IQueryable<T> query)
+    public async Task<DataTablesResult<T>> GetPagedAsync(TRequest model, IQueryable<T> query = null)
     {
+        if (query == null)
+        {
+            query = _context.Set<T>().AsQueryable();
+
+            if (model.Search != null && !string.IsNullOrEmpty(model.Search.Value))
+            {
+                string searchValue = model.Search.Value.ToLower();
+                query = query.Where(e => EF.Property<string>(e, "Name").ToLower().Contains(searchValue));
+            }
+
+            if (model.Order != null && model.Order.Count > 0)
+            {
+                var order = model.Order[0];
+                string columnName = ToPascaleCase(model.Columns[order.Column].Data);
+                bool isDescending = order.Dir.ToLower() == "desc";
+                query = isDescending 
+                    ? query.OrderByDescending(e => EF.Property<object>(e, ToPascaleCase(columnName))) 
+                    : query.OrderBy(e => EF.Property<object>(e, ToPascaleCase(columnName)));
+            }
+        }
+
         var data = await query
             .Skip((model.Start / model.Length) * model.Length)
             .Take(model.Length)
