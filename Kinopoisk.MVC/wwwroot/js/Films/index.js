@@ -1,8 +1,22 @@
 ﻿$(document).ready(function () {
     let dataTable = $('#filmsTable').DataTable({
+        serverSide: true,
+        processing: true,
+        paging: true,
+        ordering: true,
         ajax: {
             url: '/Films/Index?handler=GetFilms',
-            dataSrc: ''
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                d.name = $('#nameFilter').val();
+                d.year = $('#yearFilter').val();
+                d.country = $('#countryFilter').val();
+                d.actor = $('#actorFilter').val();
+                d.director = $('#directorFilter').val();
+
+                return JSON.stringify(d);
+            }
         },
         columns: [
             { data: 'id' },
@@ -34,22 +48,17 @@
         }
     });
 
-    let filterTimeout;
-    let filterDelay = 500;
+    let timeout;
 
-    $("#filterFilmsForm input").on("input", function () {
-        clearTimeout(filterTimeout);
-
-        filterTimeout = setTimeout(function () {
-            const form = $("#filterFilmsForm");
-            const formData = form.serialize();
-            dataTable.ajax.url('/Films/Index?handler=GetFilms&' + formData).load();
-        }, filterDelay);
+    $('#nameFilter, #yearFilter, #countryFilter, #actorFilter, #directorFilter').on('change keyup', function (e) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            dataTable.ajax.reload();
+        }, 300);
     });
 
     $('#resetFilter').on('click', function () {
-        $('#filterFilmsForm')[0].reset();
-        dataTable.ajax.url('/Films/Index?handler=GetFilms').load();
+        $('#nameFilter, #yearFilter, #countryFilter, #actorFilter, #directorFilter').val('');
+        dataTable.ajax.reload();
     });
-
 });

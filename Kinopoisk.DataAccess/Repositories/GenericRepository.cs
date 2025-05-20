@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
+using Kinopoisk.MVC.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -30,42 +31,20 @@ public class GenericRepository<T> : IRepository<T> where T : class
         return entities;
     }
 
-    public async Task<PagedResult<T>> GetPagedAsync(FilterModel<T> filter, IQueryable<T> query)
+    public async Task<DataTablesResult<T>> GetPagedAsync(DataTablesRequestModel model, IQueryable<T> query)
     {
-
-        if (filter.SortField != null)
-        {
-            if (filter.IsAscending)
-                query = query.OrderBy(e => EF.Property<T>(e, filter.SortField));
-            else
-                query = query.OrderByDescending(e => EF.Property<T>(e, filter.SortField));
-
-        }
-
-        if (filter.Predicates != null)
-        {
-            foreach (var predicate in filter.Predicates)
-            {
-                query = query.Where(predicate).AsQueryable();
-            }
-        }            
-
-        var totalCount = await query.CountAsync();
-        var items = await query
-            .Skip((filter.Page - 1) * filter.PageSize)
-            .Take(filter.PageSize)
+        var data = await query
+            .Skip((model.Start / model.Length) * model.Length)
+            .Take(model.Length)
             .ToListAsync();
-        var totalPages = (int)Math.Ceiling((double)totalCount / filter.PageSize);
 
-        var result = new PagedResult<T>
+        return new DataTablesResult<T>
         {
-            Items = items,
-            TotalCount = totalCount,
-            TotalPages = totalPages,
-            PageSize = filter.PageSize,
-            CurrentPage = filter.Page
+            Draw = model.Draw,
+            RecordsTotal = await _context.Set<T>().CountAsync(),
+            RecordsFiltered = await query.CountAsync(),
+            Data = data
         };
-        return result;
     }
 
     public async Task<Result<T>> AddAsync(T entity)

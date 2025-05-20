@@ -4,6 +4,7 @@ using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
+using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -28,26 +29,17 @@ public class FilmService : BaseService<Film>, IFilmService
         return filsmDtos;
     }
 
-    public async Task<PagedResult<FilmDTO>> GetPagedAsync(FilterModel<FilmDTO> model)
+    public async Task<DataTablesResult<FilmDTO>> GetPagedAsync(FilmFilter model)
     {
-        var filmFilterModel = new FilterModel<Film>
-        {
-            Page = model.Page,
-            PageSize = model.PageSize,
-            SortField = model.SortField,
-            IsAscending = model.IsAscending,
-            Predicates = _mapper.Map<List<Expression<Func<Film, bool>>>>(model.Predicates)
-        };
 
-        var pagedResult = await _uow.FilmRepository.GetPagedAsync(filmFilterModel);
+        var pagedResult = await _uow.FilmRepository.GetPagedAsync(model);
 
-        var filmDTOResult = new PagedResult<FilmDTO>
+        var filmDTOResult = new DataTablesResult<FilmDTO>
         {
-            PageSize = pagedResult.PageSize,
-            TotalCount = pagedResult.TotalCount,
-            TotalPages = pagedResult.TotalPages,
-            CurrentPage = pagedResult.CurrentPage,
-            Items = _mapper.Map<List<FilmDTO>>(pagedResult.Items)
+            Draw = pagedResult.Draw,
+            RecordsTotal = pagedResult.RecordsTotal,
+            RecordsFiltered = pagedResult.RecordsFiltered,
+            Data = _mapper.Map<List<FilmDTO>>(pagedResult.Data)
         };
 
         return filmDTOResult;
