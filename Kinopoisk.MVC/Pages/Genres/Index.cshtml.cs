@@ -1,25 +1,41 @@
-using Kinopoisk.Core.DTO;
-using Kinopoisk.Core.Enitites;
+using AutoMapper;
+using Kinopoisk.Core.Filters;
+using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
-using Kinopoisk.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Kinopoisk.MVC.Pages.Genres;
 
+[IgnoreAntiforgeryToken]
 public class IndexModel : PageModel
 {
-    private readonly IService<GenreDTO, DataTablesRequestModel> _genreService;
-    public IndexModel(IService<GenreDTO, DataTablesRequestModel> genreService)
+    private readonly IGenreService _genreService;
+    private readonly IMapper _mapper;
+    public IndexModel(IGenreService genreService, IMapper mapper)
     {
         _genreService = genreService;
+        _mapper = mapper;
     }
 
-    [BindProperty(SupportsGet = true)]
-    public List<Genre> Genres { get; set; } = new List<Genre>();
-
-    public async Task OnGetAsync([FromBody] DataTablesRequestModel model)
+    public void OnGet()
     {
+
+    }
+
+    public async Task<IActionResult> OnPostGetGenresAsync([FromBody] DataTablesRequestModel model)
+    {
+        if (model == null)
+            return BadRequest();
+
         var genres = await _genreService.GetPagedAsync(model);
+        var genresPaged = new DataTablesResult<GenreViewModel>
+        {
+            Draw = model.Draw,
+            RecordsTotal = genres.RecordsTotal,
+            RecordsFiltered = genres.RecordsFiltered,
+            Data = _mapper.Map<List<GenreViewModel>>(genres.Data)
+        };
+        return new JsonResult(genresPaged);
     }
 }

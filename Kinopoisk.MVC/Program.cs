@@ -1,4 +1,5 @@
 using AutoMapper.Extensions.ExpressionMapping;
+using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Core.Interfaces.Services;
@@ -6,6 +7,7 @@ using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.DataSeeding;
 using Kinopoisk.DataAccess.Repositories;
 using Kinopoisk.MVC.Initializers;
+using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Identity;
@@ -41,6 +43,7 @@ builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IRatingRepository, RatingRepository>();
 builder.Services.AddTransient<IRatingService, RatingService>();
+builder.Services.AddTransient<IGenreService, GenreService>();
 
 var app = builder.Build();
 
