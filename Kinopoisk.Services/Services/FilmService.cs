@@ -31,7 +31,6 @@ public class FilmService : BaseService<Film>, IFilmService
 
     public async Task<DataTablesResult<FilmDTO>> GetPagedAsync(FilmFilter model)
     {
-
         var pagedResult = await _uow.FilmRepository.GetPagedAsync(model);
 
         var filmDTOResult = new DataTablesResult<FilmDTO>

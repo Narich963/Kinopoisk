@@ -1,11 +1,17 @@
 ﻿$(document).ready(function () {
     const filmId = $("#comments-container").data("film-id");
 
-    let table = $('#commentsTable').DataTable({
+    let table = $('#comments-container').DataTable({
+        serverSide: true,
+        processing: true,
         ajax: {
             url: '/Films/Details?handler=GetComments',
-            dataSrc: '',
-            data: { filmId: filmId }
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                d.filmId = filmId;
+                return JSON.stringify(d);
+            }
         },
         columns: [
             { data: 'user.userName' },
@@ -17,13 +23,8 @@
                 }
             }
         ],
-        order: [[2, 'desc']],
-        paging: true,
-
-        info: true
     });
     
-
     $('#addCommentForm').submit(function (e) {
         e.preventDefault();
 

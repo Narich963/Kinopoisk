@@ -1,6 +1,7 @@
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
+using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Kinopoisk.MVC.Pages.Films;
 
+[IgnoreAntiforgeryToken]
 public class DetailsModel : PageModel
 {
     private readonly IFilmService _filmsService;
@@ -51,18 +53,26 @@ public class DetailsModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnGetGetCommentsAsync(int? filmId)
+    public async Task<IActionResult> OnPostGetCommentsAsync([FromBody] CommentFilter filter)
     {
-        var commentsResult = await _commentsService.GetAllByFilmAsync(filmId);
+        if (filter == null)
+            return BadRequest("Model is null");
+
+        var commentsResult = await _commentsService.GetAllByFilmAsync(filter);
         if (commentsResult.IsFailure)
         {
             _logger.LogError(commentsResult.Error);
             return NotFound();
         }
-        var commentsVm = _mapper.Map<List<CommentViewModel>>(commentsResult.Value);
-        return new JsonResult(commentsVm);
+        var commetsPaged = new DataTablesResult<CommentViewModel>
+        {
+            Draw = commentsResult.Value.Draw,
+            RecordsTotal = commentsResult.Value.RecordsTotal,
+            RecordsFiltered = commentsResult.Value.RecordsFiltered,
+            Data = _mapper.Map<List<CommentViewModel>>(commentsResult.Value.Data)
+        };
+        return new JsonResult(commetsPaged);
     }
-
     public async Task<IActionResult> OnPostAddCommentAsync()
     {
         if (!ModelState.IsValid)

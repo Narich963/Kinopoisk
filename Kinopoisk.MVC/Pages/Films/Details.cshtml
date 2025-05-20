@@ -97,9 +97,15 @@
             </button>
         </div>
 
-        <div id="comments-container" class="list-group" data-film-id="@Model.Film.Id">
-
-        </div>
+        <table id="comments-container" class="display" data-film-id="@Model.Film.Id">
+            <thead>
+                <tr class="text-primary text-center">
+                    <th>Author</th>
+                    <th>Comment</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
 
@@ -126,15 +132,6 @@
     </div>
 </div>
 
-<table id="commentsTable" class="display">
-    <thead>
-        <tr class="text-primary text-center">
-            <th>Comment</th>
-            <th>Author</th>
-            <th>Created At</th>
-        </tr>
-    </thead>
-</table>
 
 @section Scripts 
 {

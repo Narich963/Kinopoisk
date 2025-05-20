@@ -2,6 +2,7 @@
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Services.Interfaces;
 
@@ -25,17 +26,21 @@ public class CommentService : BaseService<Comment>, ICommentService
         return commentsDtos;
     }
 
-    public async Task<Result<IEnumerable<CommentDTO>>> GetAllByFilmAsync(int? filmId)
+    public async Task<Result<DataTablesResult<CommentDTO>>> GetAllByFilmAsync(CommentFilter filter)
     {
-        if (!filmId.HasValue)
-            return Result.Failure<IEnumerable<CommentDTO>>("FilmId is null");
+        if (!filter.FilmId.HasValue)
+            return Result.Failure<DataTablesResult<CommentDTO>>("FilmId is null");
 
-        var commentsResult = await _uow.CommentsRepository.GetAllByFilmAsync(filmId.Value);
-        if (commentsResult.IsFailure)
-            return Result.Failure<IEnumerable<CommentDTO>>(commentsResult.Error);
+        var commentsResult = await _uow.CommentsRepository.GetAllByFilmAsync(filter);
 
-        var commentsDtos = _mapper.Map<IEnumerable<CommentDTO>>(commentsResult.Value);
-        return Result.Success(commentsDtos);
+        var commentDTOResult = new DataTablesResult<CommentDTO>
+        {
+            Draw = commentsResult.Draw,
+            RecordsTotal = commentsResult.RecordsTotal,
+            RecordsFiltered = commentsResult.RecordsFiltered,
+            Data = _mapper.Map<List<CommentDTO>>(commentsResult.Data)
+        };
+        return Result.Success(commentDTOResult);
     }
 
     public Task<Result<CommentDTO>> GetByIdAsync(int? id)

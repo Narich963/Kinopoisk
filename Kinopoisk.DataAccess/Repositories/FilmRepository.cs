@@ -21,8 +21,6 @@ public class FilmRepository : GenericRepository<Film>, IFilmRepository
     {
         var query = _context.Films
             .Include(f => f.Genres)
-            .Include(f => f.Comments)
-                .ThenInclude(c => c.User)
             .Include(f => f.Ratings)
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
@@ -99,10 +97,10 @@ public class FilmRepository : GenericRepository<Film>, IFilmRepository
             .Include(f => f.Genres)
             .Include(f => f.Comments)
                 .ThenInclude(c => c.User)
-            .Include(f => f.Ratings)
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
-            .Include(f => f.Country);
+            .Include(f => f.Country)
+            .AsNoTracking();
 
         var filmResult = await base.GetByIdAsync(id, query);
 

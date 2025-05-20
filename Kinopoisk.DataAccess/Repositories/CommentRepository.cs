@@ -1,7 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
@@ -22,14 +24,44 @@ public class CommentRepository : GenericRepository<Comment>, ICommentRepository
         return comments;
     }
 
-    public async Task<Result<IEnumerable<Comment>>> GetAllByFilmAsync(int filmId)
+    public async Task<DataTablesResult<Comment>> GetAllByFilmAsync(CommentFilter filter)
     {
-        var comments = await _context.Comments
-            .Include(c => c.User)
-            .Where(c => c.FilmId == filmId)
-            .ToListAsync();
+        var query = _context.Comments
+            .Include(q => q.User)
+            .Where(q => q.FilmId == filter.FilmId)
+            .AsQueryable();
 
-        return comments;
+        Expression<Func<Comment, object>> orderBy = null;
+
+        if (filter.Order != null && filter.Order.Count > 0)
+        {
+            var order = filter.Order[0];
+            var columnName = filter.Columns[order.Column].Data;
+            switch (columnName)
+            {
+                case "user.userName":
+                    orderBy = c => c.User.UserName;
+                    break;
+                default:
+                    orderBy = c => EF.Property<Comment>(c, ToPascaleCase(columnName));
+                    break;
+            }
+
+            query = order.Dir == "asc"
+                ? query.OrderBy(orderBy)
+                : query.OrderByDescending(orderBy);
+        }
+
+        if (!string.IsNullOrEmpty(filter.Search?.Value))
+        {
+            string searchValue = filter.Search.Value.ToLower();
+            query = query.Where(c => c.Text.ToLower().Contains(searchValue)
+                || c.User.UserName.Contains(searchValue)
+                || c.CreatedAt.ToString().ToLower().Contains(searchValue));
+        }
+
+
+        return await base.GetPagedAsync(filter, query);
     }
 
     public Task<Result<Comment>> GetByIdAsync(int id)
