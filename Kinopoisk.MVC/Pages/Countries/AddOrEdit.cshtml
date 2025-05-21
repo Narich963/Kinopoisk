@@ -1,0 +1,24 @@
+﻿@page "{id?}"
+@model Kinopoisk.MVC.Pages.Countries.AddOrEditModel
+@{
+    var isNew = Model.Country.IsNew ?? true;
+}
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Country.Name"></label>
+        <input asp-for="Country.Name" class="form-control" />
+        <span asp-validation-for="Country.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Country.IsoCode"></label>
+        <input asp-for="Country.IsoCode" class="form-control" />
+        <span asp-validation-for="Country.IsoCode" class="text-danger"></span>
+    </div>
+
+    <input type="hidden" asp-for="Country.Id" />
+    <input type="hidden" asp-for="Country.IsNew"/>
+
+    <button type="submit" class="btn btn-primary">@(isNew ? "Create" : "Edit")</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>

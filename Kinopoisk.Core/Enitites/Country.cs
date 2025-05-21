@@ -11,4 +11,11 @@ public class Country
 
     [MaxLength(10)]
     public string IsoCode { get; set; }
+
+    public List<Film> Films { get; set; }
+
+    public Country()
+    {
+        Films = new();
+    }
 }

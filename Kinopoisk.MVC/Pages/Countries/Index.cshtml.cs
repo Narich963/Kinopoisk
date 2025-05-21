@@ -35,4 +35,12 @@ public class IndexModel : PageModel
         };
         return new JsonResult(result);
     }
+    public async Task<IActionResult> OnPostDeleteCountryAsync(int? id)
+    {
+        var result = await _countryService.DeleteAsync(id);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return new JsonResult(new { success = true });
+    }
 }

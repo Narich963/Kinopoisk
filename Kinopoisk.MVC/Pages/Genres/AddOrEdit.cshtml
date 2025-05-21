@@ -1,6 +1,7 @@
 ﻿@page "{id?}"
 @model Kinopoisk.MVC.Pages.Genres.AddOrEditModel
 @{
+    var isNew = Model.Genre.IsNew ?? true;
 }
 
 <form method="post">
@@ -13,6 +14,6 @@
     <input type="hidden" asp-for="Genre.Id" />
     <input type="hidden" asp-for="Genre.IsNew"/>
 
-    <button type="submit" class="btn btn-primary">Edit</button>
+    <button type="submit" class="btn btn-primary">@(isNew ? "Create" : "Edit")</button>
     <a asp-page="Index" class="btn btn-secondary">Cancel</a>
 </form>

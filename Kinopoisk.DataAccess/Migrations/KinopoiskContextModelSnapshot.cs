@@ -443,7 +443,7 @@ namespace Kinopoisk.DataAccess.Migrations
             modelBuilder.Entity("Kinopoisk.Core.Enitites.Film", b =>
                 {
                     b.HasOne("Kinopoisk.Core.Enitites.Country", "Country")
-                        .WithMany()
+                        .WithMany("Films")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -538,6 +538,11 @@ namespace Kinopoisk.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Kinopoisk.Core.Enitites.Country", b =>
+                {
+                    b.Navigation("Films");
                 });
 
             modelBuilder.Entity("Kinopoisk.Core.Enitites.Film", b =>
