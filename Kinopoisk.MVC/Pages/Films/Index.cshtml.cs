@@ -40,4 +40,13 @@ public class IndexModel : PageModel
 
         return new JsonResult(filmsPaged);
     }
+
+    public async Task<IActionResult> OnPostDeleteFilmAsync(int? id)
+    {
+        var result = await _filmService.DeleteAsync(id);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return new JsonResult(new { success = true });
+    }
 }

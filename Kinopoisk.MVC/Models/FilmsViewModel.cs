@@ -21,4 +21,6 @@ public class FilmsViewModel
     public List<CommentViewModel> Comments { get; set; }
     //public List<Rating> Ratings { get; set; }
     public List<string> Actors { get; set; }
+
+    public bool? IsNew { get; set; }
 }

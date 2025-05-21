@@ -1,0 +1,37 @@
+﻿@page "{id?}"
+@model Kinopoisk.MVC.Pages.Films.AddOrEditModel
+@{
+    var isNew = Model.Film.IsNew ?? true;
+    var title = isNew ? "Create Film" : "Edit Film";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">@title</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="Film.Name" class="form-label"></label>
+                            <input asp-for="Film.Name" class="form-control" />
+                            <span asp-validation-for="Film.Name" class="text-danger"></span>
+                        </div>
+
+                        <input type="hidden" asp-for="Film.Id" />
+                        <input type="hidden" asp-for="Film.IsNew" />
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-outline-warning">
+                                @(isNew ? "Create" : "Update")
+                            </button>
+                            <a asp-page="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

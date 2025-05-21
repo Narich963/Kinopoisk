@@ -1,4 +1,17 @@
-﻿$(document).ready(function () {
+﻿let deleteId = null;
+function remove(id) {
+    deleteId = id;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+function showErrorModal(message) {
+    $('#errorModalBody').text(message);
+    var modal = new bootstrap.Modal(document.getElementById('errorModal'));
+    modal.show();
+}
+
+$(document).ready(function () {
     let dataTable = $('#filmsTable').DataTable({
         serverSide: true,
         processing: true,
@@ -45,13 +58,46 @@
             { data: 'duration' },
             { data: 'imdbRating' },
             { data: 'usersRating' },
-            { data: 'directorName' }
+            { data: 'directorName' },
+            {
+                data: null,
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    return `
+                    <a class="btn btn-sm btn-warning" href="/Films/AddOrEdit?id=${row.id}" onclick="event.stopPropagation()">Edit</a>
+                    <a class="btn btn-sm btn-danger" href="#" onclick="event.stopPropagation(); remove(${row.id})">Delete</a>`;
+                }
+            }
         ],
         createdRow: function (row, data) {
             $(row).css('cursor', 'pointer');
             $(row).on('click', function () {
                 window.location.href = '/Films/Details?id=' + data.id;
             });
+        }
+    });
+
+    $('#confirmDeleteBtn').on('click', function (e) {
+        if (deleteId !== null) {
+            fetch(`/Films/Index?handler=DeleteFilm&id=${deleteId}`, {
+                method: 'POST',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        $('#deleteModal').modal('hide');
+                        dataTable.ajax.reload();
+                    } else {
+                        return response.text().then(function (errorText) {
+                            $('#deleteModal').modal('hide');
+                            showErrorModal(errorText);
+                        });
+                    }
+                })
+                .catch(error => {
+                    $('#deleteModal').modal('hide');
+                    showErrorModal(error.message);
+                });
         }
     });
 
