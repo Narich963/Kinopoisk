@@ -12,7 +12,7 @@ function showErrorModal(message) {
 }
 
 $(document).ready(function () {
-    $('#employeesTable').DataTable({
+    var dataTable = $('#employeesTable').DataTable({
         serverSide: true,
         processing: true,
         ajax: {
@@ -41,7 +41,7 @@ $(document).ready(function () {
     });
     $('#confirmDeleteBtn').on('click', function () {
         if (deleteId !== null) {
-            fetch(`/Countries/Index?handler=DeleteCountry&id=${deleteId}`, {
+            fetch(`/FilmEmployees/Index?handler=DeleteFilmEmployee&id=${deleteId}`, {
                 method: 'POST',
             })
                 .then(response => {

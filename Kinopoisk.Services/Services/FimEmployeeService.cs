@@ -27,6 +27,10 @@ public class FimEmployeeService : BaseService<FilmEmployee, FilmEmployeeDTO, Dat
 
         if (employee.IsFailure)
             return Result.Failure(employee.Error);
+
+        if (employee.Value.ActorRoles.Any())
+            return Result.Failure("You can't delete employee that has roles");
+
         return await base.DeleteAsync(id);
     }
 }
