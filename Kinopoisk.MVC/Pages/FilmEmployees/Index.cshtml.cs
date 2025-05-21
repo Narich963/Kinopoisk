@@ -2,6 +2,7 @@ using AutoMapper;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
+using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -35,5 +36,13 @@ public class IndexModel : PageModel
             Data = _mapper.Map<List<FilmEmployeeViewModel>>(filmEmployees.Data)
         };
         return new JsonResult(result);
+    }
+    public async Task<IActionResult> OnPostDeleteFilmEmployeeAsync(int? id)
+    {
+        var result = await _employeesService.DeleteAsync(id);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return new JsonResult(new { success = true });
     }
 }

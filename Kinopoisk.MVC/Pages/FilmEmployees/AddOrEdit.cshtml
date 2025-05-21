@@ -1,0 +1,19 @@
+﻿@page "{id?}"
+@model Kinopoisk.MVC.Pages.FilmEmployees.AddOrEditModel
+@{
+    var isNew = Model.FilmEmployee.IsNew ?? true;
+}
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="FilmEmployee.Name"></label>
+        <input asp-for="FilmEmployee.Name" class="form-control" />
+        <span asp-validation-for="FilmEmployee.Name" class="text-danger"></span>
+    </div>
+
+    <input type="hidden" asp-for="FilmEmployee.Id" />
+    <input type="hidden" asp-for="FilmEmployee.IsNew" />
+
+    <button type="submit" class="btn btn-primary">@(isNew ? "Create" : "Edit")</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>
