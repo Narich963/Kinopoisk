@@ -15,6 +15,8 @@ public class MapperInitializer : Profile
 
         CreateMap<FilmEmployeeDTO, FilmEmployee>().ReverseMap();
         CreateMap<FilmEmployeeRoleDTO, FilmEmployeeRole>().ReverseMap();
+        CreateMap<FilmEmployeeViewModel, FilmEmployeeDTO>().ReverseMap();
+
         CreateMap<GenreDTO, Genre>().ReverseMap();
         CreateMap<UserDTO, User>().ReverseMap();
 

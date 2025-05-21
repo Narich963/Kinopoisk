@@ -45,6 +45,7 @@ builder.Services.AddTransient<IRatingRepository, RatingRepository>();
 builder.Services.AddTransient<IRatingService, RatingService>();
 builder.Services.AddTransient<IGenreService, GenreService>();
 builder.Services.AddTransient<ICountryService, CountryService>();
+builder.Services.AddTransient<IFilmEmployeeService, FimEmployeeService>();
 
 var app = builder.Build();
 
