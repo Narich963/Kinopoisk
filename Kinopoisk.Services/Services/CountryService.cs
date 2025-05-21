@@ -7,9 +7,9 @@ using Kinopoisk.MVC.Models;
 
 namespace Kinopoisk.Services.Services;
 
-public class GenreService : BaseService<Genre, GenreDTO, DataTablesRequestModel>, IGenreService
+public class CountryService : BaseService<Country, CountryDTO, DataTablesRequestModel>, ICountryService
 {
-    public GenreService(IUnitOfWork uow, IMapper mapper) : base(uow, mapper)
+    public CountryService(IUnitOfWork uow, IMapper mapper) : base(uow, mapper)
     {
     }
 }

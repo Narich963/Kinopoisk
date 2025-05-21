@@ -20,7 +20,14 @@
         },
         columns: [
             { data: 'id' },
-            { data: 'poster', render: function (data) { return '<img src="' + data + '" alt="Poster" style="width:100px;height:auto;">'; } },
+            {
+                data: 'poster',
+                searchable: false,
+                orderable: false,
+                render: function (data) {
+                    return '<img src="' + data + '" alt="Poster" style="width:100px;height:auto;">';
+                }
+            },
             { data: 'name' },
             { data: 'description' },
             {

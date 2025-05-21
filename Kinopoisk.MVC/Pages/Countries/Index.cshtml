@@ -1,0 +1,23 @@
+﻿@page
+@model Kinopoisk.MVC.Pages.Countries.IndexModel
+@{
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<table id="countriesTable" class="display">
+    <thead>
+        <tr class="text-primary text-center">
+            <th>ID</th>
+            <th>Country</th>
+            <th>Flag</th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/js/Countries/index.js"></script>
+}

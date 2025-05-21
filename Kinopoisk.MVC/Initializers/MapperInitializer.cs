@@ -23,6 +23,9 @@ public class MapperInitializer : Profile
         CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
 
         CreateMap<CountryDTO, Country>().ReverseMap();
+        CreateMap<CountryViewModel, CountryDTO>()
+            .ReverseMap()
+            .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CountryToFlagLink(src.IsoCode)));
 
         CreateMap<RatingDTO, Rating>().ReverseMap();
         CreateMap<RatingViewModel, RatingDTO>().ReverseMap();
