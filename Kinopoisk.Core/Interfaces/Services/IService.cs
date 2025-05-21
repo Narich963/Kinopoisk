@@ -7,6 +7,7 @@ namespace Kinopoisk.Services.Interfaces;
 public interface IService<TDto, TRequest> where TRequest : DataTablesRequestModel
 {
     Task<DataTablesResult<TDto>> GetPagedAsync(TRequest request);
+    Task<Result<TDto>> GetByIdAsync(int? id);
     Task<Result<TDto>> AddAsync(TDto dto);
     Task<Result<TDto>> UpdateAsync(TDto dto);
     Task<Result> DeleteAsync(int? id);

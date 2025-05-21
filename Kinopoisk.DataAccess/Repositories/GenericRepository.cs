@@ -17,8 +17,11 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
         _context = context;
     }
 
-    public async Task<Result<T>> GetByIdAsync(int id, IQueryable<T> query)
+    public async Task<Result<T>> GetByIdAsync(int id, IQueryable<T> query = null)
     {
+        if (query == null)
+            query = _context.Set<T>().AsQueryable();
+        
         var entity = await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         if (entity == null)
             return Result.Failure<T>("Entity not found");

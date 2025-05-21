@@ -36,6 +36,19 @@ public abstract class BaseService<TEntity, TDto, TRequest> : IService<TDto, TReq
 
         return dataTableResult;
     }
+    public async Task<Result<TDto>> GetByIdAsync(int? id)
+    {
+        if (!id.HasValue)
+            return Result.Failure<TDto>("Id is null");
+
+        var result = await _repository.GetByIdAsync(id.Value);
+        if (result.IsSuccess)
+        {
+            var dto = _mapper.Map<TDto>(result.Value);
+            return Result.Success(dto);
+        }
+        return Result.Failure<TDto>(result.Error);
+    }
 
     public async Task<Result<TDto>> AddAsync(TDto dto)
     {

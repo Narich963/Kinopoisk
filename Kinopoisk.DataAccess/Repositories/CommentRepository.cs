@@ -53,9 +53,4 @@ public class CommentRepository : GenericRepository<Comment, CommentFilter>, ICom
 
         return await base.GetPagedAsync(filter, query);
     }
-
-    public Task<Result<Comment>> GetByIdAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
 }
