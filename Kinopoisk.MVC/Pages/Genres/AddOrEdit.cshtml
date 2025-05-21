@@ -1,0 +1,18 @@
+﻿@page "{id?}"
+@model Kinopoisk.MVC.Pages.Genres.AddOrEditModel
+@{
+}
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Genre.Name"></label>
+        <input asp-for="Genre.Name" class="form-control" />
+        <span asp-validation-for="Genre.Name" class="text-danger"></span>
+    </div>
+
+    <input type="hidden" asp-for="Genre.Id" />
+    <input type="hidden" asp-for="Genre.IsNew"/>
+
+    <button type="submit" class="btn btn-primary">Edit</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>

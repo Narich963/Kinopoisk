@@ -3,6 +3,7 @@ using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.MVC.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
@@ -17,11 +18,19 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
         _context = context;
     }
 
-    public async Task<Result<T>> GetByIdAsync(int id, IQueryable<T> query = null)
+    public async Task<Result<T>> GetByIdAsync(int id, IQueryable<T> query = null, params Expression<Func<T, object>>[] includes)
     {
         if (query == null)
             query = _context.Set<T>().AsQueryable();
-        
+
+        if (includes != null && includes.Length > 0)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
         var entity = await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         if (entity == null)
             return Result.Failure<T>("Entity not found");

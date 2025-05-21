@@ -83,7 +83,7 @@ public abstract class BaseService<TEntity, TDto, TRequest> : IService<TDto, TReq
         return Result.Failure<TDto>(result.Error);
     }
 
-    public async Task<Result> DeleteAsync(int? id)
+    public virtual async Task<Result> DeleteAsync(int? id)
     {
         if (!id.HasValue)
             return Result.Failure("Id is null");

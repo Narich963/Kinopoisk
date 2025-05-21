@@ -38,4 +38,13 @@ public class IndexModel : PageModel
         };
         return new JsonResult(genresPaged);
     }
+
+    public async Task<IActionResult> OnPostDeleteGenreAsync(int? id)
+    {
+        var result = await _genreService.DeleteAsync(id);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return new JsonResult(new { success = true });
+    }
 }
