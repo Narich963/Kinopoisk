@@ -2,23 +2,41 @@
 @model Kinopoisk.MVC.Pages.Countries.AddOrEditModel
 @{
     var isNew = Model.Country.IsNew ?? true;
+    var title = isNew ? "Create Country" : "Edit Country";
 }
 
-<form method="post">
-    <div class="form-group">
-        <label asp-for="Country.Name"></label>
-        <input asp-for="Country.Name" class="form-control" />
-        <span asp-validation-for="Country.Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Country.IsoCode"></label>
-        <input asp-for="Country.IsoCode" class="form-control" />
-        <span asp-validation-for="Country.IsoCode" class="text-danger"></span>
-    </div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">@title</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="Country.Name" class="form-label"></label>
+                            <input asp-for="Country.Name" class="form-control" />
+                            <span asp-validation-for="Country.Name" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Country.IsoCode" class="form-label"></label>
+                            <input asp-for="Country.IsoCode" class="form-control" />
+                            <span asp-validation-for="Country.IsoCode" class="text-danger"></span>
+                        </div>
 
-    <input type="hidden" asp-for="Country.Id" />
-    <input type="hidden" asp-for="Country.IsNew"/>
+                        <input type="hidden" asp-for="Country.Id" />
+                        <input type="hidden" asp-for="Country.IsNew" />
 
-    <button type="submit" class="btn btn-primary">@(isNew ? "Create" : "Edit")</button>
-    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-</form>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-outline-warning">
+                                @(isNew ? "Create" : "Update")
+                            </button>
+                            <a asp-page="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

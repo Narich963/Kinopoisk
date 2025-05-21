@@ -2,18 +2,36 @@
 @model Kinopoisk.MVC.Pages.FilmEmployees.AddOrEditModel
 @{
     var isNew = Model.FilmEmployee.IsNew ?? true;
+    var title = isNew ? "Create Film Employee" : "Edit Film Employee";
 }
 
-<form method="post">
-    <div class="form-group">
-        <label asp-for="FilmEmployee.Name"></label>
-        <input asp-for="FilmEmployee.Name" class="form-control" />
-        <span asp-validation-for="FilmEmployee.Name" class="text-danger"></span>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">@title</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="FilmEmployee.Name" class="form-label"></label>
+                            <input asp-for="FilmEmployee.Name" class="form-control" />
+                            <span asp-validation-for="FilmEmployee.Name" class="text-danger"></span>
+                        </div>
+
+                        <input type="hidden" asp-for="FilmEmployee.Id" />
+                        <input type="hidden" asp-for="FilmEmployee.IsNew" />
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-outline-warning">
+                                @(isNew ? "Create" : "Update")
+                            </button>
+                            <a asp-page="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <input type="hidden" asp-for="FilmEmployee.Id" />
-    <input type="hidden" asp-for="FilmEmployee.IsNew" />
-
-    <button type="submit" class="btn btn-primary">@(isNew ? "Create" : "Edit")</button>
-    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
