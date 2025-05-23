@@ -158,7 +158,6 @@ public static class DataSeeder
                 PublishDate = new DateTime(2010, 7, 16),
                 IMDBRating = 8.8,
                 Poster = "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX1000_.jpg",
-                Genres = [actionGenre, scifiGenre, dramaGenre]
             },
             new()
             {
@@ -169,7 +168,6 @@ public static class DataSeeder
                 PublishDate = new DateTime(2014, 11, 7),
                 IMDBRating = 8.6,
                 Poster = "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-                Genres = [scifiGenre, dramaGenre]
             },
             new()
             {
@@ -180,7 +178,6 @@ public static class DataSeeder
                 PublishDate = new DateTime(1999, 3, 31),
                 IMDBRating = 8.7,
                 Poster = "https://m.media-amazon.com/images/M/MV5BN2NmN2VhMTQtMDNiOS00NDlhLTliMjgtODE2ZTY0ODQyNDRhXkEyXkFqcGc@._V1_.jpg",
-                Genres = [actionGenre, scifiGenre, thrillerGenre]
             },
             new()
             {
@@ -191,7 +188,6 @@ public static class DataSeeder
                 PublishDate = new DateTime(1999, 10, 15),
                 IMDBRating = 8.8,
                 Poster = "https://m.media-amazon.com/images/M/MV5BOTgyOGQ1NDItNGU3Ny00MjU3LTg2YWEtNmEyYjBiMjI1Y2M5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-                Genres = [dramaGenre, thrillerGenre]
             }
         };
 

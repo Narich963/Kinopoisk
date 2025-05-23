@@ -18,6 +18,8 @@ public class MapperInitializer : Profile
         CreateMap<FilmEmployeeViewModel, FilmEmployeeDTO>().ReverseMap();
 
         CreateMap<GenreDTO, Genre>().ReverseMap();
+        CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
+
         CreateMap<UserDTO, User>().ReverseMap();
 
         CreateMap<FilmEmployeeRoleViewModel, FilmEmployeeRoleDTO>().ReverseMap();
@@ -31,13 +33,15 @@ public class MapperInitializer : Profile
 
         CreateMap<RatingDTO, Rating>().ReverseMap();
         CreateMap<RatingViewModel, RatingDTO>().ReverseMap();
+
+        CreateMap<FilmGenreDTO, FilmGenre>().ReverseMap();
+        CreateMap<FilmGenreViewModel, FilmGenreDTO>().ReverseMap();
     }
     private void CreateFilmsMap()
     {
         CreateMap<FilmDTO, Film>().ReverseMap();
         CreateMap<FilmsViewModel, FilmDTO>()
             .ReverseMap()
-            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(g => g.Name)))
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => $"{Math.Floor(src.Duration / 60)}h {src.Duration % 60}min"))
             .ForMember(dest => dest.CountryFlagLink, opt => opt.MapFrom(src => CountryToFlagLink(src.Country.IsoCode)))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name))

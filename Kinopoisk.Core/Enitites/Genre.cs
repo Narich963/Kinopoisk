@@ -10,7 +10,7 @@ public class Genre
     [MaxLength(50)]
     public string Name { get; set; }
 
-    public List<Film> Films { get; set; }
+    public List<FilmGenre> Films { get; set; }
     public Genre()
     {
         Films = new();

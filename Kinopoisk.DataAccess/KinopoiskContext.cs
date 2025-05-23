@@ -14,7 +14,8 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<Country> Countries { get; set; }   
+    public DbSet<Country> Countries { get; set; }
+    public DbSet<FilmGenre> FilmGenres { get; set; }
 
     public KinopoiskContext(DbContextOptions<KinopoiskContext> opts) : base(opts)
     {
@@ -30,5 +31,8 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
 
         builder.Entity<Rating>()
             .HasKey(r => new { r.UserId, r.FilmId });
+
+        builder.Entity<FilmGenre>()
+            .HasKey(fg => new { fg.FilmId, fg.GenreId });
     }
 }

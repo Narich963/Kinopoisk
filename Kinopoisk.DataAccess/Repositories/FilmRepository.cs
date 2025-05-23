@@ -21,6 +21,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     {
         query = _context.Films
             .Include(f => f.Genres)
+                .ThenInclude(g => g.Genre)
             .Include(f => f.Ratings)
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
@@ -95,6 +96,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     {
         var query = _context.Films
             .Include(f => f.Genres)
+                .ThenInclude(g => g.Genre)
             .Include(f => f.Comments)
                 .ThenInclude(c => c.User)
             .Include(f => f.Employees)

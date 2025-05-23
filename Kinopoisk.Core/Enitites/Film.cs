@@ -18,7 +18,7 @@ public class Film
 
     public int CountryId { get; set; }
     public Country? Country { get; set; }
-    public List<Genre> Genres { get; set; }
+    public List<FilmGenre> Genres { get; set; }
     public List<Comment> Comments { get; set; }
     public List<Rating> Ratings { get; set; }
     public List<FilmEmployeeRole> Employees { get; set; }

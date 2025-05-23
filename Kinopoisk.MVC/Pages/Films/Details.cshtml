@@ -59,7 +59,7 @@
                         </tr>
                         <tr class="mb-5">
                             <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.Genres):</strong></td>
-                            <td class="ms-1">@string.Join(", ", Model.Film.Genres)</td>
+                            <td class="ms-1">@string.Join(", ", Model.Film.Genres.Select(g => g.Genre.Name))</td>
                         </tr>
                         <tr class="mb-5">
                             <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.Description):</strong></td>

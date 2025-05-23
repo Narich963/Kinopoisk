@@ -17,7 +17,7 @@ public class FilmsViewModel
 
     public string DirectorName { get; set; }
 
-    public List<string> Genres { get; set; }
+    public List<FilmGenreViewModel> Genres { get; set; }
     public List<CommentViewModel> Comments { get; set; }
     //public List<Rating> Ratings { get; set; }
     public List<string> Actors { get; set; }
