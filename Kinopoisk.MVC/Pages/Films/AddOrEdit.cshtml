@@ -48,28 +48,25 @@
                         </div>
                         <div class="mb-3">
                             <label asp-for="Film.Genres" class="form-label"></label>
-                            @if (Model.Film.Genres != null && Model.Film.Genres.Count > 0)
-                            {
-                                <div id="genresContainer" class="mb-3" data-genre-index="@Model.Film.Genres?.Count">
-                                    @for (int i = 0; i < Model.Film.Genres?.Count; i++)
-                                    {
-                                        <div class="row genre-entry mb-2" data-index="@i">
-                                            <div class="col-md-10">
-                                                <select asp-for="Film.Genres[i].GenreId" class="form-select genre-select" data-index="@i">
-                                                    <option value="@Model.Film.Genres[i].GenreId" selected>
-                                                        @Model.Film.Genres[i].Genre.Name
-                                                    </option>
-                                                </select>
-                                                <input type="hidden" asp-for="Film.Genres[i].FilmId" value="@Model.Film.Id"/>
-                                                <input type="hidden" asp-for="Film.Genres[i].IsForDeleting" value="false"/>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <button type="button" class="btn btn-sm btn-danger remove-genre-btn">−</button>
-                                            </div>
+                            <div id="genresContainer" class="mb-3" data-genre-index="@Model.Film.Genres?.Count">
+                                @for (int i = 0; i < Model.Film.Genres?.Count; i++)
+                                {
+                                    <div class="row genre-entry mb-2" data-index="@i">
+                                        <div class="col-md-10">
+                                            <select asp-for="Film.Genres[i].GenreId" class="form-select genre-select" data-index="@i">
+                                                <option value="@Model.Film.Genres[i].GenreId" selected>
+                                                    @Model.Film.Genres[i].Genre.Name
+                                                </option>
+                                            </select>
+                                            <input type="hidden" asp-for="Film.Genres[i].FilmId" value="@Model.Film.Id"/>
+                                            <input type="hidden" asp-for="Film.Genres[i].IsForDeleting" value="false"/>
                                         </div>
-                                    }
-                                </div>
-                            }
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-sm btn-danger remove-genre-btn">−</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>              
                             <span asp-validation-for="Film.Genres" class="text-danger"></span>
                             <button type="button" id="addGenreBtn" class="btn btn-sm btn-success">+ Add genre</button>
                         </div>

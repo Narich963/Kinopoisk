@@ -22,8 +22,13 @@ public class FilmsViewModel
 
     public List<FilmGenreViewModel> Genres { get; set; }
     public List<CommentViewModel>? Comments { get; set; }
-    //public List<Rating> Ratings { get; set; }
     public List<FilmEmployeeRoleViewModel> Actors { get; set; }
 
     public bool? IsNew { get; set; }
+    public FilmsViewModel()
+    {
+        Genres = new();
+        Actors = new();
+        Comments = new();
+    }
 }

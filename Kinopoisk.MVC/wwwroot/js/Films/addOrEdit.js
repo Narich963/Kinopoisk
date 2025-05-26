@@ -39,6 +39,7 @@
     });
 }
 function addAndRemoveGenre(genreIndex, genreUrl, genreClass, placeholder) {
+    console.log(`Adding genre with index: ${genreIndex}`);
     $('#addGenreBtn').on('click', function () {
         const newGenreHtml = `
             <div class="row genre-entry mb-2" data-index="${genreIndex}">

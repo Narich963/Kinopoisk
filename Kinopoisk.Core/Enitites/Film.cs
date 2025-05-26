@@ -10,7 +10,7 @@ public class Film
     [MaxLength(50)]
     public string Name { get; set; }
 
-    [MaxLength(50)]
+    [MaxLength(500)]
     public string? Description { get; set; }
     public DateTime PublishDate { get; set; }
     public double Duration { get; set; }
