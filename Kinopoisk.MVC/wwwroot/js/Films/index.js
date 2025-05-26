@@ -116,4 +116,35 @@ $(document).ready(function () {
         $('#nameFilter, #yearFilter, #countryFilter, #actorFilter, #directorFilter').val('');
         dataTable.ajax.reload();
     });
+
+    $('#omdbConfirmBtn').on('click', function () {
+        const idOrTitle = $('#omdbTitle').val();
+        const $error = $('#omdbError');
+        const $success = $('#omdbSuccess');
+
+        $error.addClass('d-none').text('');
+        $success.addClass('d-none');
+
+        if (!idOrTitle.trim()) {
+            $error.removeClass('d-none').text('Please enter a title or IMDb ID.');
+            return;
+        }
+
+        $.ajax({
+            url: '/Films/Index?handler=ImportFilm',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(idOrTitle),
+            success: function (response) {
+                if (response.success) {
+                    console.log('success');
+                    $success.removeClass('d-none').text('Film imported successfully.');
+                    dataTable.ajax.reload();
+                } else {
+                    console.error('error');
+                    $error.removeClass('d-none').text(response.message);
+                }
+            },
+        });
+    });
 });

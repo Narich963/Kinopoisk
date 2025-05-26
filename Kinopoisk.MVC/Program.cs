@@ -35,6 +35,8 @@ builder.Services.AddAutoMapper(opts =>
     opts.AddExpressionMapping();
 }, typeof(MapperInitializer));
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IFilmRepository, FilmRepository>();
 builder.Services.AddTransient<IFilmService, FilmService>();
@@ -46,6 +48,8 @@ builder.Services.AddTransient<IRatingService, RatingService>();
 builder.Services.AddTransient<IGenreService, GenreService>();
 builder.Services.AddTransient<ICountryService, CountryService>();
 builder.Services.AddTransient<IFilmEmployeeService, FimEmployeeService>();
+builder.Services.AddTransient<IOmdbService, OmdbService>();
+builder.Services.AddTransient<IOmdbRepository, OmdbRepository>();
 
 var app = builder.Build();
 

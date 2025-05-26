@@ -1,5 +1,6 @@
 using AutoMapper;
 using Kinopoisk.Core.Filters;
+using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +12,14 @@ namespace Kinopoisk.MVC.Pages.Films;
 public class IndexModel : PageModel
 {
     private readonly IFilmService _filmService;
+   private readonly IOmdbService _omdbService;
     private readonly IMapper _mapper;
 
-    public IndexModel(IFilmService filmService, IMapper mapper)
+    public IndexModel(IFilmService filmService, IMapper mapper, IOmdbService omdbService)
     {
         _filmService = filmService;
         _mapper = mapper;
+        _omdbService = omdbService;
     }
 
     public void OnGet()
@@ -48,5 +51,18 @@ public class IndexModel : PageModel
             return BadRequest(result.Error);
 
         return new JsonResult(new { success = true });
+    }
+
+    public async Task<IActionResult> OnPostImportFilmAsync([FromBody] string idOrTitle)
+    {
+        if (string.IsNullOrWhiteSpace(idOrTitle))
+            return BadRequest("Title cannot be empty");
+        
+        var filmDto = await _omdbService.ImportFilm(idOrTitle);
+        if (filmDto.IsFailure)
+            return BadRequest(filmDto.Error);
+
+        var filmViewModel = _mapper.Map<FilmsViewModel>(filmDto.Value);
+        return new JsonResult(new {success = true}) ;
     }
 }
