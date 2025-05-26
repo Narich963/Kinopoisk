@@ -101,8 +101,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                 .ThenInclude(c => c.User)
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
-            .Include(f => f.Country)
-            .AsNoTracking();
+            .Include(f => f.Country);
 
         var filmResult = await base.GetByIdAsync(id, query);
 
@@ -122,5 +121,31 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             .Include(f => f.Country)
             .ToListAsync();
         return films;
+    }
+
+    public async Task<Result> RemoveEmployeeFromFilm(int filmId, int employeeId)
+    {
+        var employeeRole = await _context.FilmEmployeeRoles
+            .FirstOrDefaultAsync(e => e.FilmEmployeeID == employeeId && e.FilmId == filmId);
+
+        if (employeeRole == null)
+            return Result.Failure("Employee not found in film");
+
+        _context.FilmEmployeeRoles.Remove(employeeRole);
+        await _context.SaveChangesAsync();
+        return Result.Success();
+    }
+
+    public async Task<Result> RemoveGenreFromFilm(int filmId, int genreId)
+    {
+        var filmGenre = await _context.FilmGenres
+            .FirstOrDefaultAsync(e => e.GenreId == genreId && e.FilmId == filmId);
+
+        if (filmGenre == null)
+            return Result.Failure("Genre not found in film");
+
+        _context.FilmGenres.Remove(filmGenre);
+        await _context.SaveChangesAsync();
+        return Result.Success();
     }
 }

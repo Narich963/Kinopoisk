@@ -50,15 +50,17 @@ $(document).ready(function () {
                 }
             },
             {
-                data: 'countryFlagLink',
+                data: 'country',
                 render: function (data) {
-                    return `<img src="${data}" style="margin-right:5px;">`;
+                    return `<img src="${data.flag}" style="margin-right:5px;">`;
                 }
             },
             { data: 'duration' },
             { data: 'imdbRating' },
             { data: 'usersRating' },
-            { data: 'directorName' },
+            {
+                data: 'director.filmEmployee.name'
+            },
             {
                 data: null,
                 orderable: false,

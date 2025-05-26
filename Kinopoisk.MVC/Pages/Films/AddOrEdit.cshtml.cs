@@ -1,7 +1,7 @@
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
-using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +21,7 @@ public class AddOrEditModel : PageModel
     }
 
     [BindProperty]
-    public FilmsViewModel Film { get; set; }
+    public FilmsViewModel Film { get; set; } = new();
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
@@ -48,6 +48,31 @@ public class AddOrEditModel : PageModel
     {
         if (!ModelState.IsValid)
             return Page();
+
+        var deleteGenres = Film.Genres.Where(g => g.IsForDeleting);
+        foreach (var genre in deleteGenres)
+        {
+            var genreResult = await _filmService.RemoveGenreFromFilm(Film.Id, genre.GenreId);
+            if (genreResult.IsFailure)
+            {
+                ModelState.AddModelError(string.Empty, genreResult.Error);
+                return Page();
+            }
+        }
+        Film.Genres = Film.Genres.Where(g => !g.IsForDeleting).ToList();
+
+        var deleteActors = Film.Actors.Where(a => a.IsForDeleting);
+        foreach (var actor in deleteActors)
+        {
+            var actorResult = await _filmService.RemoveEmployeeFromFilm(Film.Id, actor.FilmEmployeeId);
+            if (actorResult.IsFailure)
+            {
+                ModelState.AddModelError(string.Empty, actorResult.Error);
+                return Page();
+            }
+        }
+        Film.Actors = Film.Actors.Where(a => !a.IsForDeleting).ToList();
+
         var film = _mapper.Map<FilmDTO>(Film);
 
         Result<FilmDTO> result = null;
@@ -56,7 +81,7 @@ public class AddOrEditModel : PageModel
             result = await _filmService.AddAsync(film);
         else
             result = await _filmService.UpdateAsync(film);
-
+        
         if (result.IsFailure)
         {
             ModelState.AddModelError(string.Empty, result.Error);

@@ -5,5 +5,7 @@ public class FilmGenreViewModel
     public int FilmId { get; set; }
 
     public int GenreId { get; set; }
-    public GenreViewModel Genre { get; set; }
+    public GenreViewModel? Genre { get; set; }
+
+    public bool IsForDeleting { get; set; } = false;
 }

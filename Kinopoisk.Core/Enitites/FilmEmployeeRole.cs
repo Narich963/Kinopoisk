@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
-namespace Kinopoisk.Core.Enitites;
+﻿namespace Kinopoisk.Core.Enitites;
 
 public class FilmEmployeeRole
 {

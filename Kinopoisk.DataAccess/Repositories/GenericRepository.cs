@@ -1,8 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
+using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.MVC.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq.Expressions;
 
 namespace Kinopoisk.DataAccess.Repositories;
@@ -66,11 +68,15 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
                     : query.OrderBy(e => EF.Property<object>(e, ToPascaleCase(columnName)));
             }
         }
+        List<T> data = null;
 
-        var data = await query
-            .Skip((model.Start / model.Length) * model.Length)
-            .Take(model.Length)
-            .ToListAsync();
+        if (model.Length == 0)
+            data = await query.ToListAsync();
+        else
+            data = await query
+                .Skip((model.Start / model.Length) * model.Length)
+                .Take(model.Length)
+                .ToListAsync();
 
         return new DataTablesResult<T>
         {

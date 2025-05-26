@@ -2,12 +2,12 @@
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.MVC.Models;
-using AutoMapper.Extensions.ExpressionMapping;
 
 namespace Kinopoisk.MVC.Initializers;
 
 public class MapperInitializer : Profile
 {
+    private readonly IMapper _mapper;
     public MapperInitializer()
     {
         CreateFilmsMap();
@@ -41,12 +41,12 @@ public class MapperInitializer : Profile
     {
         CreateMap<FilmDTO, Film>().ReverseMap();
         CreateMap<FilmsViewModel, FilmDTO>()
+            .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => StringDurationToNumber(src.Duration)))
+            .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.Actors.Concat(new[] { src.Director })))
             .ReverseMap()
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => $"{Math.Floor(src.Duration / 60)}h {src.Duration % 60}min"))
-            .ForMember(dest => dest.CountryFlagLink, opt => opt.MapFrom(src => CountryToFlagLink(src.Country.IsoCode)))
-            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name))
-            .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Employees.Where(ar => !ar.IsDirector).OrderBy(ar => ar.Role).Select(ar => ar.FilmEmployee.Name)))
-            .ForMember(dest => dest.DirectorName, opt => opt.MapFrom(src => src.Employees.FirstOrDefault(e => e.IsDirector).FilmEmployee.Name))
+            .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Employees.Where(ar => !ar.IsDirector).OrderBy(ar => ar.Role)))
+            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.Employees.FirstOrDefault(e => e.IsDirector)))
             .ForMember(dest => dest.UsersRating, opt => opt.MapFrom(src => src.Ratings.Count > 0 ? src.Ratings.Average(r => r.Value) : 0));
     }
     private void CreateCommentsMap()
@@ -58,5 +58,20 @@ public class MapperInitializer : Profile
     private string CountryToFlagLink(string isoCode)
     {
         return $"https://flagcdn.com/24x18/{isoCode}.png";
+    }
+    private int StringDurationToNumber(string durationStr)
+    {
+        var hoursIndex = durationStr.IndexOf("h");
+        var minutesIndex = durationStr.IndexOf("m");
+        int durationInt = 0;
+        if (hoursIndex >= 0)
+        {
+            durationInt = Convert.ToInt32(durationStr.Substring(0, hoursIndex).Trim()) * 60;
+        }
+        if (minutesIndex >= 0)
+        {
+            durationInt += Convert.ToInt32(durationStr.Substring(hoursIndex + 1, minutesIndex - hoursIndex - 1).Trim());
+        }
+        return durationInt;
     }
 }

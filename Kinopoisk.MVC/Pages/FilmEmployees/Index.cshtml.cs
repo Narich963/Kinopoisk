@@ -1,4 +1,5 @@
 using AutoMapper;
+using Azure.Core;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
@@ -26,6 +27,9 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostGetEmployeesAsync([FromBody] DataTablesRequestModel request)
     {
+        if (request == null)
+            return BadRequest("Invalid request");
+
         var filmEmployees = await _employeesService.GetPagedAsync(request);
 
         var result = new DataTablesResult<FilmEmployeeViewModel>
