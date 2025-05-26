@@ -122,8 +122,12 @@ public class DetailsModel : PageModel
         var userDto = await _userService.GetUserAsync(User);
         if (userDto.IsFailure)
         {
-            _logger.LogError(userDto.Error);
-            return BadRequest(userDto.Error);
+            if (User.Identity.IsAuthenticated)
+            {
+                _logger.LogError(userDto.Error);
+                return BadRequest(userDto.Error);
+            }
+            return new JsonResult(0); 
         }
 
         var ratingResult = await _ratingService.GetUserRating(filmId.Value, userDto.Value.Id);

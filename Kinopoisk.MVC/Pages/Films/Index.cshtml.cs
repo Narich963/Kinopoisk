@@ -60,7 +60,7 @@ public class IndexModel : PageModel
         
         var filmDto = await _omdbService.ImportFilm(idOrTitle);
         if (filmDto.IsFailure)
-            return BadRequest(filmDto.Error);
+            return BadRequest(new {message = filmDto.Error});
 
         var filmViewModel = _mapper.Map<FilmsViewModel>(filmDto.Value);
         return new JsonResult(new {success = true}) ;

@@ -137,14 +137,17 @@ $(document).ready(function () {
             data: JSON.stringify(idOrTitle),
             success: function (response) {
                 if (response.success) {
-                    console.log('success');
                     $success.removeClass('d-none').text('Film imported successfully.');
                     dataTable.ajax.reload();
                 } else {
-                    console.error('error');
                     $error.removeClass('d-none').text(response.message);
                 }
             },
+            error: function (xhr) {
+                const response = xhr.responseJSON;
+                const message = response?.message || 'An unexpected error occurred.';
+                $error.removeClass('d-none').text(message);
+            }
         });
     });
 });

@@ -55,7 +55,7 @@
                         </tr>
                         <tr class="mb-5">
                             <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.Country):</strong></td>
-                            <td class="ms-1"><img src="@Model.Film.Country?.Flag" style="margin-right:5px;">@Model.Film.Country</td>
+                            <td class="ms-1"><img src="@Model.Film.Country?.Flag" style="margin-right:5px;">@Model.Film.Country?.Name</td>
                         </tr>
                         <tr class="mb-5">
                             <td><strong class="text-secondary">@Html.DisplayNameFor(m => m.Film.Genres):</strong></td>
