@@ -2,9 +2,6 @@
 @model Kinopoisk.MVC.Pages.Genres.IndexModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="text-primary">Genres</h1>
     <a class="btn btn-primary" asp-page="/Genres/AddOrEdit">Create</a>
@@ -51,7 +48,5 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/Genres/index.js"></script>
 }
