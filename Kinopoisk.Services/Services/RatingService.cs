@@ -18,9 +18,9 @@ public class RatingService : BaseService<Rating, RatingDTO, DataTablesRequestMod
         _repository = repository;
     }
 
-    public async Task<Result<double>> GetFilmRating(int filmId)
+    public async Task<Result<double>> CalculateSitesRating(int filmId)
     {
-        var result = await _repository.GetFilmRating(filmId);
+        var result = await _repository.CalculateSitesRating(filmId);
         if (result.IsFailure)
             return Result.Failure<double>(result.Error);
 

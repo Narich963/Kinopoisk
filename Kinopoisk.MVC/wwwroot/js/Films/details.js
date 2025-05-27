@@ -56,14 +56,12 @@
         const form = $(this);
         const formData = form.serialize();
 
-        console.log(formData);
-
         $.ajax({
             url: '/Films/Details?handler=AddOrEditRating',
             type: 'POST',
             data: formData,
             success: function (response) {
-                loadRating();
+                $('#filmRating').text(response.newRating.toFixed(1));
                 loadUserRating();
             },
             error: function () {
@@ -72,19 +70,19 @@
         });
     });
 
-    function loadRating() {
-        $.ajax({
-            url: '/Films/Details?handler=GetRating',
-            type: 'GET',
-            data: { filmId: filmId },
-            success: function (response) {
-                $('#filmRating').text(response);
-            },
-            error: function () {
-                alert('Failed to load rating');
-            }
-        });
-    }
+    //function loadRating() {
+    //    $.ajax({
+    //        url: '/Films/Details?handler=GetRating',
+    //        type: 'GET',
+    //        data: { filmId: filmId },
+    //        success: function (response) {
+    //            $('#filmRating').text(response);
+    //        },
+    //        error: function () {
+    //            alert('Failed to load rating');
+    //        }
+    //    });
+    //}
     function loadUserRating() {
         $.ajax({
             url: '/Films/Details?handler=GetUserRating',
@@ -105,5 +103,5 @@
     }
 
     loadUserRating();
-    loadRating();
+    //loadRating();
 });

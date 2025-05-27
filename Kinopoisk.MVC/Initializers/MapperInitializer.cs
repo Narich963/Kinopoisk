@@ -46,8 +46,7 @@ public class MapperInitializer : Profile
             .ReverseMap()
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => $"{Math.Floor(src.Duration / 60)}h {src.Duration % 60}min"))
             .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Employees.Where(ar => !ar.IsDirector).OrderBy(ar => ar.Role)))
-            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.Employees.FirstOrDefault(e => e.IsDirector)))
-            .ForMember(dest => dest.UsersRating, opt => opt.MapFrom(src => src.Ratings.Count > 0 ? src.Ratings.Average(r => r.Value) : 0));
+            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.Employees.FirstOrDefault(e => e.IsDirector)));
     }
     private void CreateCommentsMap()
     {

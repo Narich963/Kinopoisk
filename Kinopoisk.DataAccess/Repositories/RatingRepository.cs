@@ -14,7 +14,7 @@ public class RatingRepository : GenericRepository<Rating, DataTablesRequestModel
         _context = context;
     }
 
-    public async Task<Result<double>> GetFilmRating(int filmId)
+    public async Task<Result<double>> CalculateSitesRating(int filmId)
     {
         var film = await _context.Films
             .Include(f => f.Ratings)
@@ -23,10 +23,10 @@ public class RatingRepository : GenericRepository<Rating, DataTablesRequestModel
         if (film == null)
             return Result.Failure<double>("Film not found");
 
-        var rating = film.Ratings.Count == 0 
+        film.SitesRating = film.Ratings.Count == 0 
             ? 0
             : Math.Round(film.Ratings.Sum(r => r.Value) / film.Ratings.Count, 1);
-        return Result.Success(rating);
+        return Result.Success(film.SitesRating);
     }
 
     public async Task<Result<double>> GetUserRating(int filmId, int userId)

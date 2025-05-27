@@ -16,7 +16,7 @@ public class FilmsViewModel
     [RegularExpression(@"^\d{1,2}h\s\d{1,2}min$", ErrorMessage = "Format must be like '2h 30min'")]
     public string Duration { get; set; }
     public double? IMDBRating { get; set; }
-    public double? UsersRating { get; set; }
+    public double SitesRating { get; set; } = 0;
 
     public FilmEmployeeRoleViewModel? Director { get; set; }
 

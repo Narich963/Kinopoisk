@@ -48,7 +48,18 @@ public class DetailsModel : PageModel
             _logger.LogError(filmDto.Error);
             return NotFound();
         }
+
         Film = _mapper.Map<FilmsViewModel>(filmDto.Value);
+
+        if (filmDto.Value.SitesRating == 0)
+        {
+            var sitesRatingResult = await _ratingService.CalculateSitesRating(filmDto.Value.Id);
+
+            if (sitesRatingResult.IsFailure)
+                Film.SitesRating = 0;
+            else
+                Film.SitesRating = sitesRatingResult.Value;
+        }
 
         return Page();
     }
@@ -101,21 +112,6 @@ public class DetailsModel : PageModel
         await _commentsService.SaveChangesAsync();
         return new JsonResult(new { success = true });
     }
-    public async Task<IActionResult> OnGetGetRatingAsync(int? filmId)
-    {
-        if (!filmId.HasValue)
-            return BadRequest("Film ID is required.");
-
-        var ratingResult = await _ratingService.GetFilmRating(filmId.Value);
-
-        if (ratingResult.IsFailure)
-        {
-            _logger.LogError(ratingResult.Error);
-            return BadRequest(ratingResult.Error);
-        }
-
-        return new JsonResult(ratingResult.Value);
-    }
     public async Task<IActionResult> OnGetGetUserRatingAsync(int? filmId)
     {
         if (!filmId.HasValue)
@@ -161,13 +157,15 @@ public class DetailsModel : PageModel
             result = await _ratingService.AddAsync(ratingDto);
         else
             result = await _ratingService.UpdateAsync(ratingDto);
-        
-        if (result.IsFailure)
+
+        var sitesRatingResult = await _ratingService.CalculateSitesRating(ratingDto.FilmId);
+
+        if (result.IsFailure || sitesRatingResult.IsFailure)
         {
             _logger.LogError(result.Error);
             return BadRequest(result.Error);
         }
         await _ratingService.SaveChangesAsync();
-        return new JsonResult(new { success = true });
+        return new JsonResult(new { success = true, newRating = sitesRatingResult.Value});
     }
 }

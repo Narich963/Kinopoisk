@@ -12,14 +12,16 @@ namespace Kinopoisk.MVC.Pages.Films;
 public class IndexModel : PageModel
 {
     private readonly IFilmService _filmService;
-   private readonly IOmdbService _omdbService;
+    private readonly IRatingService _ratingService;
+    private readonly IOmdbService _omdbService;
     private readonly IMapper _mapper;
 
-    public IndexModel(IFilmService filmService, IMapper mapper, IOmdbService omdbService)
+    public IndexModel(IFilmService filmService, IMapper mapper, IOmdbService omdbService, IRatingService ratingService)
     {
         _filmService = filmService;
         _mapper = mapper;
         _omdbService = omdbService;
+        _ratingService = ratingService;
     }
 
     public void OnGet()
@@ -32,6 +34,22 @@ public class IndexModel : PageModel
             return BadRequest("Model is null");
 
         var result = await _filmService.GetPagedAsync(model);
+
+        if (result.Data.Any(r => r.SitesRating == 0))
+        {
+            foreach (var film in result.Data)
+            {
+                var rating = await _ratingService.CalculateSitesRating(film.Id);
+                if (rating.IsSuccess)
+                {
+                    film.SitesRating = rating.Value;
+                }
+                else
+                {
+                    film.SitesRating = 0;
+                }
+            }
+        }
 
         var filmsPaged = new DataTablesResult<FilmsViewModel>
         {

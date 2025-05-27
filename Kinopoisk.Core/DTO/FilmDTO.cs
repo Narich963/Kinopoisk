@@ -11,7 +11,7 @@ public class FilmDTO
     public DateTime PublishDate { get; set; }
     public double Duration { get; set; }
     public double? IMDBRating { get; set; }
-    public double? UsersRating { get; set; }
+    public double SitesRating { get; set; } = 0;
     public int CountryId { get; set; }
 
     public CountryDTO Country { get; set; }

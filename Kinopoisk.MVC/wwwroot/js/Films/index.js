@@ -57,7 +57,7 @@ $(document).ready(function () {
             },
             { data: 'duration' },
             { data: 'imdbRating' },
-            { data: 'usersRating' },
+            { data: 'sitesRating' },
             {
                 data: 'director.filmEmployee.name'
             },
