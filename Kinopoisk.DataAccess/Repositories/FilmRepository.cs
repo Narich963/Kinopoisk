@@ -32,7 +32,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             query = query.Where(q => q.Name.ToLower().Contains(filter.Name));
 
         if (!string.IsNullOrEmpty(filter.Year))
-            query = query.Where(q => q.PublishDate.Year.ToString().Contains(filter.Year));
+            query = query.Where(q => q.PublishDate.Value.Year.ToString().Contains(filter.Year));
 
         if (!string.IsNullOrEmpty(filter.Country))
             query = query.Where(q => q.Country.Name.ToLower().Contains(filter.Country.ToLower()));
@@ -50,7 +50,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         {
             string searchValue = filter.Search.Value.ToLower();
             query = query.Where(f => f.Name.ToLower().Contains(searchValue) ||
-                                     f.PublishDate.Year.ToString().Contains(searchValue) ||
+                                     f.PublishDate.Value.Year.ToString().Contains(searchValue) ||
                                      f.Country.Name.ToLower().Contains(searchValue) ||
                                      f.Employees.Any(e => e.FilmEmployee.Name.ToLower().Contains(searchValue)));
         }

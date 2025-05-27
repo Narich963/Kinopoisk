@@ -12,7 +12,7 @@ public class Film
 
     [MaxLength(500)]
     public string? Description { get; set; }
-    public DateTime PublishDate { get; set; }
+    public DateTime? PublishDate { get; set; }
     public double Duration { get; set; }
     public double? IMDBRating { get; set; }
 

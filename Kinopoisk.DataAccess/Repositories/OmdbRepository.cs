@@ -9,49 +9,31 @@ namespace Kinopoisk.DataAccess.Repositories;
 
 public class OmdbRepository : IOmdbRepository
 {
-    private readonly HttpClient _httpClient;
     private readonly KinopoiskContext _context;
-    private readonly string apiKey = "2bafad4f";
-    private readonly string apiUrl = "https://www.omdbapi.com/";
 
-    public OmdbRepository(HttpClient httpClient, KinopoiskContext context)
+    public OmdbRepository(KinopoiskContext context)
     {
-        _httpClient = httpClient;
         _context = context;
     }
 
-    public async Task<Result<Film>> ImportFilm(string idOrTitle)
+    public async Task<Result<Film>> ImportFilm(OmdbResponse omdbResponse)
     {
-        var urlById = $"{apiUrl}?i={Uri.EscapeDataString(idOrTitle)}&apikey={apiKey}";
-        var urlByTitle = $"{apiUrl}?t={Uri.EscapeDataString(idOrTitle)}&apikey={apiKey}";
-
-        var response = await _httpClient.GetAsync(urlById);
-
-        var json = await response.Content.ReadAsStringAsync();
-        var omdbResponse = JsonSerializer.Deserialize<OmdbResponse>(json, new JsonSerializerOptions
+        DateTime? releaseDate = null;
+        if (DateTime.TryParse(omdbResponse.Released, out var parsedDate))
         {
-            PropertyNameCaseInsensitive = true
-        });
-
-        if (omdbResponse == null || string.Equals(omdbResponse.Response, "False", StringComparison.OrdinalIgnoreCase))
-        {
-            response = await _httpClient.GetAsync(urlByTitle);
-            json = await response.Content.ReadAsStringAsync();
-
-            omdbResponse = JsonSerializer.Deserialize<OmdbResponse>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            if (omdbResponse == null || string.Equals(omdbResponse.Response, "False", StringComparison.OrdinalIgnoreCase))
-            {
-                return Result.Failure<Film>("Failed to fetch data from OMDb API.");
-            }
+            releaseDate = parsedDate;
         }
 
-        if (await _context.Films.AnyAsync(f => f.Name == omdbResponse.Title && f.PublishDate == Convert.ToDateTime(omdbResponse.Released)))       
-            return Result.Failure<Film>("Film already exists in the database.");
-        
+        if (releaseDate.HasValue)
+        {
+            if (await _context.Films.AnyAsync(f => f.Name == omdbResponse.Title && f.PublishDate == releaseDate.Value))  
+                return Result.Failure<Film>("Film already exists in the database.");
+        }
+        else
+        {
+            if (await _context.Films.AnyAsync(f => f.Name == omdbResponse.Title))
+                return Result.Failure<Film>("Film already exists in the database.");
+        }
 
         var genresResponse = omdbResponse.Genre?.Split(',').Select(g => g.Trim()).ToList();
         var genres = new List<FilmGenre>();
@@ -111,7 +93,7 @@ public class OmdbRepository : IOmdbRepository
         var film = new Film
         {
             Name = omdbResponse.Title,
-            PublishDate = Convert.ToDateTime(omdbResponse.Released),
+            PublishDate = DateTime.TryParse(omdbResponse.Released, out var date) ? date : null,
             Description = omdbResponse.Plot,
             Poster = omdbResponse.Poster,
             IMDBRating = double.TryParse(omdbResponse.imdbRating, out var rating) ? rating : (double?)null,
