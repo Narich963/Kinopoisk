@@ -11,5 +11,4 @@ public class FilmEmployeeRoleDTO
     public FilmEmployeeDTO? FilmEmployee { get; set; }
 
     public int FilmId { get; set; }
-    //public FilmDTO? Film { get; set; }
 }
