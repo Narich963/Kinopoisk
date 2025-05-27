@@ -96,4 +96,8 @@ public abstract class BaseService<TEntity, TDto, TRequest> : IService<TDto, TReq
         return Result.Failure(result.Error);
     }
 
+    public async Task SaveChangesAsync()
+    {
+        await _repository.SaveChangesAsync();
+    }
 }

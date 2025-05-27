@@ -50,6 +50,7 @@ public class IndexModel : PageModel
         if (result.IsFailure)
             return BadRequest(result.Error);
 
+        await _filmService.SaveChangesAsync();
         return new JsonResult(new { success = true });
     }
 

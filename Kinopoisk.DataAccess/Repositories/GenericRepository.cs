@@ -93,7 +93,6 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
             return Result.Failure<T>("Entity is null");
 
         await _context.AddAsync(entity);
-        await _context.SaveChangesAsync();
         return Result.Success(entity);
     }
 
@@ -103,7 +102,6 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
             return Result.Failure<T>("Entity is null");
 
         _context.Update(entity);
-        await _context.SaveChangesAsync();
         return Result.Success(entity);
     }
 
@@ -114,8 +112,11 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
             return Result.Failure("Entity not found");
 
         _context.Set<T>().Remove(entity);
-        await _context.SaveChangesAsync();
         return Result.Success();
+    }
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
     }
     protected string ToPascaleCase(string str)
     {

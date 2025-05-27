@@ -81,12 +81,13 @@ public class AddOrEditModel : PageModel
             result = await _filmService.AddAsync(film);
         else
             result = await _filmService.UpdateAsync(film);
-        
+
         if (result.IsFailure)
         {
             ModelState.AddModelError(string.Empty, result.Error);
             return Page();
         }
+        await _filmService.SaveChangesAsync();
         return RedirectToPage("./Index");
     }
 }

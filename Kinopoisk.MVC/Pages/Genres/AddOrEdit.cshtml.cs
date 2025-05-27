@@ -61,6 +61,7 @@ public class AddOrEditModel : PageModel
             ModelState.AddModelError(string.Empty, result.Error);
             return Page();
         }
+        await _genreService.SaveChangesAsync();
         return RedirectToPage("./Index");
     }
 }

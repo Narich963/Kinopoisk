@@ -16,4 +16,5 @@ public interface IRepository<T, TRequest>
     Task<Result<T>> AddAsync(T entity);
     Task<Result<T>> UpdateAsync(T entity);
     Task<Result> DeleteAsync(int id);
+    Task SaveChangesAsync();
 }
