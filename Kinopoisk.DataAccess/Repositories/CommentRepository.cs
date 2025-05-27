@@ -22,6 +22,25 @@ public class CommentRepository : GenericRepository<Comment, CommentFilter>, ICom
             .Where(q => q.FilmId == filter.FilmId)
             .AsQueryable();
 
+        Order(filter, query);
+        Search(filter, query);
+
+        return await base.GetPagedAsync(filter, query);
+    }
+
+    #region Search and order
+    public void Search(CommentFilter filter, IQueryable<Comment> query)
+    {
+        if (!string.IsNullOrEmpty(filter.Search?.Value))
+        {
+            string searchValue = filter.Search.Value.ToLower();
+            query = query.Where(c => c.Text.ToLower().Contains(searchValue)
+                || c.User.UserName.Contains(searchValue)
+                || c.CreatedAt.ToString().ToLower().Contains(searchValue));
+        }
+    }
+    public void Order(CommentFilter filter, IQueryable<Comment> query)
+    {
         Expression<Func<Comment, object>> orderBy = null;
 
         if (filter.Order != null && filter.Order.Count > 0)
@@ -42,15 +61,6 @@ public class CommentRepository : GenericRepository<Comment, CommentFilter>, ICom
                 ? query.OrderBy(orderBy)
                 : query.OrderByDescending(orderBy);
         }
-
-        if (!string.IsNullOrEmpty(filter.Search?.Value))
-        {
-            string searchValue = filter.Search.Value.ToLower();
-            query = query.Where(c => c.Text.ToLower().Contains(searchValue)
-                || c.User.UserName.Contains(searchValue)
-                || c.CreatedAt.ToString().ToLower().Contains(searchValue));
-        }
-
-        return await base.GetPagedAsync(filter, query);
     }
+    #endregion
 }

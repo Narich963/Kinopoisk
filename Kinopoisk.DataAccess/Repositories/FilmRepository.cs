@@ -5,6 +5,7 @@ using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.MVC.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
@@ -28,66 +29,9 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             .Include(f => f.Country)
             .AsQueryable();
 
-        if (!string.IsNullOrEmpty(filter.Name))
-            query = query.Where(q => q.Name.ToLower().Contains(filter.Name));
-
-        if (!string.IsNullOrEmpty(filter.Year))
-            query = query.Where(q => q.PublishDate.Value.Year.ToString().Contains(filter.Year));
-
-        if (!string.IsNullOrEmpty(filter.Country))
-            query = query.Where(q => q.Country.Name.ToLower().Contains(filter.Country.ToLower()));
-
-        if (!string.IsNullOrEmpty(filter.Actor))
-            query = query.Where(q => q.Employees
-                .Any(e => !e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(filter.Actor.ToLower())));
-
-        if (!string.IsNullOrEmpty(filter.Director))
-            query = query.Where(q => q.Employees
-                .Any(e => e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(filter.Director.ToLower())));
-
-
-        if (!string.IsNullOrEmpty(filter.Search?.Value))
-        {
-            string searchValue = filter.Search.Value.ToLower();
-            query = query.Where(f => f.Name.ToLower().Contains(searchValue) ||
-                                     f.PublishDate.Value.Year.ToString().Contains(searchValue) ||
-                                     f.Country.Name.ToLower().Contains(searchValue) ||
-                                     f.Employees.Any(e => e.FilmEmployee.Name.ToLower().Contains(searchValue)));
-        }
-
-        Expression<Func<Film, object>> orderBy = null;
-
-        if (filter.Order != null && filter.Order.Count > 0)
-        {
-            var order = filter.Order[0];
-            var columnName = filter.Columns[order.Column].Data;
-            switch (columnName)
-            {
-                case "country":
-                case "countryFlagLink":
-                    orderBy = f => f.Country.Name;
-                    break;
-                case "imdbRating":
-                    orderBy = f => f.IMDBRating;
-                    break;
-                case "usersRating":
-                    orderBy = f => f.Ratings.Average(r => r.Value);
-                    break;
-                case "directorName":
-                    orderBy = f => f.Employees
-                        .Where(e => e.IsDirector)
-                        .Select(e => e.FilmEmployee.Name)
-                        .FirstOrDefault();
-                    break;
-                default:
-                    orderBy = f => EF.Property<Film>(f, ToPascaleCase(columnName));
-                    break;
-            };
-
-            query = order.Dir == "asc" 
-                ? query.OrderBy(orderBy) 
-                : query.OrderByDescending(orderBy);
-        }
+        Filter(filter, query);
+        Search(filter, query);
+        Order(filter, query);
 
         return await base.GetPagedAsync(filter, query);
     }
@@ -148,4 +92,78 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         await _context.SaveChangesAsync();
         return Result.Success();
     }
+
+    #region Filter and Order Methods
+    public void Filter(FilmFilter filter, IQueryable<Film> query)
+    {
+        // By name
+        if (!string.IsNullOrEmpty(filter.Name))
+            query = query.Where(q => q.Name.ToLower().Contains(filter.Name));
+
+        // By year
+        if (!string.IsNullOrEmpty(filter.Year))
+            query = query.Where(q => q.PublishDate.Value.Year.ToString().Contains(filter.Year));
+
+        // By country
+        if (!string.IsNullOrEmpty(filter.Country))
+            query = query.Where(q => q.Country.Name.ToLower().Contains(filter.Country.ToLower()));
+
+        // By actors
+        if (!string.IsNullOrEmpty(filter.Actor))
+            query = query.Where(q => q.Employees
+                .Any(e => !e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(filter.Actor.ToLower())));
+
+        // By director
+        if (!string.IsNullOrEmpty(filter.Director))
+            query = query.Where(q => q.Employees
+                .Any(e => e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(filter.Director.ToLower())));
+    }
+    public void Search(FilmFilter filter, IQueryable<Film> query)
+    {
+        if (!string.IsNullOrEmpty(filter.Search?.Value))
+        {
+            string searchValue = filter.Search.Value.ToLower();
+            query = query.Where(f => f.Name.ToLower().Contains(searchValue) ||  
+                                     f.PublishDate.Value.Year.ToString().Contains(searchValue) ||
+                                     f.Country.Name.ToLower().Contains(searchValue) ||
+                                     f.Employees.Any(e => e.FilmEmployee.Name.ToLower().Contains(searchValue)));
+        }
+    }
+    public void Order(FilmFilter filter, IQueryable<Film> query)
+    {
+        Expression<Func<Film, object>> orderBy = null;
+
+        if (filter.Order != null && filter.Order.Count > 0)
+        {
+            var order = filter.Order[0];
+            var columnName = filter.Columns[order.Column].Data;
+            switch (columnName)
+            {
+                case "country":
+                case "countryFlagLink":
+                    orderBy = f => f.Country.Name;
+                    break;
+                case "imdbRating":
+                    orderBy = f => f.IMDBRating;
+                    break;
+                case "usersRating":
+                    orderBy = f => f.Ratings.Average(r => r.Value);
+                    break;
+                case "directorName":
+                    orderBy = f => f.Employees
+                        .Where(e => e.IsDirector)
+                        .Select(e => e.FilmEmployee.Name)
+                        .FirstOrDefault();
+                    break;
+                default:
+                    orderBy = f => EF.Property<Film>(f, ToPascaleCase(columnName));
+                    break;
+            };
+
+            query = order.Dir == "asc"
+                ? query.OrderBy(orderBy)
+                : query.OrderByDescending(orderBy);
+        }
+    }
+    #endregion
 }

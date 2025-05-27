@@ -4,7 +4,6 @@ using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.MVC.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq.Expressions;
 
 namespace Kinopoisk.DataAccess.Repositories;
@@ -20,6 +19,7 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
         _context = context;
     }
 
+    #region Get Methods
     public async Task<Result<T>> GetByIdAsync(int id, IQueryable<T> query = null, params Expression<Func<T, object>>[] includes)
     {
         if (query == null)
@@ -51,32 +51,16 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
         if (query == null)
         {
             query = _context.Set<T>().AsQueryable();
-
-            if (model.Search != null && !string.IsNullOrEmpty(model.Search.Value))
-            {
-                string searchValue = model.Search.Value.ToLower();
-                query = query.Where(e => EF.Property<string>(e, "Name").ToLower().Contains(searchValue));
-            }
-
-            if (model.Order != null && model.Order.Count > 0)
-            {
-                var order = model.Order[0];
-                string columnName = ToPascaleCase(model.Columns[order.Column].Data);
-                bool isDescending = order.Dir.ToLower() == "desc";
-                query = isDescending 
-                    ? query.OrderByDescending(e => EF.Property<object>(e, ToPascaleCase(columnName))) 
-                    : query.OrderBy(e => EF.Property<object>(e, ToPascaleCase(columnName)));
-            }
+            query = SearchByName(model, query);
+            query = Order(model, query);
         }
+
         List<T> data = null;
 
         if (model.Length == 0)
             data = await query.ToListAsync();
         else
-            data = await query
-                .Skip((model.Start / model.Length) * model.Length)
-                .Take(model.Length)
-                .ToListAsync();
+            data = await Paginate(model, query, data);
 
         return new DataTablesResult<T>
         {
@@ -86,7 +70,9 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
             Data = data
         };
     }
+    #endregion
 
+    #region CRUD Methods
     public async Task<Result<T>> AddAsync(T entity)
     {
         if (entity == null)
@@ -114,10 +100,50 @@ public class GenericRepository<T, TRequest> : IRepository<T, TRequest>
         _context.Set<T>().Remove(entity);
         return Result.Success();
     }
+    #endregion
+
+    #region Filter, Sort and Paginate
+    private static async Task<List<T>> Paginate(TRequest model, IQueryable<T> query, List<T> data)
+    {
+        data = await query
+            .Skip((model.Start / model.Length) * model.Length)
+            .Take(model.Length)
+            .ToListAsync();
+        return data;
+    }
+
+    private IQueryable<T> Order(TRequest model, IQueryable<T> query)
+    {
+        if (model.Order != null && model.Order.Count > 0)
+        {
+            var order = model.Order[0];
+            string columnName = ToPascaleCase(model.Columns[order.Column].Data);
+            bool isDescending = order.Dir.ToLower() == "desc";
+            query = isDescending
+                ? query.OrderByDescending(e => EF.Property<object>(e, ToPascaleCase(columnName)))
+                : query.OrderBy(e => EF.Property<object>(e, ToPascaleCase(columnName)));
+        }
+
+        return query;
+    }
+
+    private static IQueryable<T> SearchByName(TRequest model, IQueryable<T> query)
+    {
+        if (model.Search != null && !string.IsNullOrEmpty(model.Search.Value))
+        {
+            string searchValue = model.Search.Value.ToLower();
+            query = query.Where(e => EF.Property<string>(e, "Name").ToLower().Contains(searchValue));
+        }
+
+        return query;
+    }
+    #endregion
+
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();
     }
+
     protected string ToPascaleCase(string str)
     {
         if (string.IsNullOrEmpty(str))
