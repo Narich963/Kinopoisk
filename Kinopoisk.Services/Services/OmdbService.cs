@@ -29,8 +29,11 @@ public class OmdbService : IOmdbService
         var urlById = $"{API_URL}?i={Uri.EscapeDataString(idOrTitle)}&apikey={API_KEY}";
         var urlByTitle = $"{API_URL}?t={Uri.EscapeDataString(idOrTitle)}&apikey={API_KEY}";
 
-        var response = await _httpClient.GetAsync(urlById);
+        var response = await _httpClient.GetAsync(urlByTitle);
 
+        if (!response.IsSuccessStatusCode)
+            return Result.Failure<FilmDTO>($"Failed to fetch data from OMDb API. Status code: {response.StatusCode}");
+        
         var json = await response.Content.ReadAsStringAsync();
         var omdbResponse = JsonSerializer.Deserialize<OmdbResponse>(json, new JsonSerializerOptions
         {
@@ -39,7 +42,7 @@ public class OmdbService : IOmdbService
 
         if (omdbResponse == null || string.Equals(omdbResponse.Response, "False", StringComparison.OrdinalIgnoreCase))
         {
-            response = await _httpClient.GetAsync(urlByTitle);
+            response = await _httpClient.GetAsync(urlById);
             json = await response.Content.ReadAsStringAsync();
 
             omdbResponse = JsonSerializer.Deserialize<OmdbResponse>(json, new JsonSerializerOptions

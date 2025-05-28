@@ -49,17 +49,34 @@ public class AddOrEditModel : PageModel
         if (!ModelState.IsValid)
             return Page();
 
-        var deleteGenres = Film.Genres.Where(g => g.IsForDeleting);
-        foreach (var genre in deleteGenres)
+        bool isAddGenres = Film.SelectedGenreIds.Count > Film.Genres.Count;
+
+        List<int> genreIds = new();
+        if (isAddGenres)
         {
-            var genreResult = await _filmService.RemoveGenreFromFilm(Film.Id, genre.GenreId);
+            genreIds = Film.SelectedGenreIds
+                .Except(Film.Genres.Select(g => g.GenreId))
+                .ToList();
+        }
+        else
+        {
+            genreIds = Film.Genres.Select(g => g.GenreId)
+                .Except(Film.SelectedGenreIds)
+                .ToList();
+        }
+
+        foreach (var genreId in genreIds)
+        {
+            var genreResult = isAddGenres 
+                ? await _filmService.AddGenreToFilm(Film.Id, genreId) 
+                : await _filmService.RemoveGenreFromFilm(Film.Id, genreId);
+
             if (genreResult.IsFailure)
             {
                 ModelState.AddModelError(string.Empty, genreResult.Error);
                 return Page();
             }
         }
-        Film.Genres = Film.Genres.Where(g => !g.IsForDeleting).ToList();
 
         var deleteActors = Film.Actors.Where(a => a.IsForDeleting);
         foreach (var actor in deleteActors)

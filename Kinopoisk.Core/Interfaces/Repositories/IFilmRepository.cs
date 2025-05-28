@@ -10,4 +10,5 @@ public interface IFilmRepository : IRepository<Film, FilmFilter>
     Task<Result<Film>> GetByIdAsync(int id);
     Task<Result> RemoveEmployeeFromFilm(int filmId, int employeeId);
     Task<Result> RemoveGenreFromFilm(int filmId, int genreId);
+    Task<Result> AddGenreToFilm(int filmId, int genreId);
 }

@@ -61,4 +61,16 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
 
         return Result.Success();
     }
+
+    public async Task<Result> AddGenreToFilm(int? filmId, int? genreId)
+    {
+        if (!filmId.HasValue || !genreId.HasValue)
+            return Result.Failure("Film ID or Genre ID is null");
+
+        var genre = await _repository.AddGenreToFilm(filmId.Value, genreId.Value);
+
+        if (genre.IsFailure)
+            return Result.Failure(genre.Error);
+        return Result.Success();
+    }
 }

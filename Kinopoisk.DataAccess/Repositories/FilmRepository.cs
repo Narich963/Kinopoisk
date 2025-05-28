@@ -93,6 +93,21 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         return Result.Success();
     }
 
+    public async Task<Result> AddGenreToFilm(int filmId, int genreId)
+    {
+        if (await _context.FilmGenres.AnyAsync(fg => fg.FilmId == filmId && fg.GenreId == genreId))
+            return Result.Failure("Genre already exists in film");
+
+        var filmGenre = new FilmGenre
+        {
+            FilmId = filmId,
+            GenreId = genreId
+        };
+
+        await _context.FilmGenres.AddAsync(filmGenre);
+        return Result.Success();
+    }
+
     #region Filter and Order Methods
     public void Filter(FilmFilter filter, IQueryable<Film> query)
     {
