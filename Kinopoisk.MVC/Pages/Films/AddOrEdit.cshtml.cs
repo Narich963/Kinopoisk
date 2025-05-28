@@ -62,60 +62,35 @@ public class AddOrEditModel : PageModel
         }
 
         bool isAddGenres = Film.SelectedGenreIds.Count > Film.Genres.Count;
-
-        List<int> genreIds = new();
-        if (isAddGenres)
-        {
-            genreIds = Film.SelectedGenreIds
+        var genreIds = isAddGenres
+            ? Film.SelectedGenreIds
                 .Except(Film.Genres.Select(g => g.GenreId))
-                .ToList();
-        }
-        else
-        {
-            genreIds = Film.Genres.Select(g => g.GenreId)
+                .ToList()
+            : Film.Genres.Select(g => g.GenreId)
                 .Except(Film.SelectedGenreIds)
                 .ToList();
-        }
 
-        foreach (var genreId in genreIds)
+        var genresResult = await _filmService.UpdateFilmGenres(genreIds, Film.Id, isAddGenres);
+        if (genresResult.IsFailure)
         {
-            var genreResult = isAddGenres 
-                ? await _filmService.AddGenreToFilm(Film.Id, genreId) 
-                : await _filmService.RemoveGenreFromFilm(Film.Id, genreId);
-
-            if (genreResult.IsFailure)
-            {
-                ModelState.AddModelError(string.Empty, genreResult.Error);
-                return Page();
-            }
+            ModelState.AddModelError(string.Empty, genresResult.Error);
+            return Page();
         }
 
         bool isAddActors = Film.SelectedActorIds.Count > Film.Actors.Count;
-
-        List<int> actorIds = new();
-        if (isAddActors)
-        {
-            actorIds = Film.SelectedActorIds
+        var actorIds = isAddActors
+            ? Film.SelectedActorIds
                 .Except(Film.Actors.Select(a => a.FilmEmployeeId))
-                .ToList();
-        }
-        else
-        {
-            actorIds = Film.Actors.Select(a => a.FilmEmployeeId)
+                .ToList()
+            : Film.Actors.Select(a => a.FilmEmployeeId)
                 .Except(Film.SelectedActorIds)
                 .ToList();
-        }
-        foreach (var actorId in actorIds)
-        {
-            var actorResult = isAddActors
-                ? await _filmService.AddActorToFilm(Film.Id, actorId)
-                : await _filmService.RemoveEmployeeFromFilm(Film.Id, actorId);
 
-            if (actorResult.IsFailure)
-            {
-                ModelState.AddModelError(string.Empty, actorResult.Error);
-                return Page();
-            }
+        var actorsResult = await _filmService.UpdateFilmActors(actorIds, Film.Id, isAddActors);
+        if (actorsResult.IsFailure)
+        {
+            ModelState.AddModelError(string.Empty, actorsResult.Error);
+            return Page();
         }
 
         await _filmService.SaveChangesAsync();

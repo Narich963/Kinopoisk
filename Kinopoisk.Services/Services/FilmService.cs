@@ -38,50 +38,39 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
             : Result.Success(filmDto);
     }
 
-    public async Task<Result> RemoveEmployeeFromFilm(int? filmId, int? employeeId)
+    public async Task<Result> UpdateFilmActors(List<int> actorIds, int? filmId, bool isAddAction)
     {
-        if (!filmId.HasValue || !employeeId.HasValue)
+        if (!filmId.HasValue)
             return Result.Failure("Film ID or Employee ID is null");
 
-        var employeeRole = await _repository.RemoveEmployeeFromFilm(filmId.Value, employeeId.Value);
-        if (employeeRole.IsFailure)
-            return Result.Failure(employeeRole.Error);
+        foreach (var actorId in actorIds)
+        {
+            var result = isAddAction
+                ? await _repository.AddActorToFilm(filmId.Value, actorId)
+                : await _repository.RemoveEmployeeFromFilm(filmId.Value, actorId);
+
+            if (result.IsFailure)
+                return Result.Failure(result.Error);
+        }
 
         return Result.Success();
     }
-    public async Task<Result> AddActorToFilm(int? filmId, int? employeeId)
+
+    public async Task<Result> UpdateFilmGenres(List<int> genreIds, int? filmId, bool isAddAction)
     {
-        if (!filmId.HasValue || !employeeId.HasValue)
-            return Result.Failure("Film ID or Action ID is null");
-
-        var result = await _repository.AddActorToFilm(filmId.Value, employeeId.Value);
-
-        if (result.IsFailure)
-            return Result.Failure(result.Error);
-        return Result.Success();
-    }
-
-    public async Task<Result> RemoveGenreFromFilm(int? filmId, int? genreId)
-    {
-        if (!filmId.HasValue || !genreId.HasValue)
+        if (!filmId.HasValue)
             return Result.Failure("Film ID or Genre ID is null");
 
-        var genre = await _repository.RemoveGenreFromFilm(filmId.Value, genreId.Value);
-        if (genre.IsFailure)
-            return Result.Failure(genre.Error);
+        foreach (var genreId in genreIds)
+        {
+            var result = isAddAction
+                ? await _repository.AddGenreToFilm(filmId.Value, genreId)
+                : await _repository.RemoveGenreFromFilm(filmId.Value, genreId);
 
-        return Result.Success();
-    }
+            if (result.IsFailure)
+                    return Result.Failure(result.Error);
+        }
 
-    public async Task<Result> AddGenreToFilm(int? filmId, int? genreId)
-    {
-        if (!filmId.HasValue || !genreId.HasValue)
-            return Result.Failure("Film ID or Genre ID is null");
-
-        var genre = await _repository.AddGenreToFilm(filmId.Value, genreId.Value);
-
-        if (genre.IsFailure)
-            return Result.Failure(genre.Error);
         return Result.Success();
     }
 }
