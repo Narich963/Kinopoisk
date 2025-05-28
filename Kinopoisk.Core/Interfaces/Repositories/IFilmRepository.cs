@@ -11,4 +11,5 @@ public interface IFilmRepository : IRepository<Film, FilmFilter>
     Task<Result> RemoveEmployeeFromFilm(int filmId, int employeeId);
     Task<Result> RemoveGenreFromFilm(int filmId, int genreId);
     Task<Result> AddGenreToFilm(int filmId, int genreId);
+    Task<Result> AddActorToFilm(int filmId, int employeeId);
 }

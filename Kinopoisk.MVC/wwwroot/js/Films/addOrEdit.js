@@ -38,55 +38,29 @@
         minimumInputLength: 1,
     });
 }
-function addAndRemoveGenre(genreIndex, genreUrl, genreClass, placeholder) {
-    console.log(`Adding genre with index: ${genreIndex}`);
-    $('#addGenreBtn').on('click', function () {
-        const newGenreHtml = `
-            <div class="row genre-entry mb-2" data-index="${genreIndex}">
-                <div class="col-md-10">
-                    <select name="Film.Genres[${genreIndex}].GenreID" class="form-select genre-select" data-index="${genreIndex}"></select>
-                </div>
-                <input type="hidden" name="Film.Genres[i].Name" value="@Model.Film.Genres[i].Name"/>
+function updateRolesBasedOnOrder() {
+    const filmId = document.getElementById("filmId").value
 
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-sm btn-danger remove-genre-btn">−</button>
-                </div>
-            </div>`;
-        $('#genresContainer').append(newGenreHtml);
-        initializeSelect2(genreUrl, genreClass, placeholder);
-        genreIndex++;
+    var selectedActors = [];
+    var selectData = $('.actor-select').select2('data'); 
+
+    $('.select2-selection__choice').each(function () {
+        var actorName = $(this).attr('title');
+
+        var match = selectData.find(d => d.text === actorName);
+        if (match) {
+            selectedActors.push(match.id);
+        }
     });
 
-    $('#genresContainer').on('click', '.remove-genre-btn', function () {
-        const entry = $(this).closest('.genre-entry')
-        entry.find('input[name$=".IsForDeleting"]').val('true');
-        entry.hide();
-    });
-}
-function addAndRemoveActor(actorIndex, actorUrl, actorClass, placeholder) {
-    $('#addActorBtn').on('click', function () {
-        const newActorHtml = `
-            <div class="row actor-entry mb-2" data-index="${actorIndex}">
-                <div class="col-md-6">
-                    <select name="Film.Actors[${actorIndex}].FilmEmployeeID" class="form-select actor-select" data-index="${actorIndex}"></select>
-                </div>
-                <div class="col-md-4">
-                    <input type="number" name="Film.Actors[${actorIndex}].Role" class="form-control form-control-sm" placeholder="Role importance" required />
-                </div>
-                <input type="hidden" name="Film.Actors[${actorIndex}].IsDirector" value="false"/>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-sm btn-danger remove-actor-btn">−</button>
-                </div>
-            </div>`;
+    var container = $('#actorRolesContainer');
+    container.empty();
 
-        $('#actorsContainer').append(newActorHtml);
-        initializeSelect2(actorUrl, actorClass, placeholder);
-        actorIndex++;
-    });
-    $('#actorsContainer').on('click', '.remove-actor-btn', function () {
-        const entry = $(this).closest('.actor-entry');
-        entry.find('input[name$=".IsForDeleting"]').val('true');
-        entry.hide();
+    selectedActors.forEach(function (actorId, index) {
+        container.append(`<input type="hidden" name="Film.Actors[${index}].FilmEmployeeId" value="${actorId}" />`);
+        container.append(`<input type="hidden" name="Film.Actors[${index}].Role" value="${index + 1}" />`);
+        container.append(`<input type="hidden" name="Film.Actors[${index}].FilmId" value="${filmId}" />`);
+        container.append(`<input type="hidden" name="Film.Actors[${index}].IsDirector" value="false" />`);
     });
 }
 $(document).ready(function () {
@@ -94,9 +68,6 @@ $(document).ready(function () {
     const actorClass = '.actor-select';
     const actorPlaceholder = 'Select an actor';
     initializeSelect2(actorUrl, actorClass, actorPlaceholder);
-
-    let actorIndex = parseInt(document.getElementById("actorsContainer").dataset.actorIndex) || 0;
-    addAndRemoveActor(actorIndex, actorUrl, actorClass, actorPlaceholder);
 
     const countryUrl = '/Countries/Index?handler=GetCountries';
     const countryClass = '.country-select';
@@ -108,7 +79,16 @@ $(document).ready(function () {
     const genrePlaceholder = 'Select a genre';
     initializeSelect2(genreUrl, genreClass, genrePlaceholder);
 
-    let genreIndex = parseInt(document.getElementById("genresContainer").dataset.genreIndex) || 0;
-    addAndRemoveGenre(genreIndex, genreUrl, genreClass, genrePlaceholder);
+    $('.select2-selection__rendered').sortable({
+        containment: 'parent',
+        update: function () {
+            updateRolesBasedOnOrder();
+        }
+    });
 
+    updateRolesBasedOnOrder();
+
+    $('#actorSelect').on('change', function () {
+        updateRolesBasedOnOrder();
+    });
 });

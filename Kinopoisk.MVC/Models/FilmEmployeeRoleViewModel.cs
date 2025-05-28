@@ -9,6 +9,4 @@ public class FilmEmployeeRoleViewModel
     public FilmEmployeeViewModel? FilmEmployee { get; set; }
 
     public int FilmId { get; set; }
-
-    public bool IsForDeleting { get; set; } = false;
 }

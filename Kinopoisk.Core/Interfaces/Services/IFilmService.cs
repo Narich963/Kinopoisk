@@ -11,6 +11,7 @@ public interface IFilmService : IService<FilmDTO, FilmFilter>
     Task<Result<FilmDTO>> GetByIdAsync(int? id);
     Task<IEnumerable<FilmDTO>> GetAllAsync();
     Task<Result> RemoveEmployeeFromFilm(int? filmId, int? employeeId);
+    Task<Result> AddActorToFilm(int? filmId, int? employeeId);
     Task<Result> RemoveGenreFromFilm(int? filmId, int? genreId);
     Task<Result> AddGenreToFilm(int? filmId, int? genreId);
 }

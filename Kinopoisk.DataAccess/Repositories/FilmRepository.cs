@@ -75,8 +75,29 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         if (employeeRole == null)
             return Result.Failure("Employee not found in film");
 
+        var existingEntity = _context.ChangeTracker.Entries<FilmEmployeeRole>()
+        .FirstOrDefault(e => e.Entity.FilmEmployeeID == employeeId && e.Entity.FilmId == filmId);
+
+        if (existingEntity != null)
+        {
+            _context.Entry(existingEntity.Entity).State = EntityState.Detached;
+        }
+
         _context.FilmEmployeeRoles.Remove(employeeRole);
-        await _context.SaveChangesAsync();
+        return Result.Success();
+    }
+    public async Task<Result> AddActorToFilm(int filmId, int employeeId)
+    {
+        if (await _context.FilmEmployeeRoles.AnyAsync(f => f.FilmId == filmId && f.FilmEmployeeID == employeeId))
+            return Result.Failure("Employee already exists in film");
+
+        var filmEmployeeRole = new FilmEmployeeRole
+        {
+            FilmId = filmId,
+            FilmEmployeeID = employeeId,
+            IsDirector = false
+        };
+        await _context.FilmEmployeeRoles.AddAsync(filmEmployeeRole);
         return Result.Success();
     }
 
@@ -89,7 +110,6 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             return Result.Failure("Genre not found in film");
 
         _context.FilmGenres.Remove(filmGenre);
-        await _context.SaveChangesAsync();
         return Result.Success();
     }
 

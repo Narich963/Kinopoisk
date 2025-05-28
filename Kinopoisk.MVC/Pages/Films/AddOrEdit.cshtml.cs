@@ -49,6 +49,18 @@ public class AddOrEditModel : PageModel
         if (!ModelState.IsValid)
             return Page();
 
+        var film = _mapper.Map<FilmDTO>(Film);
+
+        var result = Film.IsNew.Value 
+            ? await _filmService.AddAsync(film) 
+            : await _filmService.UpdateAsync(film);
+
+        if (result.IsFailure)
+        {
+            ModelState.AddModelError(string.Empty, result.Error);
+            return Page();
+        }
+
         bool isAddGenres = Film.SelectedGenreIds.Count > Film.Genres.Count;
 
         List<int> genreIds = new();
@@ -78,32 +90,34 @@ public class AddOrEditModel : PageModel
             }
         }
 
-        var deleteActors = Film.Actors.Where(a => a.IsForDeleting);
-        foreach (var actor in deleteActors)
+        bool isAddActors = Film.SelectedActorIds.Count > Film.Actors.Count;
+
+        List<int> actorIds = new();
+        if (isAddActors)
         {
-            var actorResult = await _filmService.RemoveEmployeeFromFilm(Film.Id, actor.FilmEmployeeId);
+            actorIds = Film.SelectedActorIds
+                .Except(Film.Actors.Select(a => a.FilmEmployeeId))
+                .ToList();
+        }
+        else
+        {
+            actorIds = Film.Actors.Select(a => a.FilmEmployeeId)
+                .Except(Film.SelectedActorIds)
+                .ToList();
+        }
+        foreach (var actorId in actorIds)
+        {
+            var actorResult = isAddActors
+                ? await _filmService.AddActorToFilm(Film.Id, actorId)
+                : await _filmService.RemoveEmployeeFromFilm(Film.Id, actorId);
+
             if (actorResult.IsFailure)
             {
                 ModelState.AddModelError(string.Empty, actorResult.Error);
                 return Page();
             }
         }
-        Film.Actors = Film.Actors.Where(a => !a.IsForDeleting).ToList();
 
-        var film = _mapper.Map<FilmDTO>(Film);
-
-        Result<FilmDTO> result = null;
-
-        if (Film.IsNew.Value)
-            result = await _filmService.AddAsync(film);
-        else
-            result = await _filmService.UpdateAsync(film);
-
-        if (result.IsFailure)
-        {
-            ModelState.AddModelError(string.Empty, result.Error);
-            return Page();
-        }
         await _filmService.SaveChangesAsync();
         return RedirectToPage("./Index");
     }

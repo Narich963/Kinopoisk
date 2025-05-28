@@ -26,6 +26,7 @@ public class FilmsViewModel
 
     public bool? IsNew { get; set; }
     public List<int> SelectedGenreIds { get; set; } = new();
+    public List<int> SelectedActorIds { get; set; } = new();
     public FilmsViewModel()
     {
         Genres = new();

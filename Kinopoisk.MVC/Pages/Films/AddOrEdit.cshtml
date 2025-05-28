@@ -6,6 +6,7 @@
 }
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" rel="stylesheet" />
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -64,25 +65,6 @@
                                 <input type="hidden" asp-for="Film.Genres[i].GenreId" />
                             }
 
-                            @* <div id="genresContainer" class="mb-3" data-genre-index="@Model.Film.Genres?.Count">
-                                @for (int i = 0; i < Model.Film.Genres?.Count; i++)
-                                {
-                                    <div class="row genre-entry mb-2" data-index="@i">
-                                        <div class="col-md-10">
-                                            <select asp-for="Film.Genres[i].GenreId" class="form-select genre-select" data-index="@i">
-                                                <option value="@Model.Film.Genres[i].GenreId" selected>
-                                                    @Model.Film.Genres[i].Genre.Name
-                                                </option>
-                                            </select>
-                                            <input type="hidden" asp-for="Film.Genres[i].FilmId" value="@Model.Film.Id"/>
-                                            <input type="hidden" asp-for="Film.Genres[i].IsForDeleting" value="false"/>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="button" class="btn btn-sm btn-danger remove-genre-btn">−</button>
-                                        </div>
-                                    </div>
-                                } 
-                            </div> *@
                             <span asp-validation-for="Film.Genres" class="text-danger"></span>
                             <button type="button" id="addGenreBtn" class="btn btn-sm btn-success">+ Add genre</button>
                         </div>
@@ -109,29 +91,28 @@
                         </div>
                         <div class="mb-3">
                             <label asp-for="Film.Actors" class="form-label"></label>
-                            <div id="actorsContainer" class="mb-3" data-actor-index="@Model.Film.Actors.Count">
+
+                            <select asp-for="Film.SelectedActorIds" class="form-select actor-select">
+                                @foreach (var actor in Model.Film.Actors)
+                                {
+                                    <option value="@actor.FilmEmployeeId" selected>
+                                        @actor.FilmEmployee?.Name
+                                    </option>
+                                }
+                            </select>
+
+
+                            <div id="actorRolesContainer">
                                 @for (int i = 0; i < Model.Film.Actors.Count; i++)
                                 {
-                                    <div class="row actor-entry mb-2" data-index="@i">
-                                        <div class="col-md-6">
-                                            <select asp-for="Film.Actors[@i].FilmEmployeeId" class="form-select actor-select" data-index="@i">
-                                                <option value="@Model.Film.Actors[i].FilmEmployeeId" selected>
-                                                    @Model.Film.Actors[i].FilmEmployee?.Name
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="number" asp-for="Film.Actors[@i].Role" class="form-control form-control-sm" value="@Model.Film.Actors[i].Role" placeholder="Role importance" required />
-                                        </div>
-                                        <input type="hidden" asp-for="Film.Actors[i].IsDirector" value="false"/>
-                                        <input type="hidden" asp-for="Film.Actors[i].FilmId" value="@Model.Film.Id"/>
-                                        <input type="hidden" asp-for="Film.Actors[i].IsForDeleting" value="false"/>
-                                        <div class="col-md-2">
-                                            <button type="button" class="btn btn-sm btn-danger remove-actor-btn">−</button>
-                                        </div>
-                                    </div>
+                                    <input type="hidden" asp-for="Film.Actors[@i].FilmId" value="@Model.Film.Id" />
+                                    <input type="hidden" asp-for="Film.Actors[@i].FilmEmployeeId" value="@Model.Film.Actors[i].FilmEmployeeId" />
+                                    <input type="hidden" asp-for="Film.Actors[@i].IsDirector" value="false" />
                                 }
                             </div>
+
+                            <input type="hidden" id="filmId" value="@Model.Film.Id" />
+
                             <span asp-validation-for="Film.Actors" class="text-danger"></span>
                             <button type="button" id="addActorBtn" class="btn btn-sm btn-success">+ Add actor</button>
                         </div>
@@ -153,6 +134,7 @@
 </div>
 
 @section Scripts{
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="~/js/Films/addOrEdit.js"></script>
 }
