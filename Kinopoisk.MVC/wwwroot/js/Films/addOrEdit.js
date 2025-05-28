@@ -1,4 +1,5 @@
-﻿function initializeSelect2(url, selectClass, placeholder) {
+﻿function initializeSelect2(url, selectClass) {
+    const placeholder = $(selectClass).data('placeholder') || 'Select an option';
     $(selectClass).select2({
         ajax: {
             url: url,
@@ -66,18 +67,15 @@ function updateRolesBasedOnOrder() {
 $(document).ready(function () {
     const actorUrl = '/FilmEmployees/Index?handler=GetEmployees';
     const actorClass = '.actor-select';
-    const actorPlaceholder = 'Select an actor';
-    initializeSelect2(actorUrl, actorClass, actorPlaceholder);
+    initializeSelect2(actorUrl, actorClass);
 
     const countryUrl = '/Countries/Index?handler=GetCountries';
     const countryClass = '.country-select';
-    const countryPlaceholder = 'Select a country';
-    initializeSelect2(countryUrl, countryClass, countryPlaceholder);
+    initializeSelect2(countryUrl, countryClass);
 
     const genreUrl = '/Genres/Index?handler=GetGenres';
     const genreClass = '.genre-select';
-    const genrePlaceholder = 'Select a genre';
-    initializeSelect2(genreUrl, genreClass, genrePlaceholder);
+    initializeSelect2(genreUrl, genreClass);
 
     $('.select2-selection__rendered').sortable({
         containment: 'parent',

@@ -50,7 +50,7 @@
                         <div class="mb-3">
                             <label asp-for="Film.Genres" class="form-label"></label>
 
-                            <select asp-for="Film.SelectedGenreIds" class="form-select genre-select">
+                            <select asp-for="Film.SelectedGenreIds" data-placeholder="Choose genres" class="form-select genre-select">
                                 @foreach (var genre in Model.Film.Genres)
                                 {
                                     <option value="@genre.GenreId" selected>
@@ -66,7 +66,6 @@
                             }
 
                             <span asp-validation-for="Film.Genres" class="text-danger"></span>
-                            <button type="button" id="addGenreBtn" class="btn btn-sm btn-success">+ Add genre</button>
                         </div>
                         <div class="mb-3">
                             <label asp-for="Film.CountryId" class="form-label"></label>
@@ -92,7 +91,7 @@
                         <div class="mb-3">
                             <label asp-for="Film.Actors" class="form-label"></label>
 
-                            <select asp-for="Film.SelectedActorIds" class="form-select actor-select">
+                            <select asp-for="Film.SelectedActorIds" data-placeholder="Choose actors" class="form-select actor-select">
                                 @foreach (var actor in Model.Film.Actors)
                                 {
                                     <option value="@actor.FilmEmployeeId" selected>
@@ -114,7 +113,6 @@
                             <input type="hidden" id="filmId" value="@Model.Film.Id" />
 
                             <span asp-validation-for="Film.Actors" class="text-danger"></span>
-                            <button type="button" id="addActorBtn" class="btn btn-sm btn-success">+ Add actor</button>
                         </div>
 
                         <input type="hidden" asp-for="Film.Id" />
