@@ -16,12 +16,14 @@ public class OmdbService : IOmdbService
     private readonly HttpClient _httpClient;
     private const string API_KEY = "2bafad4f";
     private const string API_URL = "https://www.omdbapi.com/";
+    private readonly IUnitOfWork _uow;
 
-    public OmdbService(IOmdbRepository repository, IMapper mapper, HttpClient httpClient)
+    public OmdbService(IOmdbRepository repository, IMapper mapper, HttpClient httpClient, IUnitOfWork uow)
     {
         _repository = repository;
         _mapper = mapper;
         _httpClient = httpClient;
+        _uow = uow;
     }
 
     public async Task<Result<FilmDTO>> ImportFilm(string idOrTitle)
@@ -30,9 +32,6 @@ public class OmdbService : IOmdbService
         var urlByTitle = $"{API_URL}?t={Uri.EscapeDataString(idOrTitle)}&apikey={API_KEY}";
 
         var response = await _httpClient.GetAsync(urlByTitle);
-
-        if (!response.IsSuccessStatusCode)
-            return Result.Failure<FilmDTO>($"Failed to fetch data from OMDb API. Status code: {response.StatusCode}");
         
         var json = await response.Content.ReadAsStringAsync();
         var omdbResponse = JsonSerializer.Deserialize<OmdbResponse>(json, new JsonSerializerOptions
@@ -62,6 +61,7 @@ public class OmdbService : IOmdbService
 
         var filmDto = _mapper.Map<FilmDTO>(result.Value);
 
+        await _uow.SaveChangesAsync();
         return Result.Success(filmDto);
     }
 }

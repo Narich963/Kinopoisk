@@ -45,7 +45,6 @@ public class IndexModel : PageModel
         if (result.IsFailure)
             return BadRequest(result.Error);
 
-        await _genreService.SaveChangesAsync();
         return new JsonResult(new { success = true });
     }
 }

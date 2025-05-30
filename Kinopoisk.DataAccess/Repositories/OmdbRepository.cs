@@ -3,7 +3,6 @@ using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
@@ -44,7 +43,6 @@ public class OmdbRepository : IOmdbRepository
                 if (!await _context.Genres.AnyAsync(g => g.Name == genre))
                 {
                     await _context.Genres.AddAsync(new Genre { Name = genre});
-                    await _context.SaveChangesAsync();
                 }
 
                 genres.Add(new FilmGenre
@@ -53,6 +51,8 @@ public class OmdbRepository : IOmdbRepository
                 });
             }
         }
+        // It's neccessary to save changes here to ensure that genres are added before creating the film.
+        await _context.SaveChangesAsync();
 
         var actorsResponse = omdbResponse.Actors?.Split(',').Select(a => a.Trim()).ToList();
         var filmEmployees = new List<FilmEmployeeRole>();
@@ -63,7 +63,6 @@ public class OmdbRepository : IOmdbRepository
                 if (!await _context.FilmEmployees.AnyAsync(fe => fe.Name == actor))
                 {
                     await _context.FilmEmployees.AddAsync(new FilmEmployee { Name = actor });
-                    await _context.SaveChangesAsync();
                 }
 
                 filmEmployees.Add(new FilmEmployeeRole
@@ -79,7 +78,6 @@ public class OmdbRepository : IOmdbRepository
         if (!await _context.FilmEmployees.AnyAsync(f => f.Name == directorResponse))
         {
             await _context.FilmEmployees.AddAsync(new FilmEmployee { Name = directorResponse });
-            await _context.SaveChangesAsync();
         }
         filmEmployees.Add(new FilmEmployeeRole
         {
@@ -87,9 +85,11 @@ public class OmdbRepository : IOmdbRepository
             Role = 1,
             IsDirector = true
         });
+        // It's neccessary to save changes here to ensure that film employees are added before creating the film.
+        await _context.SaveChangesAsync();
+
 
         var durationString = omdbResponse.Runtime.Replace(" min", "").Trim();
-
         var film = new Film
         {
             Name = omdbResponse.Title,
@@ -104,7 +104,6 @@ public class OmdbRepository : IOmdbRepository
         };
 
         await _context.AddAsync(film);
-        await _context.SaveChangesAsync();
         return Result.Success(film);
     }
 }

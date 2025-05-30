@@ -42,9 +42,4 @@ public class CommentService : BaseService<Comment, CommentDTO, CommentFilter>, I
         };
         return Result.Success(commentDTOResult);
     }
-
-    public Task<Result<CommentDTO>> GetByIdAsync(int? id)
-    {
-        throw new NotImplementedException();
-    }
 }

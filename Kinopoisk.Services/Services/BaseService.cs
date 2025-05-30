@@ -61,6 +61,7 @@ public abstract class BaseService<TEntity, TDto, TRequest> : IService<TDto, TReq
 
         if (result.IsSuccess)
         {
+            await _uow.SaveChangesAsync();
             dto = _mapper.Map<TDto>(result.Value);
             return Result.Success(dto);
         }
@@ -77,6 +78,7 @@ public abstract class BaseService<TEntity, TDto, TRequest> : IService<TDto, TReq
 
         if (result.IsSuccess)
         {
+            await _uow.SaveChangesAsync();
             dto = _mapper.Map<TDto>(result.Value);
             return Result.Success(dto);
         }
@@ -91,13 +93,10 @@ public abstract class BaseService<TEntity, TDto, TRequest> : IService<TDto, TReq
         var result = await _repository.DeleteAsync(id.Value);
 
         if (result.IsSuccess)
+        {
+            await _uow.SaveChangesAsync();
             return Result.Success();
-
+        }
         return Result.Failure(result.Error);
-    }
-
-    public async Task SaveChangesAsync()
-    {
-        await _repository.SaveChangesAsync();
     }
 }

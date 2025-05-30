@@ -12,11 +12,13 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
 {
     private readonly IMapper _mapper;
     private IFilmRepository _repository;
+    private readonly IUnitOfWork _uow;
 
     public FilmService(IUnitOfWork uow, IMapper mapper, IFilmRepository repository) : base(uow, mapper)
     {
         _mapper = mapper;
         _repository = repository;
+        _uow = uow;
     }
 
     public async Task<IEnumerable<FilmDTO>> GetAllAsync()
@@ -52,7 +54,7 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
             if (result.IsFailure)
                 return Result.Failure(result.Error);
         }
-
+        await _uow.SaveChangesAsync();
         return Result.Success();
     }
 
@@ -70,7 +72,7 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
             if (result.IsFailure)
                     return Result.Failure(result.Error);
         }
-
+        await _uow.SaveChangesAsync();  
         return Result.Success();
     }
 }

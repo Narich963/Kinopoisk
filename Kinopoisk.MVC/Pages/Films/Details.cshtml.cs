@@ -109,7 +109,6 @@ public class DetailsModel : PageModel
             return BadRequest(result.Error);
         }
 
-        await _commentsService.SaveChangesAsync();
         return new JsonResult(new { success = true });
     }
     public async Task<IActionResult> OnGetGetUserRatingAsync(int? filmId)
@@ -165,7 +164,6 @@ public class DetailsModel : PageModel
             _logger.LogError(result.Error);
             return BadRequest(result.Error);
         }
-        await _ratingService.SaveChangesAsync();
         return new JsonResult(new { success = true, newRating = sitesRatingResult.Value});
     }
 }

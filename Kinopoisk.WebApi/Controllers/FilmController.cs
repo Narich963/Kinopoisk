@@ -46,7 +46,6 @@ public class FilmController : Controller
         var result = await _filmsService.AddAsync(filmDto);
         if (result.IsSuccess)
         {
-            await _filmsService.SaveChangesAsync();
             var filmResponse = _mapper.Map<FilmResponse>(result.Value);
             return Ok( new { id = filmResponse.Id, message = "Film created successfully" });
         }

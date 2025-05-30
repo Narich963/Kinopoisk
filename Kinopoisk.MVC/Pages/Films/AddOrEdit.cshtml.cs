@@ -93,7 +93,6 @@ public class AddOrEditModel : PageModel
             return Page();
         }
 
-        await _filmService.SaveChangesAsync();
         return RedirectToPage("./Index");
     }
 }

@@ -12,10 +12,12 @@ public class RatingService : BaseService<Rating, RatingDTO, DataTablesRequestMod
 {
     private readonly IMapper _mapper;
     private readonly IRatingRepository _repository;
+    private readonly IUnitOfWork _uow;
     public RatingService(IUnitOfWork uow, IMapper mapper, IRatingRepository repository) : base(uow, mapper)
     {
         _mapper = mapper;
         _repository = repository;
+        _uow = uow;
     }
 
     public async Task<Result<double>> CalculateSitesRating(int filmId)
@@ -24,6 +26,7 @@ public class RatingService : BaseService<Rating, RatingDTO, DataTablesRequestMod
         if (result.IsFailure)
             return Result.Failure<double>(result.Error);
 
+        await _uow.SaveChangesAsync();
         return Result.Success(result.Value);
     }
 

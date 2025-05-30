@@ -11,5 +11,4 @@ public interface IService<TDto, TRequest> where TRequest : DataTablesRequestMode
     Task<Result<TDto>> AddAsync(TDto dto);
     Task<Result<TDto>> UpdateAsync(TDto dto);
     Task<Result> DeleteAsync(int? id);
-    Task SaveChangesAsync();
 }
