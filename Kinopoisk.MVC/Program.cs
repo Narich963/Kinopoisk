@@ -12,6 +12,7 @@ using Kinopoisk.Services.Interfaces;
 using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,9 @@ builder.Services.AddTransient<ICountryService, CountryService>();
 builder.Services.AddTransient<IFilmEmployeeService, FimEmployeeService>();
 builder.Services.AddTransient<IOmdbService, OmdbService>();
 builder.Services.AddTransient<IOmdbRepository, OmdbRepository>();
+builder.Services.AddTransient<IDocumentService, DocumentService>();
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
 

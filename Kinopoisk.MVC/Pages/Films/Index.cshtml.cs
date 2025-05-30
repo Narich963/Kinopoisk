@@ -1,10 +1,13 @@
 using AutoMapper;
+using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
+using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QuestPDF.Fluent;
 
 namespace Kinopoisk.MVC.Pages.Films;
 
@@ -15,13 +18,15 @@ public class IndexModel : PageModel
     private readonly IRatingService _ratingService;
     private readonly IOmdbService _omdbService;
     private readonly IMapper _mapper;
+    private readonly IDocumentService _documentService;
 
-    public IndexModel(IFilmService filmService, IMapper mapper, IOmdbService omdbService, IRatingService ratingService)
+    public IndexModel(IFilmService filmService, IMapper mapper, IOmdbService omdbService, IRatingService ratingService, IDocumentService documentService)
     {
         _filmService = filmService;
         _mapper = mapper;
         _omdbService = omdbService;
         _ratingService = ratingService;
+        _documentService = documentService;
     }
 
     public void OnGet()
@@ -50,6 +55,8 @@ public class IndexModel : PageModel
                 }
             }
         }
+
+        DocumentService.Films = result.Data.ToList();
 
         var filmsPaged = new DataTablesResult<FilmsViewModel>
         {
@@ -83,5 +90,16 @@ public class IndexModel : PageModel
 
         var filmViewModel = _mapper.Map<FilmsViewModel>(filmDto.Value);
         return new JsonResult(new {success = true}) ;
+    }
+
+    public void OnGetExportToPdf()
+    {
+        _documentService.GeneratePdfAndShow();
+    }
+    public IActionResult OnGetExportToExcel()
+    {
+        var excelBytes = _documentService.ExportToExcel();
+
+        return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "films.xlsx");
     }
 }
