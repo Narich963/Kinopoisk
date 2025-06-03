@@ -67,6 +67,8 @@ $(document).ready(function () {
                 orderable: false,
                 searchable: false,
                 render: function (data, type, row) {
+                    if (!window.isAdmin) return '';
+
                     return `
                     <a class="btn btn-sm btn-warning" href="/Films/AddOrEdit?id=${row.id}" onclick="event.stopPropagation()">Edit</a>
                     <a class="btn btn-sm btn-danger" href="#" onclick="event.stopPropagation(); remove(${row.id})">Delete</a>`;

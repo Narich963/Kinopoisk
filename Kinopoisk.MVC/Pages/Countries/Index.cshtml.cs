@@ -2,11 +2,13 @@ using AutoMapper;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Kinopoisk.MVC.Pages.Countries;
 
+[Authorize(Roles = "admin")]
 [IgnoreAntiforgeryToken]
 public class IndexModel : PageModel
 {

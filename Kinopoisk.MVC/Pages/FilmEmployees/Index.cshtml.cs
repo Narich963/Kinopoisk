@@ -1,14 +1,14 @@
 using AutoMapper;
-using Azure.Core;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
-using Kinopoisk.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Kinopoisk.MVC.Pages.FilmEmployees;
 
+[Authorize(Roles = "admin")]
 [IgnoreAntiforgeryToken]
 public class IndexModel : PageModel
 {

@@ -3,11 +3,13 @@ using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Kinopoisk.MVC.Pages.Genres;
 
+[Authorize(Roles = "admin")]
 public class AddOrEditModel : PageModel
 {
     private readonly IGenreService _genreService;

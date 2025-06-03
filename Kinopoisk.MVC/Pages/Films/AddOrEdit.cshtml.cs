@@ -3,11 +3,13 @@ using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Kinopoisk.MVC.Pages.Films;
 
+[Authorize(Roles = "admin")]
 public class AddOrEditModel : PageModel
 {
     private readonly IFilmService _filmService;

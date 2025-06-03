@@ -1,16 +1,17 @@
 using AutoMapper;
-using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Kinopoisk.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QuestPDF.Fluent;
 
 namespace Kinopoisk.MVC.Pages.Films;
 
+[AllowAnonymous]
 [IgnoreAntiforgeryToken]
 public class IndexModel : PageModel
 {
@@ -71,6 +72,9 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostDeleteFilmAsync(int? id)
     {
+        if (!User.IsInRole("admin"))
+            return Unauthorized();
+
         var result = await _filmService.DeleteAsync(id);
         if (result.IsFailure)
             return BadRequest(result.Error);
@@ -80,6 +84,9 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostImportFilmAsync([FromBody] string idOrTitle)
     {
+        if (!User.IsInRole("admin"))
+            return Unauthorized();
+
         if (string.IsNullOrWhiteSpace(idOrTitle))
             return BadRequest("Title cannot be empty");
         
@@ -93,12 +100,17 @@ public class IndexModel : PageModel
 
     public void OnGetExportToPdf()
     {
+        if (!User.IsInRole("admin"))
+            throw new UnauthorizedAccessException("You do not have permission to export to PDF.");
+
         _documentService.GeneratePdfAndShow();
     }
     public IActionResult OnGetExportToExcel()
     {
-        var excelBytes = _documentService.ExportToExcel();
+        if (!User.IsInRole("admin"))
+            return Unauthorized();
 
+        var excelBytes = _documentService.ExportToExcel();
         return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "films.xlsx");
     }
 }

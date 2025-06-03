@@ -20,23 +20,26 @@
 
                     <h2 id="filmRating" class="text-warning fw-bolder">@Model.Film.SitesRating</h2>
 
-                    <div class="rating-container">
-                        <form id="ratingForm" method="post">
-                            <input type="hidden" name="Rating.FilmId" value="@Model.Film.Id" />
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="rating-container">
+                            <form id="ratingForm" method="post">
+                                <input type="hidden" name="Rating.FilmId" value="@Model.Film.Id" />
 
-                            <div class="star-rating">
-                                @for (int i = 10; i >= 1; i--)
-                                {
-                                    <input type="radio" id="star-@i" name="Rating.Value" value="@i"/>
-                                    <label for="star-@i" title="@i stars">
-                                        <i class="fas fa-star"></i>
-                                    </label>
-                                }
-                            </div>
+                                <div class="star-rating">
+                                    @for (int i = 10; i >= 1; i--)
+                                    {
+                                        <input type="radio" id="star-@i" name="Rating.Value" value="@i"/>
+                                        <label for="star-@i" title="@i stars">
+                                            <i class="fas fa-star"></i>
+                                        </label>
+                                    }
+                                </div>
 
-                            <button type="submit" class="btn btn-sm btn-primary mt-2">Rate Film</button>
-                        </form>
-                    </div>
+                                <button type="submit" class="btn btn-sm btn-primary mt-2">Rate Film</button>
+                            </form>
+                        </div>
+                    }
 
                 </div>
             </div>
@@ -91,9 +94,12 @@
     <div class="mt-5">
         <div class="row d-flex justify-content-between">
             <h4 class="mb-3 col">Comments: </h4>
-            <button class="btn btn-primary mb-3 col-1 h-25" data-bs-toggle="modal" data-bs-target="#addCommentModal">
-                Add Comment
-            </button>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <button class="btn btn-primary mb-3 col-1 h-25" data-bs-toggle="modal" data-bs-target="#addCommentModal">
+                    Add Comment
+                </button>
+            }
         </div>
 
         <table id="comments-container" class="display" data-film-id="@Model.Film.Id">

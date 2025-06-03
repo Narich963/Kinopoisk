@@ -13,6 +13,7 @@ public static class DataSeeder
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<KinopoiskContext>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
         if (await context.Films.AnyAsync())
             return;
@@ -23,7 +24,7 @@ public static class DataSeeder
         var actors = await SeedActorsAndDirectors(context);
         var films = await SeedFilms(context);
         
-        await SeedUsers(userManager);
+        await SeedUsers(userManager, roleManager);
 
         await SeedFilmEmployeeRoles(context);
 
@@ -110,8 +111,17 @@ public static class DataSeeder
         await context.FilmEmployeeRoles.AddRangeAsync(filmEmployeeRoles);
         await context.SaveChangesAsync();
     }
-    private async static Task SeedUsers(UserManager<User> userManager)
+    private async static Task SeedUsers(UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager)
     {
+        var roles = new[] { "admin", "user" };
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole<int>(role));
+            }
+        }
+
         var usersToSeed = new List<(string username, string email)>
         {
             ("testuser", "testuser@example.com"),
@@ -121,17 +131,26 @@ public static class DataSeeder
             ("charlie", "charlie@example.com")
         };
 
-        foreach (var (username, email) in usersToSeed)
+        for (int i = 0; i < usersToSeed.Count; i++)
         {
+            var (username, email) = usersToSeed[i];
             var existingUser = await userManager.FindByNameAsync(username);
+
             if (existingUser == null)
             {
                 var user = new User
                 {
                     UserName = username,
-                    Email = email,
+                    Email = email
                 };
-                await userManager.CreateAsync(user, "Test123!");
+
+                var result = await userManager.CreateAsync(user, "Test123!");
+
+                if (result.Succeeded)
+                {
+                    var role = i == 0 ? "admin" : "user";
+                    await userManager.AddToRoleAsync(user, role);
+                }
             }
         }
     }

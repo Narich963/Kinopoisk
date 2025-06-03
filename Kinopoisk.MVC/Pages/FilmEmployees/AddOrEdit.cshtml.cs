@@ -1,15 +1,15 @@
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
-using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
-using Kinopoisk.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Kinopoisk.MVC.Pages.FilmEmployees;
 
+[Authorize(Roles = "admin")]
 public class AddOrEditModel : PageModel
 {
     private readonly IFilmEmployeeService _employeesService;

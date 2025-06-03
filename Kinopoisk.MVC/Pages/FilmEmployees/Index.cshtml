@@ -3,7 +3,10 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="text-primary">Film employees</h1>
-    <a class="btn btn-primary" asp-page="/FilmEmployees/AddOrEdit">Create</a>
+    @if (User.IsInRole("admin"))
+    {
+        <a class="btn btn-primary" asp-page="/FilmEmployees/AddOrEdit">Create</a>
+    }
 </div>
 
 <table id="employeesTable" class="display">
@@ -46,6 +49,6 @@
     </div>
 </div>
 
-@section Scripts {
+@section Scripts {   
     <script src="~/js/FilmEmployees/index.js"></script>
 }

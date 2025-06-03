@@ -7,7 +7,6 @@ using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.DataSeeding;
 using Kinopoisk.DataAccess.Repositories;
 using Kinopoisk.MVC.Initializers;
-using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Identity;
@@ -74,6 +73,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

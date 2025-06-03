@@ -1,15 +1,16 @@
 using AutoMapper;
-using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Kinopoisk.MVC.Pages.Films;
 
+[AllowAnonymous]
 [IgnoreAntiforgeryToken]
 public class DetailsModel : PageModel
 {
@@ -86,10 +87,12 @@ public class DetailsModel : PageModel
     }
     public async Task<IActionResult> OnPostAddCommentAsync()
     {
+        if (!User.Identity.IsAuthenticated)
+            return BadRequest("You must be logged in to add a comment.");
+
         if (!ModelState.IsValid)
-        {
             return BadRequest(ModelState);
-        }
+        
 
         var commentDto = _mapper.Map<CommentDTO>(Comment);
         var userDto = await _userService.GetUserAsync(User);
@@ -137,6 +140,9 @@ public class DetailsModel : PageModel
     }
     public async Task<IActionResult> OnPostAddOrEditRatingAsync()
     {
+        if (!User.Identity.IsAuthenticated)
+            return BadRequest("You must be logged in to add or edit a rating.");
+
         var ratingDto = _mapper.Map<RatingDTO>(Rating);
         var userDto = await _userService.GetUserAsync(User);
 
