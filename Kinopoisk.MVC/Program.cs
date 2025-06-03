@@ -31,6 +31,8 @@ builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connec
     })
     .AddEntityFrameworkStores<KinopoiskContext>();
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddAutoMapper(opts =>
 {
     opts.AddExpressionMapping();

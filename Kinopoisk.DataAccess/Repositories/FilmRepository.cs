@@ -28,9 +28,9 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             .Include(f => f.Country)
             .AsQueryable();
 
-        Filter(filter, query);
-        Search(filter, query);
-        Order(filter, query);
+        query = Filter(filter, query);
+        query = Search(filter, query);
+        query = Order(filter, query);
 
         return await base.GetPagedAsync(filter, query);
     }
@@ -179,7 +179,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     #endregion
 
     #region Filter and Order Methods
-    public void Filter(FilmFilter filter, IQueryable<Film> query)
+    public IQueryable<Film> Filter(FilmFilter filter, IQueryable<Film> query)
     {
         // By name
         if (!string.IsNullOrEmpty(filter.Name))
@@ -202,8 +202,10 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         if (!string.IsNullOrEmpty(filter.Director))
             query = query.Where(q => q.Employees
                 .Any(e => e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(filter.Director.ToLower())));
+
+        return query;
     }
-    public void Search(FilmFilter filter, IQueryable<Film> query)
+    public IQueryable<Film> Search(FilmFilter filter, IQueryable<Film> query)
     {
         if (!string.IsNullOrEmpty(filter.Search?.Value))
         {
@@ -213,8 +215,10 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                                      f.Country.Name.ToLower().Contains(searchValue) ||
                                      f.Employees.Any(e => e.FilmEmployee.Name.ToLower().Contains(searchValue)));
         }
+
+        return query;
     }
-    public void Order(FilmFilter filter, IQueryable<Film> query)
+    public IQueryable<Film> Order(FilmFilter filter, IQueryable<Film> query)
     {
         Expression<Func<Film, object>> orderBy = null;
 
@@ -249,6 +253,8 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                 ? query.OrderBy(orderBy)
                 : query.OrderByDescending(orderBy);
         }
+
+        return query;
     }
     #endregion
 }

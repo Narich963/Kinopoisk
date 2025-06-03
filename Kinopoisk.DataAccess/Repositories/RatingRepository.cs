@@ -42,7 +42,7 @@ public class RatingRepository : GenericRepository<Rating, DataTablesRequestModel
         var userRating = film.Ratings.FirstOrDefault(r => r.UserId == userId);
 
         return userRating == null
-            ? Result.Success(0.0)
+            ? Result.Success(-1.0)
             : Result.Success(userRating.Value);
     }
 }

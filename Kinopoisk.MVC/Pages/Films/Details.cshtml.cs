@@ -150,12 +150,12 @@ public class DetailsModel : PageModel
 
         var existResult = await _ratingService.GetUserRating(ratingDto.FilmId, ratingDto.UserId);
 
-        Result<RatingDTO> result = null;
-
         if (existResult.IsFailure)
-            result = await _ratingService.AddAsync(ratingDto);
-        else
-            result = await _ratingService.UpdateAsync(ratingDto);
+            return BadRequest(existResult.Error);
+
+        var result = existResult.Value < 0
+            ? await _ratingService.AddAsync(ratingDto)
+            : await _ratingService.UpdateAsync(ratingDto);
 
         var sitesRatingResult = await _ratingService.CalculateSitesRating(ratingDto.FilmId);
 

@@ -4,7 +4,20 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1 class="fw-1 text-center mt-3 mb-3">Home page</h1>
+
+<div class="container mt-4">
+    <h2>Top Rated Films</h2>
+    <div id="top-rated-films" class="row row-cols-1 row-cols-md-5 g-4 mb-5">
+
+    </div>
+
+    <h2>Top Newest Films</h2>
+    <div id="top-newest-films" class="row row-cols-1 row-cols-md-5 g-4">
+
+    </div>
 </div>
+
+@section Scripts{
+    <script src="~/js/Home/index.js"></script>
+}
