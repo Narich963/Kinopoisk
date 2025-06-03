@@ -19,4 +19,7 @@ public class FilmDTO
     public List<CommentDTO> Comments { get; set; }
     public List<RatingDTO> Ratings { get; set; }
     public List<FilmEmployeeRoleDTO> Employees { get; set; }
+
+    public List<int> SelectedActorIds { get; set; } = new();
+    public List<int> SelectedGenreIds { get; set; } = new();
 }

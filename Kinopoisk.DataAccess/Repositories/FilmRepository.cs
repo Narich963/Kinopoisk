@@ -2,10 +2,8 @@
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
-using Kinopoisk.MVC.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
@@ -18,6 +16,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         _context = context;
     }
 
+    #region Get Methods
     public async Task<DataTablesResult<Film>> GetPagedAsync(FilmFilter filter, IQueryable<Film> query = null)
     {
         query = _context.Films
@@ -66,67 +65,118 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             .ToListAsync();
         return films;
     }
+    #endregion
 
-    public async Task<Result> RemoveEmployeeFromFilm(int filmId, int employeeId)
+    #region CRUD Methods
+    public new async Task<Result<Film>> AddAsync(Film film)
     {
-        var employeeRole = await _context.FilmEmployeeRoles
-            .FirstOrDefaultAsync(e => e.FilmEmployeeID == employeeId && e.FilmId == filmId);
+        if (film == null)
+            throw new ArgumentNullException(nameof(film), "Film cannot be null");
 
-        if (employeeRole == null)
-            return Result.Failure("Employee not found in film");
+        await _context.Films.AddAsync(film);
+        await _context.SaveChangesAsync(); // It's necessary to save changes here to get the ID of the newly added film
+        return Result.Success(film);
+    }
+    public async Task<Result> UpdateGenres(int filmId, List<int> genreIds)
+    {
+        if (!genreIds.Any())
+            return Result.Failure("Genre IDs list is empty");
 
-        var existingEntity = _context.ChangeTracker.Entries<FilmEmployeeRole>()
-        .FirstOrDefault(e => e.Entity.FilmEmployeeID == employeeId && e.Entity.FilmId == filmId);
+        var existingGenres = await _context.FilmGenres
+            .Where(fg => fg.FilmId == filmId)
+            .ToListAsync();
 
-        if (existingEntity != null)
+        var genresToRemove = existingGenres
+            .Where(fg => !genreIds.Contains(fg.GenreId))
+            .ToList();
+
+        if (genresToRemove.Any())
+            _context.FilmGenres.RemoveRange(genresToRemove);
+
+        var genresToAdd = genreIds
+            .Where(id => !existingGenres.Any(fg => fg.GenreId == id))
+            .Select(id => new FilmGenre
+            {
+                FilmId = filmId,
+                GenreId = id
+            })
+            .ToList();
+
+        if (genresToAdd.Any())
+            await _context.FilmGenres.AddRangeAsync(genresToAdd);
+
+        return Result.Success();
+    }
+    public async Task<Result> UpdateFilmEmployees(int filmId, int directorId, List<int> actorIds)
+    {
+        var director = await _context.FilmEmployeeRoles
+            .FirstOrDefaultAsync(f => f.FilmId == filmId && f.IsDirector);
+
+        if (director?.FilmEmployeeID != directorId)
         {
-            _context.Entry(existingEntity.Entity).State = EntityState.Detached;
+            if (director != null)
+                _context.FilmEmployeeRoles.Remove(director);
+
+            var existing = await _context.FilmEmployeeRoles
+                .FirstOrDefaultAsync(f => f.FilmId == filmId && f.FilmEmployeeID == directorId);
+
+            if (existing != null)
+                _context.Entry(existing).State = EntityState.Detached;
+
+            director = new FilmEmployeeRole
+            {
+                FilmId = filmId,
+                FilmEmployeeID = directorId,
+                IsDirector = true,
+                Role = 0
+            };
+            await _context.FilmEmployeeRoles.AddAsync(director);
         }
 
-        _context.FilmEmployeeRoles.Remove(employeeRole);
-        return Result.Success();
-    }
-    public async Task<Result> AddActorToFilm(int filmId, int employeeId)
-    {
-        if (await _context.FilmEmployeeRoles.AnyAsync(f => f.FilmId == filmId && f.FilmEmployeeID == employeeId))
-            return Result.Failure("Employee already exists in film");
+        var actors = await _context.FilmEmployeeRoles
+            .Where(f => f.FilmId == filmId && !f.IsDirector)
+            .ToListAsync();
 
-        var filmEmployeeRole = new FilmEmployeeRole
+        var actorsToRemove = actors
+            .Where(a => !actorIds.Contains(a.FilmEmployeeID))
+            .ToList();
+
+        var actorsToAdd = actorIds
+            .Where(id => !actors.Any(a => a.FilmEmployeeID == id))
+            .Select(id => new { Id = id, Index = actorIds.IndexOf(id) })
+            .Select(x => new FilmEmployeeRole
+            {
+                FilmId = filmId,
+                FilmEmployeeID = x.Id,
+                IsDirector = false,
+                Role = x.Index
+            })
+            .ToList();
+
+        if (actorsToRemove.Count > 0)
+            _context.FilmEmployeeRoles.RemoveRange(actorsToRemove);
+
+        if (actorsToAdd.Count > 0)
+            await _context.FilmEmployeeRoles.AddRangeAsync(actorsToAdd);
+
+        var actorsToUpdate = actors
+            .Where(a => actorIds.Contains(a.FilmEmployeeID)
+                && a.Role != actorIds.IndexOf(a.FilmEmployeeID))
+            .ToList();
+
+        if (actorsToUpdate.Count == 0 && actorsToAdd.Count == 0)
+            return Result.Success();
+
+        actorsToUpdate.ForEach(a =>
         {
-            FilmId = filmId,
-            FilmEmployeeID = employeeId,
-            IsDirector = false
-        };
-        await _context.FilmEmployeeRoles.AddAsync(filmEmployeeRole);
+            a.Role = actorIds.IndexOf(a.FilmEmployeeID);
+        });
+
+        _context.FilmEmployeeRoles.UpdateRange(actorsToUpdate);
+
         return Result.Success();
     }
-
-    public async Task<Result> RemoveGenreFromFilm(int filmId, int genreId)
-    {
-        var filmGenre = await _context.FilmGenres
-            .FirstOrDefaultAsync(e => e.GenreId == genreId && e.FilmId == filmId);
-
-        if (filmGenre == null)
-            return Result.Failure("Genre not found in film");
-
-        _context.FilmGenres.Remove(filmGenre);
-        return Result.Success();
-    }
-
-    public async Task<Result> AddGenreToFilm(int filmId, int genreId)
-    {
-        if (await _context.FilmGenres.AnyAsync(fg => fg.FilmId == filmId && fg.GenreId == genreId))
-            return Result.Failure("Genre already exists in film");
-
-        var filmGenre = new FilmGenre
-        {
-            FilmId = filmId,
-            GenreId = genreId
-        };
-
-        await _context.FilmGenres.AddAsync(filmGenre);
-        return Result.Success();
-    }
+    #endregion
 
     #region Filter and Order Methods
     public void Filter(FilmFilter filter, IQueryable<Film> query)

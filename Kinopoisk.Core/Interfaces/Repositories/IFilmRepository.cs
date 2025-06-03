@@ -1,15 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Filters;
-using Kinopoisk.MVC.Models;
 
 namespace Kinopoisk.Core.Interfaces.Repositories;
 
 public interface IFilmRepository : IRepository<Film, FilmFilter>
 {
     Task<Result<Film>> GetByIdAsync(int id);
-    Task<Result> RemoveEmployeeFromFilm(int filmId, int employeeId);
-    Task<Result> RemoveGenreFromFilm(int filmId, int genreId);
-    Task<Result> AddGenreToFilm(int filmId, int genreId);
-    Task<Result> AddActorToFilm(int filmId, int employeeId);
+    Task<Result<Film>> AddAsync(Film entity);
+    Task<Result> UpdateGenres(int filmId, List<int> genreIds);
+    Task<Result> UpdateFilmEmployees(int filmId, int directorId, List<int> actorIds);
 }

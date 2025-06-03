@@ -21,6 +21,7 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
         _uow = uow;
     }
 
+    #region Get Methods
     public async Task<IEnumerable<FilmDTO>> GetAllAsync()
     {
         var films = await _repository.GetAllAsync();
@@ -39,40 +40,60 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
             ? Result.Failure<FilmDTO>("Film not found")
             : Result.Success(filmDto);
     }
+    #endregion
 
-    public async Task<Result> UpdateFilmActors(List<int> actorIds, int? filmId, bool isAddAction)
+    #region CRUD Methods
+    public async Task<Result<FilmDTO>> AddOrEditAsync(FilmDTO filmDto, bool? isNew)
     {
-        if (!filmId.HasValue)
-            return Result.Failure("Film ID or Employee ID is null");
+        if (!isNew.HasValue)
+            return Result.Failure<FilmDTO>("isNew parameter is null");
+        
+        var directorId = filmDto.Employees.FirstOrDefault(e => e.IsDirector)?.FilmEmployeeId;
+        filmDto.Employees.Clear();
 
-        foreach (var actorId in actorIds)
-        {
-            var result = isAddAction
-                ? await _repository.AddActorToFilm(filmId.Value, actorId)
-                : await _repository.RemoveEmployeeFromFilm(filmId.Value, actorId);
+        var filmResult = isNew.Value
+            ? await _repository.AddAsync(_mapper.Map<Film>(filmDto))
+            : await _repository.UpdateAsync(_mapper.Map<Film>(filmDto));
 
-            if (result.IsFailure)
-                return Result.Failure(result.Error);
-        }
-        await _uow.SaveChangesAsync();
-        return Result.Success();
+        if (filmResult.IsFailure)
+            return Result.Failure<FilmDTO>(filmResult.Error);
+
+        var employesResult = await UpdateFilmEmployees(filmResult.Value.Id, directorId, filmDto.SelectedActorIds);
+
+        if (employesResult.IsFailure)
+            return Result.Failure<FilmDTO>(employesResult.Error);
+
+        var genresResult = await UpdateFilmGenres(filmResult.Value.Id, filmDto.SelectedGenreIds);
+        if (genresResult.IsFailure)
+            return Result.Failure<FilmDTO>(genresResult.Error);
+
+        return Result.Success(_mapper.Map<FilmDTO>(filmResult.Value));
     }
-
-    public async Task<Result> UpdateFilmGenres(List<int> genreIds, int? filmId, bool isAddAction)
+    public async Task<Result> UpdateFilmGenres(int? filmId, List<int> genreIds)
     {
         if (!filmId.HasValue)
             return Result.Failure("Film ID or Genre ID is null");
 
-        foreach (var genreId in genreIds)
-        {
-            var result = isAddAction
-                ? await _repository.AddGenreToFilm(filmId.Value, genreId)
-                : await _repository.RemoveGenreFromFilm(filmId.Value, genreId);
+        var genresResult = await _repository.UpdateGenres(filmId.Value, genreIds);
+        if (genresResult.IsFailure)
+            return Result.Failure(genresResult.Error);
 
-            if (result.IsFailure)
-                    return Result.Failure(result.Error);
-        }
         await _uow.SaveChangesAsync();  
         return Result.Success();
     }
+
+    public async Task<Result> UpdateFilmEmployees(int? filmId, int? directorId, List<int> actorIds)
+    {
+        if (!filmId.HasValue || !directorId.HasValue)
+            return Result.Failure("Film ID is null");
+
+        var result = await _repository.UpdateFilmEmployees(filmId.Value, directorId.Value, actorIds);
+
+        if (result.IsFailure)
+            return Result.Failure(result.Error);
+
+        await _uow.SaveChangesAsync();
+        return Result.Success();
+    }
+    #endregion
 }

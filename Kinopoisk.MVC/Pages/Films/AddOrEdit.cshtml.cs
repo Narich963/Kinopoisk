@@ -1,7 +1,6 @@
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
-using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -50,49 +49,13 @@ public class AddOrEditModel : PageModel
             return Page();
 
         var film = _mapper.Map<FilmDTO>(Film);
-
-        var result = Film.IsNew.Value 
-            ? await _filmService.AddAsync(film) 
-            : await _filmService.UpdateAsync(film);
+        var result = await _filmService.AddOrEditAsync(film, Film.IsNew);
 
         if (result.IsFailure)
         {
             ModelState.AddModelError(string.Empty, result.Error);
             return Page();
         }
-
-        bool isAddGenres = Film.SelectedGenreIds.Count > Film.Genres.Count;
-        var genreIds = isAddGenres
-            ? Film.SelectedGenreIds
-                .Except(Film.Genres.Select(g => g.GenreId))
-                .ToList()
-            : Film.Genres.Select(g => g.GenreId)
-                .Except(Film.SelectedGenreIds)
-                .ToList();
-
-        var genresResult = await _filmService.UpdateFilmGenres(genreIds, Film.Id, isAddGenres);
-        if (genresResult.IsFailure)
-        {
-            ModelState.AddModelError(string.Empty, genresResult.Error);
-            return Page();
-        }
-
-        bool isAddActors = Film.SelectedActorIds.Count > Film.Actors.Count;
-        var actorIds = isAddActors
-            ? Film.SelectedActorIds
-                .Except(Film.Actors.Select(a => a.FilmEmployeeId))
-                .ToList()
-            : Film.Actors.Select(a => a.FilmEmployeeId)
-                .Except(Film.SelectedActorIds)
-                .ToList();
-
-        var actorsResult = await _filmService.UpdateFilmActors(actorIds, Film.Id, isAddActors);
-        if (actorsResult.IsFailure)
-        {
-            ModelState.AddModelError(string.Empty, actorsResult.Error);
-            return Page();
-        }
-
         return RedirectToPage("./Index");
     }
 }

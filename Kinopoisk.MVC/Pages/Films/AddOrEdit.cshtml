@@ -90,7 +90,6 @@
                         </div>
                         <div class="mb-3">
                             <label asp-for="Film.Actors" class="form-label"></label>
-
                             <select asp-for="Film.SelectedActorIds" data-placeholder="Choose actors" class="form-select actor-select">
                                 @foreach (var actor in Model.Film.Actors)
                                 {
@@ -99,19 +98,6 @@
                                     </option>
                                 }
                             </select>
-
-
-                            <div id="actorRolesContainer">
-                                @for (int i = 0; i < Model.Film.Actors.Count; i++)
-                                {
-                                    <input type="hidden" asp-for="Film.Actors[@i].FilmId" value="@Model.Film.Id" />
-                                    <input type="hidden" asp-for="Film.Actors[@i].FilmEmployeeId" value="@Model.Film.Actors[i].FilmEmployeeId" />
-                                    <input type="hidden" asp-for="Film.Actors[@i].IsDirector" value="false" />
-                                }
-                            </div>
-
-                            <input type="hidden" id="filmId" value="@Model.Film.Id" />
-
                             <span asp-validation-for="Film.Actors" class="text-danger"></span>
                         </div>
 

@@ -17,6 +17,7 @@ $(document).ready(function () {
         processing: true,
         paging: true,
         ordering: true,
+        stateSave: true,
         ajax: {
             url: '/Films/Index?handler=GetFilms',
             type: 'POST',
