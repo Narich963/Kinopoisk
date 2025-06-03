@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Kinopoisk.MVC.Models;
+namespace Kinopoisk.MVC.Models.Accounts;
 
 public class LoginViewModel
 {

@@ -1,5 +1,5 @@
 using Kinopoisk.Core.Enitites;
-using Kinopoisk.MVC.Models;
+using Kinopoisk.MVC.Models.Accounts;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

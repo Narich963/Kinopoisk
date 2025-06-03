@@ -17,7 +17,7 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Kinopoisk</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -28,6 +28,41 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <a asp-page="/Films/Index" class="nav-link text-dark">Films</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("admin"))
+                            {
+                                <li class="nav-item">
+                                    <a asp-page="/Genres/Index" class="nav-link text-dark">Genres</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-page="/Countries/Index" class="nav-link text-dark">Countries</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-page="/FilmEmployees/Index" class="nav-link text-dark">Film employees</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-primary">@User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item">
+                                <form method="post" asp-page="/Accounts/Logout">
+                                    <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a asp-page="/Accounts/Login" class="nav-link text-dark">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-page="/Accounts/Register" class="nav-link text-dark">Register</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
