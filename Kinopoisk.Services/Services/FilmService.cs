@@ -5,20 +5,23 @@ using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Kinopoisk.Services.Services;
 
 public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
 {
     private readonly IMapper _mapper;
-    private IFilmRepository _repository;
+    private readonly IFilmRepository _repository;
     private readonly IUnitOfWork _uow;
+    private readonly ILogger<FilmService> _logger;
 
-    public FilmService(IUnitOfWork uow, IMapper mapper, IFilmRepository repository) : base(uow, mapper)
+    public FilmService(IUnitOfWork uow, IMapper mapper, IFilmRepository repository, ILogger<FilmService> logger) : base(uow, mapper, logger)
     {
         _mapper = mapper;
         _repository = repository;
         _uow = uow;
+        _logger = logger;
     }
 
     #region Get Methods
@@ -46,7 +49,10 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
     public async Task<Result<FilmDTO>> AddOrEditAsync(FilmDTO filmDto, bool? isNew)
     {
         if (!isNew.HasValue)
+        {
+            _logger.Log(LogLevel.Error, "isNew parameter is null in AddOrEditAsync method");
             return Result.Failure<FilmDTO>("isNew parameter is null");
+        }
         
         var directorId = filmDto.Employees.FirstOrDefault(e => e.IsDirector)?.FilmEmployeeId;
         filmDto.Employees.Clear();
@@ -56,17 +62,25 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
             : await _repository.UpdateAsync(_mapper.Map<Film>(filmDto));
 
         if (filmResult.IsFailure)
+        {
+            _logger.Log(LogLevel.Error, "An error occurred while trying to {Action} Film. Message: {Error}", isNew.Value ? "add" : "update", filmResult.Error);
             return Result.Failure<FilmDTO>(filmResult.Error);
+        }
 
         var employesResult = await UpdateFilmEmployees(filmResult.Value.Id, directorId, filmDto.SelectedActorIds);
-
         if (employesResult.IsFailure)
+        {
+            _logger.Log(LogLevel.Error, "An error occurred while trying to update film employees. Message: {Error}", employesResult.Error);
             return Result.Failure<FilmDTO>(employesResult.Error);
+        }
 
         var genresResult = await UpdateFilmGenres(filmResult.Value.Id, filmDto.SelectedGenreIds);
         if (genresResult.IsFailure)
+        {
+            _logger.Log(LogLevel.Error, "An error occurred while trying to update film genres. Message: {Error}", genresResult.Error);
             return Result.Failure<FilmDTO>(genresResult.Error);
-
+        }
+        _logger.Log(LogLevel.Information, "Film {Action} successfully", isNew.Value ? "added" : "updated");
         return Result.Success(_mapper.Map<FilmDTO>(filmResult.Value));
     }
     public async Task<Result> UpdateFilmGenres(int? filmId, List<int> genreIds)

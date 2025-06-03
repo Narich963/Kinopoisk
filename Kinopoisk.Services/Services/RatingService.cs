@@ -5,17 +5,19 @@ using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Kinopoisk.Services.Services;
 
 public class RatingService : BaseService<Rating, RatingDTO, DataTablesRequestModel>, IRatingService
 {
-    private readonly IMapper _mapper;
     private readonly IRatingRepository _repository;
     private readonly IUnitOfWork _uow;
-    public RatingService(IUnitOfWork uow, IMapper mapper, IRatingRepository repository) : base(uow, mapper)
+    public RatingService(IUnitOfWork uow,
+                         IMapper mapper,
+                         IRatingRepository repository,
+                         ILogger<RatingService> logger) : base(uow, mapper, logger)
     {
-        _mapper = mapper;
         _repository = repository;
         _uow = uow;
     }

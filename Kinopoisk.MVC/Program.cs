@@ -1,5 +1,4 @@
 using AutoMapper.Extensions.ExpressionMapping;
-using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Core.Interfaces.Services;
@@ -12,8 +11,18 @@ using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.Seq("http://localhost:5341")
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
@@ -29,7 +38,7 @@ builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connec
         opts.Password.RequireLowercase = false;
     })
     .AddEntityFrameworkStores<KinopoiskContext>();
-
+ 
 builder.Services.AddMemoryCache();
 
 builder.Services.AddAutoMapper(opts =>
@@ -49,7 +58,7 @@ builder.Services.AddTransient<IRatingRepository, RatingRepository>();
 builder.Services.AddTransient<IRatingService, RatingService>();
 builder.Services.AddTransient<IGenreService, GenreService>();
 builder.Services.AddTransient<ICountryService, CountryService>();
-builder.Services.AddTransient<IFilmEmployeeService, FimEmployeeService>();
+builder.Services.AddTransient<IFilmEmployeeService, FilmEmployeeService>();
 builder.Services.AddTransient<IOmdbService, OmdbService>();
 builder.Services.AddTransient<IOmdbRepository, OmdbRepository>();
 builder.Services.AddTransient<IDocumentService, DocumentService>();

@@ -5,23 +5,29 @@ using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Kinopoisk.Services.Services;
 
-public class FimEmployeeService : BaseService<FilmEmployee, FilmEmployeeDTO, DataTablesRequestModel>, IFilmEmployeeService
+public class FilmEmployeeService : BaseService<FilmEmployee, FilmEmployeeDTO, DataTablesRequestModel>, IFilmEmployeeService
 {
     private readonly IUnitOfWork _uow;
+    private readonly ILogger<FilmEmployeeService> _logger;
     private readonly IRepository<FilmEmployee, DataTablesRequestModel> _repository;
-    public FimEmployeeService(IUnitOfWork uow, IMapper mapper) : base(uow, mapper)
+    public FilmEmployeeService(IUnitOfWork uow, IMapper mapper, ILogger<FilmEmployeeService> logger) : base(uow, mapper, logger)
     {
         _uow = uow;
         _repository = _uow.GetRepository<FilmEmployee, DataTablesRequestModel>();
+        _logger = logger;
     }
 
     public async override Task<Result> DeleteAsync(int? id)
     {
         if (!id.HasValue)
+        {
+            _logger.Log(LogLevel.Error, "Id is null in DeleteAsync method");
             return Result.Failure("Id is null");
+        }
 
         var employee = await _repository.GetByIdAsync(id.Value, includes: e => e.ActorRoles);
 

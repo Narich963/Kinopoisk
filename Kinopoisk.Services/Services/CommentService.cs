@@ -5,6 +5,7 @@ using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Kinopoisk.Services.Services;
 
@@ -13,7 +14,7 @@ public class CommentService : BaseService<Comment, CommentDTO, CommentFilter>, I
     private readonly IMapper _mapper;
     private readonly ICommentRepository _repository;
 
-    public CommentService(IUnitOfWork uow, IMapper mapper, ICommentRepository repository) : base(uow, mapper)
+    public CommentService(IUnitOfWork uow, IMapper mapper, ICommentRepository repository, ILogger<CommentService> logger) : base(uow, mapper, logger)
     {
         _mapper = mapper;
         _repository = repository;
