@@ -56,6 +56,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     {
         var films = await _context.Films
             .Include(f => f.Genres)
+                .ThenInclude(g => g.Genre)
             .Include(f => f.Comments)
                 .ThenInclude(c => c.User)
             .Include(f => f.Ratings)

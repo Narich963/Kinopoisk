@@ -7,35 +7,48 @@ namespace Kinopoisk.MVC.Initializers;
 
 public class MapperInitializer : Profile
 {
-    private readonly IMapper _mapper;
     public MapperInitializer()
     {
         CreateFilmsMap();
         CreateCommentsMap();
-
-        CreateMap<FilmEmployeeDTO, FilmEmployee>().ReverseMap();
-        CreateMap<FilmEmployeeRoleDTO, FilmEmployeeRole>().ReverseMap();
-        CreateMap<FilmEmployeeViewModel, FilmEmployeeDTO>().ReverseMap();
-
-        CreateMap<GenreDTO, Genre>().ReverseMap();
-        CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
+        CreateFilmEmployeesMap();
+        CreateGenresMap();
+        CreateCountriesMap();
+        CreateRatingsMap();
 
         CreateMap<UserDTO, User>().ReverseMap();
+    }
 
-        CreateMap<FilmEmployeeRoleViewModel, FilmEmployeeRoleDTO>().ReverseMap();
-        CreateMap<FilmEmployeeViewModel, FilmEmployeeDTO>().ReverseMap();
-        CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
+    private void CreateRatingsMap()
+    {
+        CreateMap<RatingDTO, Rating>().ReverseMap();
+        CreateMap<RatingViewModel, RatingDTO>().ReverseMap();
+    }
 
+    private void CreateCountriesMap()
+    {
         CreateMap<CountryDTO, Country>().ReverseMap();
         CreateMap<CountryViewModel, CountryDTO>()
             .ReverseMap()
             .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CountryToFlagLink(src.IsoCode)));
+    }
 
-        CreateMap<RatingDTO, Rating>().ReverseMap();
-        CreateMap<RatingViewModel, RatingDTO>().ReverseMap();
+    private void CreateGenresMap()
+    {
+        CreateMap<GenreDTO, Genre>().ReverseMap();
+        CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
 
         CreateMap<FilmGenreDTO, FilmGenre>().ReverseMap();
         CreateMap<FilmGenreViewModel, FilmGenreDTO>().ReverseMap();
+    }
+
+    private void CreateFilmEmployeesMap()
+    {
+        CreateMap<FilmEmployeeDTO, FilmEmployee>().ReverseMap();
+        CreateMap<FilmEmployeeViewModel, FilmEmployeeDTO>().ReverseMap();
+
+        CreateMap<FilmEmployeeRoleDTO, FilmEmployeeRole>().ReverseMap();
+        CreateMap<FilmEmployeeRoleViewModel, FilmEmployeeRoleDTO>().ReverseMap();
     }
     private void CreateFilmsMap()
     {
