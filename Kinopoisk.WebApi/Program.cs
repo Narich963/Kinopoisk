@@ -1,6 +1,5 @@
 using Duende.IdentityServer.Models;
 using Kinopoisk.Core.Enitites;
-using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.Repositories;
