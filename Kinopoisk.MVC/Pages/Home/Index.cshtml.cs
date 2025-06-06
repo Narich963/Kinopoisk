@@ -55,13 +55,13 @@ public class IndexModel : PageModel
                 Start = 0,
                 Length = 10,
                 Order = new List<OrderModel>
-            {
-                new OrderModel { Column = 0, Dir = isAscenging ? "asc" : "desc" }
-            },
+                {
+                    new OrderModel { Column = 0, Dir = isAscenging ? "asc" : "desc" }
+                },
                 Columns = new()
-            {
-                new ColumnModel{Data = columnName, Name = "", Orderable = true}
-            }
+                {
+                    new ColumnModel{Data = columnName, Name = "", Orderable = true}
+                }
             };
 
             var result = await _filmService.GetPagedAsync(filter);

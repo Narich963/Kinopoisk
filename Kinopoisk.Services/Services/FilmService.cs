@@ -16,7 +16,7 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
     private readonly IUnitOfWork _uow;
     private readonly ILogger<FilmService> _logger;
 
-    public FilmService(IUnitOfWork uow, IMapper mapper, IFilmRepository repository, ILogger<FilmService> logger) : base(uow, mapper, logger)
+    public FilmService(IUnitOfWork uow, IMapper mapper, IFilmRepository repository, ILogger<FilmService> logger) : base(uow, mapper, logger, repository)
     {
         _mapper = mapper;
         _repository = repository;

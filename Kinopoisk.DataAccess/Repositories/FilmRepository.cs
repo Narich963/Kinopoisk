@@ -239,7 +239,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                 case "usersRating":
                     orderBy = f => f.Ratings.Average(r => r.Value);
                     break;
-                case "directorName":
+                case "director.filmEmployee.name":
                     orderBy = f => f.Employees
                         .Where(e => e.IsDirector)
                         .Select(e => e.FilmEmployee.Name)

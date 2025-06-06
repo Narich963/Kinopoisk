@@ -17,12 +17,14 @@ public abstract class BaseService<TEntity, TDto, TRequest> : IService<TDto, TReq
     private IRepository<TEntity, TRequest> _repository;
     private readonly ILogger _logger;
 
-    protected BaseService(IUnitOfWork uow, IMapper mapper, ILogger logger)
+    protected BaseService(IUnitOfWork uow, IMapper mapper, ILogger logger, IRepository<TEntity, TRequest> repository = null)
     {
         _uow = uow;
         _mapper = mapper;
         _logger = logger;
-        _repository = _uow.GetRepository<TEntity, TRequest>();
+        _repository = repository == null
+            ? _uow.GetRepository<TEntity, TRequest>()
+            : repository;
     }
 
     public async Task<DataTablesResult<TDto>> GetPagedAsync(TRequest request)

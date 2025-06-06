@@ -16,7 +16,7 @@ public class RatingService : BaseService<Rating, RatingDTO, DataTablesRequestMod
     public RatingService(IUnitOfWork uow,
                          IMapper mapper,
                          IRatingRepository repository,
-                         ILogger<RatingService> logger) : base(uow, mapper, logger)
+                         ILogger<RatingService> logger) : base(uow, mapper, logger, repository)
     {
         _repository = repository;
         _uow = uow;

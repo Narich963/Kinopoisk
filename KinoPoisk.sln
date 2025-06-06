@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinopoisk.MVC", "Kinopoisk.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinopoisk.WebApi", "Kinopoisk.WebApi\Kinopoisk.WebApi.csproj", "{C6B73857-4381-49D0-8B23-F31CA872F4B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinopoisk.UnitTests", "Kinopoisk.UnitTests\Kinopoisk.UnitTests.csproj", "{1D8D403C-275C-4218-B107-039027FA1634}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C6B73857-4381-49D0-8B23-F31CA872F4B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6B73857-4381-49D0-8B23-F31CA872F4B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6B73857-4381-49D0-8B23-F31CA872F4B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D8D403C-275C-4218-B107-039027FA1634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D8D403C-275C-4218-B107-039027FA1634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D8D403C-275C-4218-B107-039027FA1634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D8D403C-275C-4218-B107-039027FA1634}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
