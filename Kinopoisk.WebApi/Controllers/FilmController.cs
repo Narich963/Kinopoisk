@@ -43,7 +43,7 @@ public class FilmController : Controller
     public async Task<IActionResult> Create([FromBody] FilmCreateRequest request)
     {
         var filmDto = _mapper.Map<FilmDTO>(request);
-        var result = await _filmsService.AddAsync(filmDto);
+        var result = await _filmsService.AddOrEditAsync(filmDto, true);
         if (result.IsSuccess)
         {
             var filmResponse = _mapper.Map<FilmResponse>(result.Value);

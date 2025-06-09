@@ -27,6 +27,14 @@ public class MapperInitializer : Profile
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => $"{Math.Floor(src.Duration / 60)}h {src.Duration % 60}min"))
             .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Employees.Where(ar => !ar.IsDirector).OrderBy(ar => ar.Role)))
             .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.Employees.FirstOrDefault(e => e.IsDirector)));
+
+        CreateMap<FilmCreateRequest, FilmDTO>()
+            .ForMember(dest => dest.SelectedActorIds, opt => opt.MapFrom(src => src.ActorIds))
+            .ForMember(dest => dest.SelectedGenreIds, opt => opt.MapFrom(src => src.GenreIds))
+            .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => new List<FilmEmployeeRoleDTO> { 
+                new FilmEmployeeRoleDTO { FilmEmployeeId = src.DirectorId, IsDirector = true} 
+            }))
+            .ReverseMap();
     }
     private void CreateCommentsMap()
     {
