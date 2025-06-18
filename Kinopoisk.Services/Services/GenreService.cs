@@ -18,7 +18,7 @@ public class GenreService : BaseService<Genre, GenreDTO, DataTablesRequestModel>
     public GenreService(IUnitOfWork uow, IMapper mapper, ILogger<GenreService> logger) : base(uow, mapper, logger)
     {
         _uow = uow;
-        _repository = _uow.GetRepository<Genre, DataTablesRequestModel>();
+        _repository = _uow.GetGenericRepository<Genre, DataTablesRequestModel>();
         _logger = logger;
     }
 

@@ -22,14 +22,14 @@ public class CommentRepository : GenericRepository<Comment, CommentFilter>, ICom
             .Where(q => q.FilmId == filter.FilmId)
             .AsQueryable();
 
-        Order(filter, query);
-        Search(filter, query);
+        query = Order(filter, query);
+        query = Search(filter, query);
 
         return await base.GetPagedAsync(filter, query);
     }
 
     #region Search and order
-    public void Search(CommentFilter filter, IQueryable<Comment> query)
+    public IQueryable<Comment> Search(CommentFilter filter, IQueryable<Comment> query)
     {
         if (!string.IsNullOrEmpty(filter.Search?.Value))
         {
@@ -38,8 +38,9 @@ public class CommentRepository : GenericRepository<Comment, CommentFilter>, ICom
                 || c.User.UserName.Contains(searchValue)
                 || c.CreatedAt.ToString().ToLower().Contains(searchValue));
         }
+        return query;
     }
-    public void Order(CommentFilter filter, IQueryable<Comment> query)
+    public IQueryable<Comment> Order(CommentFilter filter, IQueryable<Comment> query)
     {
         Expression<Func<Comment, object>> orderBy = null;
 
@@ -61,6 +62,7 @@ public class CommentRepository : GenericRepository<Comment, CommentFilter>, ICom
                 ? query.OrderBy(orderBy)
                 : query.OrderByDescending(orderBy);
         }
+        return query;
     }
     #endregion
 }

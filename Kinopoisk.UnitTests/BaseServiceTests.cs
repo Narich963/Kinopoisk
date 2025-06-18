@@ -25,7 +25,9 @@ public class BaseServiceTests
             Id = 1,
             Name = "Test"
         };
-        mocks.repo.Setup(r => r.GetByIdAsync(1, null)).ReturnsAsync(genre);
+        var repo = new Mock<IRepository<Genre, DataTablesRequestModel>>();
+        mocks.uow.Setup(m => m.GetGenericRepository<Genre, DataTablesRequestModel>()).Returns(repo.Object);
+        repo.Setup(r => r.GetByIdAsync(1, null)).ReturnsAsync(genre);
 
         var service = new GenreService(mocks.uow.Object, mocks.mapper, mocks.logger.Object);
 
@@ -47,10 +49,11 @@ public class BaseServiceTests
             Id = 1,
             Name = "Test"
         };
-        var filmsRepo = new Mock<IFilmRepository>();
-        filmsRepo.Setup(f => f.GetByIdAsync(1)).ReturnsAsync(film);
+        var repo = new Mock<IFilmRepository>();
+        mocks.uow.Setup(m => m.GetSpecificRepository<Film>()).Returns(repo.Object);
+        repo.Setup(f => f.GetByIdAsync(1)).ReturnsAsync(film);
 
-        var service = new FilmService(mocks.uow.Object, mocks.mapper, filmsRepo.Object, mocks.logger.Object);
+        var service = new FilmService(mocks.uow.Object, mocks.mapper, mocks.logger.Object);
 
         // Act
         var result = await service.GetByIdAsync(1);
@@ -81,7 +84,9 @@ public class BaseServiceTests
             RecordsTotal = 20,
             RecordsFiltered = 5
         };
-        mocks.repo.Setup(r => r.GetPagedAsync(filter, null)).ReturnsAsync(requiredResult);
+        var repo = new Mock<IRepository<Genre, DataTablesRequestModel>>();
+        mocks.uow.Setup(m => m.GetGenericRepository<Genre, DataTablesRequestModel>()).Returns(repo.Object);
+        repo.Setup(r => r.GetPagedAsync(filter, null)).ReturnsAsync(requiredResult);
 
         var service = new GenreService(mocks.uow.Object, mocks.mapper, mocks.logger.Object);
 
@@ -112,7 +117,6 @@ public class BaseServiceTests
             Order = filter.Order,
             Search = filter.Search
         };
-        var filmsRepo = new Mock<IFilmRepository>();
 
         DataTablesResult<Film> requiredResult = new()
         {
@@ -124,9 +128,11 @@ public class BaseServiceTests
             RecordsTotal = 50,
             RecordsFiltered = 5
         };
-        filmsRepo.Setup(r => r.GetPagedAsync(filmFilter, null)).ReturnsAsync(requiredResult);
+        var repo = new Mock<IFilmRepository>();
+        mocks.uow.Setup(m => m.GetGenericRepository<Film, FilmFilter>()).Returns(repo.Object);
+        repo.Setup(r => r.GetPagedAsync(filmFilter, null)).ReturnsAsync(requiredResult);
 
-        var service = new FilmService(mocks.uow.Object, mocks.mapper, filmsRepo.Object, mocks.logger.Object);
+        var service = new FilmService(mocks.uow.Object, mocks.mapper, mocks.logger.Object);
 
         // Act
         var result = await service.GetPagedAsync(filmFilter);
@@ -148,7 +154,9 @@ public class BaseServiceTests
             Id = 1,
             Name = "Test"
         };
-        mocks.repo.Setup(r => r.AddAsync(It.IsAny<Genre>())).ReturnsAsync((Genre g) => g);
+        var repo = new Mock<IRepository<Genre, DataTablesRequestModel>>();
+        mocks.uow.Setup(m => m.GetGenericRepository<Genre, DataTablesRequestModel>()).Returns(repo.Object);
+        repo.Setup(r => r.AddAsync(It.IsAny<Genre>())).ReturnsAsync((Genre g) => g);
         mocks.uow.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
         var service = new GenreService(mocks.uow.Object, mocks.mapper, mocks.logger.Object);
@@ -160,12 +168,12 @@ public class BaseServiceTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal("Test", result.Value.Name);
-        mocks.repo.Verify(r => r.AddAsync(It.IsAny<Genre>()), Times.Once());
+        repo.Verify(r => r.AddAsync(It.IsAny<Genre>()), Times.Once());
         mocks.uow.Verify(u => u.SaveChangesAsync(), Times.Once());
     }
     #endregion
 
-    private (IMapper mapper, Mock<IRepository<T, TRequest>> repo, Mock<IUnitOfWork> uow, Mock<ILogger<TService>> logger) 
+    private (IMapper mapper, Mock<IUnitOfWork> uow, Mock<ILogger<TService>> logger) 
         Arrange<T, TRequest, TService>() 
         where TRequest : DataTablesRequestModel 
         where T : class
@@ -179,10 +187,7 @@ public class BaseServiceTests
         var uow = new Mock<IUnitOfWork>();
         var logger = new Mock<ILogger<TService>>();
 
-        var repo = new Mock<IRepository<T, TRequest>>();
-        uow.Setup(u => u.GetRepository<T, TRequest>()).Returns(repo.Object);
-
-        return (mapper, repo, uow, logger);
+        return (mapper, uow, logger);
     }
     private DataTablesRequestModel GetFilter()
     {

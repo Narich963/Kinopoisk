@@ -18,7 +18,7 @@ public class CountryService : BaseService<Country, CountryDTO, DataTablesRequest
     {
         _uow = uow;
         _logger = logger;
-        _repository = _uow.GetRepository<Country, DataTablesRequestModel>();
+        _repository = _uow.GetGenericRepository<Country, DataTablesRequestModel>();
     }
     public async override Task<Result> DeleteAsync(int? id)
     {

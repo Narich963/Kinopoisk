@@ -17,7 +17,7 @@ public class FilmEmployeeService : BaseService<FilmEmployee, FilmEmployeeDTO, Da
     public FilmEmployeeService(IUnitOfWork uow, IMapper mapper, ILogger<FilmEmployeeService> logger) : base(uow, mapper, logger)
     {
         _uow = uow;
-        _repository = _uow.GetRepository<FilmEmployee, DataTablesRequestModel>();
+        _repository = _uow.GetGenericRepository<FilmEmployee, DataTablesRequestModel>();
         _logger = logger;
     }
 

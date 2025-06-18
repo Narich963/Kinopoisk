@@ -23,7 +23,7 @@ public class UnitOfWork : IUnitOfWork
         };
     }
     public UserManager<User> UserManager => _userManager;
-    public IRepository<TEntity, TRequest> GetRepository<TEntity, TRequest>() 
+    public IRepository<TEntity, TRequest> GetGenericRepository<TEntity, TRequest>() 
         where TEntity : class
         where TRequest : DataTablesRequestModel
     {
@@ -38,6 +38,15 @@ public class UnitOfWork : IUnitOfWork
         var repository = new GenericRepository<TEntity, TRequest>(_context);
         _repositories.Add(typeof(TEntity), repository);
         return repository;
+    }
+    public object GetSpecificRepository<TEntity>() where TEntity : class
+    {
+        var type = typeof(TEntity);
+        if (_repositories.TryGetValue(type, out var repo))
+        {
+            return repo;
+        }
+        throw new Exception($"There is no specific repository for type {type}.");
     }
 
     public void Dispose()
