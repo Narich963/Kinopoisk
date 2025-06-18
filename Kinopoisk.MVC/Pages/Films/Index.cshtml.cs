@@ -20,6 +20,7 @@ public class IndexModel : PageModel
     private readonly IOmdbService _omdbService;
     private readonly IMapper _mapper;
     private readonly IDocumentService _documentService;
+    private const string ADMIN_ROlE = "admin";
 
     public IndexModel(IFilmService filmService, IMapper mapper, IOmdbService omdbService, IRatingService ratingService, IDocumentService documentService)
     {
@@ -72,7 +73,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostDeleteFilmAsync(int? id)
     {
-        if (!User.IsInRole("admin"))
+        if (!User.IsInRole(ADMIN_ROlE))
             return Unauthorized();
 
         var result = await _filmService.DeleteAsync(id);
@@ -84,7 +85,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostImportFilmAsync([FromBody] string idOrTitle)
     {
-        if (!User.IsInRole("admin"))
+        if (!User.IsInRole(ADMIN_ROlE))
             return Unauthorized();
 
         if (string.IsNullOrWhiteSpace(idOrTitle))
@@ -100,14 +101,14 @@ public class IndexModel : PageModel
 
     public void OnGetExportToPdf()
     {
-        if (!User.IsInRole("admin"))
+        if (!User.IsInRole(ADMIN_ROlE))
             throw new UnauthorizedAccessException("You do not have permission to export to PDF.");
 
         _documentService.GeneratePdfAndShow();
     }
     public IActionResult OnGetExportToExcel()
     {
-        if (!User.IsInRole("admin"))
+        if (!User.IsInRole(ADMIN_ROlE))
             return Unauthorized();
 
         var excelBytes = _documentService.ExportToExcel();

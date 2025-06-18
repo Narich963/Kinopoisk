@@ -15,11 +15,10 @@ public class RatingService : BaseService<Rating, RatingDTO, DataTablesRequestMod
     private readonly IUnitOfWork _uow;
     public RatingService(IUnitOfWork uow,
                          IMapper mapper,
-                         IRatingRepository repository,
-                         ILogger<RatingService> logger) : base(uow, mapper, logger, repository)
+                         ILogger<RatingService> logger) : base(uow, mapper, logger)
     {
-        _repository = repository;
         _uow = uow;
+        _repository = _uow.GetSpecificRepository<Rating>() as IRatingRepository;
     }
 
     public async Task<Result<double>> CalculateSitesRating(int filmId)

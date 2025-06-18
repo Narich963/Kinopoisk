@@ -14,10 +14,10 @@ public class CommentService : BaseService<Comment, CommentDTO, CommentFilter>, I
     private readonly IMapper _mapper;
     private readonly ICommentRepository _repository;
 
-    public CommentService(IUnitOfWork uow, IMapper mapper, ICommentRepository repository, ILogger<CommentService> logger) : base(uow, mapper, logger, repository)
+    public CommentService(IUnitOfWork uow, IMapper mapper, ILogger<CommentService> logger) : base(uow, mapper, logger)
     {
         _mapper = mapper;
-        _repository = repository;
+        _repository = uow.GetSpecificRepository<Comment>() as ICommentRepository;
     }
 
     public async Task<IEnumerable<CommentDTO>> GetAllAsync()
