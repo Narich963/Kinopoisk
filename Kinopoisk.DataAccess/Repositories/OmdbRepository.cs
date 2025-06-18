@@ -42,17 +42,20 @@ public class OmdbRepository : IOmdbRepository
             {
                 if (!await _context.Genres.AnyAsync(g => g.Name == genre))
                 {
-                    await _context.Genres.AddAsync(new Genre { Name = genre});
+                    genres.Add(new FilmGenre
+                    {
+                        Genre = new Genre { Name = genre }
+                    });
+                }
+                else
+                {
+                    var existingGenre = await _context.Genres.FirstOrDefaultAsync(g => g.Name == genre);
+                    if (existingGenre != null)
+                        genres.Add(new FilmGenre { GenreId = existingGenre.Id});
                 }
 
-                genres.Add(new FilmGenre
-                {
-                    GenreId = await _context.Genres.Where(g => g.Name == genre).Select(g => g.Id).FirstOrDefaultAsync(),
-                });
             }
         }
-        // It's neccessary to save changes here to ensure that genres are added before creating the film.
-        await _context.SaveChangesAsync();
 
         var actorsResponse = omdbResponse.Actors?.Split(',').Select(a => a.Trim()).ToList();
         var filmEmployees = new List<FilmEmployeeRole>();
@@ -62,32 +65,48 @@ public class OmdbRepository : IOmdbRepository
             {
                 if (!await _context.FilmEmployees.AnyAsync(fe => fe.Name == actor))
                 {
-                    await _context.FilmEmployees.AddAsync(new FilmEmployee { Name = actor });
+                    filmEmployees.Add(new FilmEmployeeRole
+                    {
+                        FilmEmployee = new FilmEmployee { Name = actor },
+                        Role = 1,
+                        IsDirector = false
+                    });
                 }
-
-                filmEmployees.Add(new FilmEmployeeRole
+                else
                 {
-                    FilmEmployeeID = await _context.FilmEmployees.Where(f => f.Name == actor).Select(f => f.Id).FirstOrDefaultAsync(),
-                    Role = 1,
-                    IsDirector = false
-                });
+                    var existingFilm = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name == actor);
+                    if (existingFilm != null)
+                        filmEmployees.Add(new FilmEmployeeRole
+                        {
+                            IsDirector = false,
+                            Role = 1,
+                            FilmEmployeeID = existingFilm.Id
+                        });
+                }
             }
         }
 
         var directorResponse = omdbResponse.Director?.Trim();
         if (!await _context.FilmEmployees.AnyAsync(f => f.Name == directorResponse))
         {
-            await _context.FilmEmployees.AddAsync(new FilmEmployee { Name = directorResponse });
+            filmEmployees.Add(new FilmEmployeeRole
+            {
+                FilmEmployee = new FilmEmployee { Name = directorResponse},
+                Role = 1,
+                IsDirector = true
+            });
         }
-        filmEmployees.Add(new FilmEmployeeRole
+        else
         {
-            FilmEmployeeID = await _context.FilmEmployees.Where(f => f.Name == directorResponse).Select(f => f.Id).FirstOrDefaultAsync(),
-            Role = 1,
-            IsDirector = true
-        });
-        // It's neccessary to save changes here to ensure that film employees are added before creating the film.
-        await _context.SaveChangesAsync();
-
+            var existingDirector = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name == directorResponse);
+            if (existingDirector != null)
+                filmEmployees.Add(new FilmEmployeeRole
+                {
+                    FilmEmployeeID = existingDirector.Id,
+                    Role = 1,
+                    IsDirector = true
+                });
+        }
 
         var durationString = omdbResponse.Runtime.Replace(" min", "").Trim();
         var film = new Film
