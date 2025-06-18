@@ -13,33 +13,25 @@
 
     $('.select2-selection__rendered').sortable({
         containment: 'parent',
+        items: '.select2-selection__choice',
+        tolerance: 'pointer',
         update: function () {
             const $select = $(this).closest('.select2-container').prev('select');
 
-            let newOrder = [];
-            $(this).children('.select2-selection__choice').each(function () {
-
+            const newOrder = $(this).children('.select2-selection__choice').map(function () {
                 const title = $(this).attr('title');
-                const option = $select.find('option').filter(function () {
+                const matchingOption = $select.find('option').filter(function () {
                     return $(this).text() === title;
-                }).first();
+                });
+                return matchingOption.val();
+            }).get();
 
+            const options = $select.find('option');
+            newOrder.forEach(val => {
+                const option = options.filter(`[value="${val}"]`);
                 if (option.length) {
-                    newOrder.push(option.val());
+                    $select.append(option);
                 }
-            });
-
-            let selectedOptions = [];
-            newOrder.forEach(id => {
-                let option = $select.find(`option[value="${id}"]`);
-                if (option.length) selectedOptions.push(option);
-            });
-
-            $select.find('option:selected').remove();
-
-            selectedOptions.forEach(option => {
-                option.prop('selected', true);
-                $select.append(option);
             });
 
             $select.trigger('change');

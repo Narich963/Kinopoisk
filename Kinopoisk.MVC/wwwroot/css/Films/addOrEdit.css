@@ -1,0 +1,10 @@
+﻿.select2-selection__rendered {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.select2-selection__choice {
+    width: 100%;
+}
