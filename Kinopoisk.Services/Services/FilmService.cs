@@ -16,12 +16,12 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
     private readonly IUnitOfWork _uow;
     private readonly ILogger<FilmService> _logger;
 
-    public FilmService(IUnitOfWork uow, IMapper mapper, IFilmRepository repository, ILogger<FilmService> logger) : base(uow, mapper, logger, repository)
+    public FilmService(IUnitOfWork uow, IMapper mapper, ILogger<FilmService> logger) : base(uow, mapper, logger)
     {
         _mapper = mapper;
-        _repository = repository;
         _uow = uow;
         _logger = logger;
+        _repository = _uow.GetSpecificRepository<Film>() as IFilmRepository;
     }
 
     #region Get Methods
@@ -80,6 +80,7 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
             _logger.Log(LogLevel.Error, "An error occurred while trying to update film genres. Message: {Error}", genresResult.Error);
             return Result.Failure<FilmDTO>(genresResult.Error);
         }
+        await _uow.SaveChangesAsync();
         _logger.Log(LogLevel.Information, "Film {Action} successfully", isNew.Value ? "added" : "updated");
         return Result.Success(_mapper.Map<FilmDTO>(filmResult.Value));
     }
@@ -92,7 +93,6 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
         if (genresResult.IsFailure)
             return Result.Failure(genresResult.Error);
 
-        await _uow.SaveChangesAsync();  
         return Result.Success();
     }
 
@@ -106,7 +106,6 @@ public class FilmService : BaseService<Film, FilmDTO, FilmFilter>, IFilmService
         if (result.IsFailure)
             return Result.Failure(result.Error);
 
-        await _uow.SaveChangesAsync();
         return Result.Success();
     }
     #endregion
