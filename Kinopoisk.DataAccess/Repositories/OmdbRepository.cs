@@ -40,7 +40,8 @@ public class OmdbRepository : IOmdbRepository
         {
             foreach (var genre in genresResponse)
             {
-                if (!await _context.Genres.AnyAsync(g => g.Name == genre))
+                var existingGenre = await _context.Genres.FirstOrDefaultAsync(g => g.Name == genre);
+                if (existingGenre == null)
                 {
                     genres.Add(new FilmGenre
                     {
@@ -49,11 +50,8 @@ public class OmdbRepository : IOmdbRepository
                 }
                 else
                 {
-                    var existingGenre = await _context.Genres.FirstOrDefaultAsync(g => g.Name == genre);
-                    if (existingGenre != null)
-                        genres.Add(new FilmGenre { GenreId = existingGenre.Id});
+                    genres.Add(new FilmGenre { GenreId = existingGenre.Id });
                 }
-
             }
         }
 
@@ -63,7 +61,8 @@ public class OmdbRepository : IOmdbRepository
         {
             foreach (var actor in actorsResponse)
             {
-                if (!await _context.FilmEmployees.AnyAsync(fe => fe.Name == actor))
+                var existingActor = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name == actor);
+                if (existingActor == null)
                 {
                     filmEmployees.Add(new FilmEmployeeRole
                     {
@@ -74,38 +73,35 @@ public class OmdbRepository : IOmdbRepository
                 }
                 else
                 {
-                    var existingFilm = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name == actor);
-                    if (existingFilm != null)
-                        filmEmployees.Add(new FilmEmployeeRole
-                        {
-                            IsDirector = false,
-                            Role = 1,
-                            FilmEmployeeID = existingFilm.Id
-                        });
+                    filmEmployees.Add(new FilmEmployeeRole
+                    {
+                        IsDirector = false,
+                        Role = 1,
+                        FilmEmployeeID = existingActor.Id
+                    });
                 }
             }
         }
 
         var directorResponse = omdbResponse.Director?.Trim();
-        if (!await _context.FilmEmployees.AnyAsync(f => f.Name == directorResponse))
+        var existingDirector = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name == directorResponse);
+        if (existingDirector == null)
         {
             filmEmployees.Add(new FilmEmployeeRole
             {
-                FilmEmployee = new FilmEmployee { Name = directorResponse},
+                FilmEmployee = new FilmEmployee { Name = directorResponse },
                 Role = 1,
                 IsDirector = true
             });
         }
         else
         {
-            var existingDirector = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name == directorResponse);
-            if (existingDirector != null)
-                filmEmployees.Add(new FilmEmployeeRole
-                {
-                    FilmEmployeeID = existingDirector.Id,
-                    Role = 1,
-                    IsDirector = true
-                });
+            filmEmployees.Add(new FilmEmployeeRole
+            {
+                FilmEmployeeID = existingDirector.Id,
+                Role = 1,
+                IsDirector = true
+            });
         }
 
         var durationString = omdbResponse.Runtime.Replace(" min", "").Trim();
