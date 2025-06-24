@@ -122,6 +122,7 @@ builder.Services.AddTransient<IFilmRepository, FilmRepository>();
 builder.Services.AddTransient<IFilmService, FilmService>();
 builder.Services.AddTransient<IFilmEmployeeService, FilmEmployeeService>();
 builder.Services.AddTransient<IGenreService, GenreService>();
+builder.Services.AddTransient<ICountryService, CountryService>();
 builder.Services.AddAutoMapper(typeof(MapperInitializer));
 
 var app = builder.Build();
