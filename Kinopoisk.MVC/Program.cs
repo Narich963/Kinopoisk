@@ -5,6 +5,7 @@ using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.DataSeeding;
 using Kinopoisk.DataAccess.Repositories;
+using Kinopoisk.MVC.Hubs;
 using Kinopoisk.MVC.Initializers;
 using Kinopoisk.Services.Interfaces;
 using Kinopoisk.Services.Services;
@@ -26,6 +27,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connectionString, m => m.MigrationsAssembly("Kinopoisk.DataAccess")))
@@ -93,5 +95,6 @@ app.MapGet("/", () =>
 {
     return Results.Redirect("/Home/Index");
 });
+app.MapHub<CommentHub>("/comments");
 
 app.Run();

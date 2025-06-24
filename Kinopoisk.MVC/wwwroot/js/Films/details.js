@@ -1,4 +1,15 @@
 ﻿$(document).ready(function () {
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/comments")
+        .build();
+
+    connection.on("Receive", function (userName, message) {
+        table.ajax.reload(null, false);
+    });
+
+    connection.start()
+        .catch(err => console.error(err.toString()));
+
     const filmId = $("#comments-container").data("film-id");
 
     let table = $('#comments-container').DataTable({
@@ -29,25 +40,15 @@
         e.preventDefault();
 
         const form = $(this);
-        const formData = form.serialize();
+        const formData = form.serializeArray();
+        let comment = formData.find(x => x.name == "Comment.Text")?.value;
 
-        $.ajax({
-            url: '/Films/Details?id=' + filmId + '&handler=AddComment',
-            type: 'POST',
-            data: formData,
-            success: function (response) {
-                if (response.success) {
-                    $('#addCommentModal').modal('hide');
-                    form[0].reset();
-                    table.ajax.reload(null, false);
-                } else {
-                    alert('Failed to add comment');
-                }
-            },
-            error: function () {
-                alert('Failed to add comment');
-            }
-        });
+        connection.invoke("Send", comment, filmId)
+            .then(() => {
+                $('#addCommentModal').modal('hide');
+                form[0].reset();
+            })
+            .catch(err => console.error(err.toString()));
     });
 
     $('#ratingForm').submit(function (e) {
@@ -70,19 +71,6 @@
         });
     });
 
-    //function loadRating() {
-    //    $.ajax({
-    //        url: '/Films/Details?handler=GetRating',
-    //        type: 'GET',
-    //        data: { filmId: filmId },
-    //        success: function (response) {
-    //            $('#filmRating').text(response);
-    //        },
-    //        error: function () {
-    //            alert('Failed to load rating');
-    //        }
-    //    });
-    //}
     function loadUserRating() {
         $.ajax({
             url: '/Films/Details?handler=GetUserRating',
@@ -103,5 +91,4 @@
     }
 
     loadUserRating();
-    //loadRating();
 });
