@@ -81,7 +81,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     public async Task<Result> UpdateGenres(int filmId, List<int> genreIds)
     {
         if (!genreIds.Any())
-            return Result.Failure("Genre IDs list is empty");
+            return Result.Success();
 
         var existingGenres = await _context.FilmGenres
             .Where(fg => fg.FilmId == filmId)

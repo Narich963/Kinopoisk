@@ -1,6 +1,7 @@
 using Duende.IdentityServer.Models;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
+using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.DataAccess;
 using Kinopoisk.DataAccess.Repositories;
 using Kinopoisk.Services.Interfaces;
@@ -119,6 +120,8 @@ builder.Services.AddIdentityServer()
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IFilmRepository, FilmRepository>();
 builder.Services.AddTransient<IFilmService, FilmService>();
+builder.Services.AddTransient<IFilmEmployeeService, FilmEmployeeService>();
+builder.Services.AddTransient<IGenreService, GenreService>();
 builder.Services.AddAutoMapper(typeof(MapperInitializer));
 
 var app = builder.Build();
