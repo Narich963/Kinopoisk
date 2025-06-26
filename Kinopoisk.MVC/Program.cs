@@ -14,58 +14,12 @@ using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
 using Serilog;
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
-    .WriteTo.Console()
-    .WriteTo.Seq("http://localhost:5341")
-    .Enrich.FromLogContext()
-    .CreateLogger();
-
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog();
-
-builder.Services.AddRazorPages();
-builder.Services.AddControllersWithViews();
-builder.Services.AddSignalR();
-
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connectionString, m => m.MigrationsAssembly("Kinopoisk.DataAccess")))
-    .AddIdentity<User, IdentityRole<int>>(opts =>
-    {
-        opts.Password.RequireDigit = false;
-        opts.Password.RequiredLength = 5;
-        opts.Password.RequireNonAlphanumeric = false;
-        opts.Password.RequireUppercase = false;
-        opts.Password.RequireLowercase = false;
-    })
-    .AddEntityFrameworkStores<KinopoiskContext>();
- 
-builder.Services.AddMemoryCache();
-
-builder.Services.AddAutoMapper(opts =>
-{
-    opts.AddExpressionMapping();
-}, typeof(MapperInitializer));
-
-builder.Services.AddHttpClient();
-
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<IFilmRepository, FilmRepository>();
-builder.Services.AddTransient<IFilmService, FilmService>();
-builder.Services.AddTransient<ICommentRepository, CommentRepository>();
-builder.Services.AddTransient<ICommentService, CommentService>();
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IRatingRepository, RatingRepository>();
-builder.Services.AddTransient<IRatingService, RatingService>();
-builder.Services.AddTransient<IGenreService, GenreService>();
-builder.Services.AddTransient<ICountryService, CountryService>();
-builder.Services.AddTransient<IFilmEmployeeService, FilmEmployeeService>();
-builder.Services.AddTransient<IOmdbService, OmdbService>();
-builder.Services.AddTransient<IOmdbRepository, OmdbRepository>();
-builder.Services.AddTransient<IDocumentService, DocumentService>();
-
-QuestPDF.Settings.License = LicenseType.Community;
+ConfigureLogger();
+ConfigurePages();
+ConfigureDatabase();
+ConfigureServices();
 
 var app = builder.Build();
 
@@ -98,3 +52,64 @@ app.MapGet("/", () =>
 app.MapHub<CommentHub>("/comments");
 
 app.Run();
+
+void ConfigureLogger()
+{
+    Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.Seq("http://localhost:5341")
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+    builder.Host.UseSerilog();
+}
+void ConfigurePages()
+{
+    builder.Services.AddLocalization(opts => opts.ResourcesPath = "Resources");
+    builder.Services.AddRazorPages();
+    builder.Services
+        .AddControllersWithViews()
+        .AddViewLocalization();
+}
+void ConfigureDatabase()
+{
+    string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connectionString, m => m.MigrationsAssembly("Kinopoisk.DataAccess")))
+        .AddIdentity<User, IdentityRole<int>>(opts =>
+        {
+            opts.Password.RequireDigit = false;
+            opts.Password.RequiredLength = 5;
+            opts.Password.RequireNonAlphanumeric = false;
+            opts.Password.RequireUppercase = false;
+            opts.Password.RequireLowercase = false;
+        })
+        .AddEntityFrameworkStores<KinopoiskContext>();
+}
+void ConfigureServices()
+{
+    builder.Services.AddHttpClient();
+    builder.Services.AddMemoryCache();
+    builder.Services.AddSignalR();
+    builder.Services.AddAutoMapper(opts =>
+    {
+        opts.AddExpressionMapping();
+    }, typeof(MapperInitializer));
+
+    builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+    builder.Services.AddTransient<IFilmRepository, FilmRepository>();
+    builder.Services.AddTransient<IFilmService, FilmService>();
+    builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+    builder.Services.AddTransient<ICommentService, CommentService>();
+    builder.Services.AddTransient<IUserService, UserService>();
+    builder.Services.AddTransient<IRatingRepository, RatingRepository>();
+    builder.Services.AddTransient<IRatingService, RatingService>();
+    builder.Services.AddTransient<IGenreService, GenreService>();
+    builder.Services.AddTransient<ICountryService, CountryService>();
+    builder.Services.AddTransient<IFilmEmployeeService, FilmEmployeeService>();
+    builder.Services.AddTransient<IOmdbService, OmdbService>();
+    builder.Services.AddTransient<IOmdbRepository, OmdbRepository>();
+    builder.Services.AddTransient<IDocumentService, DocumentService>();
+
+    QuestPDF.Settings.License = LicenseType.Community;
+}
