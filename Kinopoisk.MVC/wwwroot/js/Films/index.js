@@ -18,6 +18,9 @@ $(document).ready(function () {
         paging: true,
         ordering: true,
         stateSave: true,
+        language: {
+            url: `//cdn.datatables.net/plug-ins/2.3.2/i18n/${currentCulture}.json`,
+        },
         ajax: {
             url: '/Films/Index?handler=GetFilms',
             type: 'POST',
@@ -70,8 +73,8 @@ $(document).ready(function () {
                     if (!window.isAdmin) return '';
 
                     return `
-                    <a class="btn btn-sm btn-warning" href="/Films/AddOrEdit?id=${row.id}" onclick="event.stopPropagation()">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" onclick="event.stopPropagation(); remove(${row.id})">Delete</a>`;
+                    <a class="btn btn-sm btn-warning" href="/Films/AddOrEdit?id=${row.id}" onclick="event.stopPropagation()">${localizedStrings.edit} </a>
+                    <a class="btn btn-sm btn-danger" href="#" onclick="event.stopPropagation(); remove(${row.id})">${localizedStrings.delete}</a>`;
                 }
             }
         ],

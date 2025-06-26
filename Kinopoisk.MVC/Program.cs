@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
 using Serilog;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+ConfigureLocalization();
 
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -112,4 +115,19 @@ void ConfigureServices()
     builder.Services.AddTransient<IDocumentService, DocumentService>();
 
     QuestPDF.Settings.License = LicenseType.Community;
+}
+void ConfigureLocalization()
+{
+    var supportedCultures = new List<CultureInfo>
+    {
+        new("en"),
+        new("ru")
+    };
+    var options = new RequestLocalizationOptions
+    {
+        DefaultRequestCulture = new("en"),
+        SupportedCultures = supportedCultures,
+        SupportedUICultures = supportedCultures
+    };
+    app.UseRequestLocalization(options);
 }

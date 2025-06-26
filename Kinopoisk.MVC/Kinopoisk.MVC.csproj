@@ -25,4 +25,11 @@
     <ProjectReference Include="..\Kinopoisk.Services\Kinopoisk.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\Pages\Accounts\" />
+    <Folder Include="Resources\Pages\Countries\" />
+    <Folder Include="Resources\Pages\FilmEmployees\" />
+    <Folder Include="Resources\Pages\Genres\" />
+  </ItemGroup>
+
 </Project>
