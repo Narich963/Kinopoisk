@@ -119,12 +119,6 @@
 @section Scripts {
     <script>
         window.isAdmin = @User.IsInRole("admin").ToString().ToLower();
-        const localizedStrings = {
-            edit: '@Localizer["Edit"]',
-            delete: '@Localizer["Delete"]'
-        };
-        const currentCulture = '@System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName';
-        console.log(currentCulture);
     </script>
     <script src="~/js/Films/index.js"></script>
 }
