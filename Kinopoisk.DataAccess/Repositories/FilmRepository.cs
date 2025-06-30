@@ -235,6 +235,8 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         {
             var order = filter.Order[0];
             var columnName = filter.Columns[order.Column].Data;
+
+            var culture = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
             switch (columnName)
             {
                 case "country":
@@ -254,10 +256,10 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                         .FirstOrDefault();
                     break;
                 case "name":
-                    orderBy = f => f.Name.Localizations.FirstOrDefault().Value;
+                    orderBy = f => f.Name.Localizations.FirstOrDefault(x => x.CultureInfo == culture).Value;
                     break;
                 case "description":
-                    orderBy = f => f.Description.Localizations.FirstOrDefault().Value;
+                    orderBy = f => f.Description.Localizations.FirstOrDefault(x => x.CultureInfo == culture).Value;
                     break;
                 default:
                     orderBy = f => EF.Property<Film>(f, ToPascaleCase(columnName));

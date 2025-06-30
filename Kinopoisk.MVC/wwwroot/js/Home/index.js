@@ -4,7 +4,7 @@
 
 function loadTopFilms() {
     $.ajax({
-        url: '/Home/Index?handler=GetTopFilmsByRate',
+        url: `/Home/Index?handler=GetTopFilmsByRate&culture=${currentCulture}`,
         method: 'GET',
         success: function (data) {
             renderFilms(data.rateFilms, 'top-rated-films');
@@ -12,7 +12,7 @@ function loadTopFilms() {
     });
 
     $.ajax({
-        url: '/Home/Index?handler=GetTopFilmsByDate',
+        url: `/Home/Index?handler=GetTopFilmsByDate&culture=${currentCulture}`,
         method: 'GET',
         success: function (data) {
             renderFilms(data.dateFilms, 'top-newest-films');
