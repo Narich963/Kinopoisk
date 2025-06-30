@@ -16,7 +16,7 @@ $(document).ready(function () {
         serverSide: true,
         processing: true,
         ajax: {
-            url: '/FilmEmployees/Index?handler=GetEmployees',
+            url: `/FilmEmployees/Index?handler=GetEmployees&culture=${currentCulture}`,
             type: 'POST',
             contentType: 'application/json',
             data: function (d) {

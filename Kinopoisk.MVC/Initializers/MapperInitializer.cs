@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Enitites.Localization;
 using Kinopoisk.MVC.Models;
 using System.Globalization;
 
@@ -28,7 +29,11 @@ public class MapperInitializer : Profile
 
     private void CreateCountriesMap()
     {
-        CreateMap<CountryDTO, Country>().ReverseMap();
+        CreateMap<Country, CountryDTO>()
+            .ForMember(dest => dest.Name,
+                opt => opt.MapFrom(src => MapLocalization(src.Name)))
+            .ReverseMap();
+
         CreateMap<CountryViewModel, CountryDTO>()
             .ReverseMap()
             .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CountryToFlagLink(src.IsoCode)));
@@ -38,7 +43,7 @@ public class MapperInitializer : Profile
     {
         CreateMap<Genre, GenreDTO>()
             .ForMember(dest => dest.Name,
-                opt => opt.MapFrom(src => src.Name.Localizations.FirstOrDefault(x => x.CultureInfo == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value))
+                opt => opt.MapFrom(src => MapLocalization(src.Name)))
             .ReverseMap();
         CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
 
@@ -48,7 +53,10 @@ public class MapperInitializer : Profile
 
     private void CreateFilmEmployeesMap()
     {
-        CreateMap<FilmEmployeeDTO, FilmEmployee>().ReverseMap();
+        CreateMap<FilmEmployee, FilmEmployeeDTO>()
+            .ForMember(dest => dest.Name,
+                opt => opt.MapFrom(src => MapLocalization(src.Name)))
+            .ReverseMap();
         CreateMap<FilmEmployeeViewModel, FilmEmployeeDTO>().ReverseMap();
 
         CreateMap<FilmEmployeeRoleDTO, FilmEmployeeRole>().ReverseMap();
@@ -58,9 +66,9 @@ public class MapperInitializer : Profile
     {
         CreateMap<Film, FilmDTO>()
             .ForMember(dest => dest.Description,
-                opt => opt.MapFrom(src => src.Description.Localizations.FirstOrDefault(x => x.CultureInfo == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value))
+                opt => opt.MapFrom(src => MapLocalization(src.Description)))
             .ForMember(dest => dest.Name,
-                opt => opt.MapFrom(src => src.Name.Localizations.FirstOrDefault(x => x.CultureInfo == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value))
+                opt => opt.MapFrom(src => MapLocalization(src.Name)))
             .ReverseMap();
         CreateMap<FilmsViewModel, FilmDTO>()
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => StringDurationToNumber(src.Duration)))
@@ -94,5 +102,10 @@ public class MapperInitializer : Profile
             durationInt += Convert.ToInt32(durationStr.Substring(hoursIndex + 1, minutesIndex - hoursIndex - 1).Trim());
         }
         return durationInt;
+    }
+    private string MapLocalization(LocalizationSet localizationSet)
+    {
+        return localizationSet.Localizations
+            .FirstOrDefault(x => x.CultureInfo == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value;
     }
 }

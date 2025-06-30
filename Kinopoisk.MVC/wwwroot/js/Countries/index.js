@@ -16,7 +16,7 @@ $(document).ready(function () {
         serverSide: true,
         processing: true,
         ajax: {
-            url: '/Countries/Index?handler=GetCountries',
+            url: `/Countries/Index?handler=GetCountries&culture=${currentCulture}`,
             type: 'POST',
             contentType: 'application/json',
             data: function (d) {

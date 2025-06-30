@@ -4,6 +4,7 @@ using Kinopoisk.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kinopoisk.DataAccess.Migrations
 {
     [DbContext(typeof(KinopoiskContext))]
-    partial class KinopoiskContextModelSnapshot : ModelSnapshot
+    [Migration("20250630104715_Added_Localization_To_FilmEmployees_Name")]
+    partial class Added_Localization_To_FilmEmployees_Name
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,12 +72,12 @@ namespace Kinopoisk.DataAccess.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int?>("NameId")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NameId");
 
                     b.ToTable("Countries");
                 });
@@ -491,15 +494,6 @@ namespace Kinopoisk.DataAccess.Migrations
                     b.Navigation("Film");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Country", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", "Name")
-                        .WithMany()
-                        .HasForeignKey("NameId");
-
-                    b.Navigation("Name");
                 });
 
             modelBuilder.Entity("Kinopoisk.Core.Enitites.Film", b =>

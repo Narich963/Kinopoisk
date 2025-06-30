@@ -87,12 +87,32 @@ public class OmdbRepository : IOmdbRepository
         {
             foreach (var actor in actorsResponse)
             {
-                var existingActor = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name == actor);
+                var existingActor = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name.Localizations.Any(x => x.Value == actor));
                 if (existingActor == null)
                 {
                     filmEmployees.Add(new FilmEmployeeRole
                     {
-                        FilmEmployee = new FilmEmployee { Name = actor },
+                        FilmEmployee = new FilmEmployee
+                        {
+                            Name = new LocalizationSet
+                            {
+                                Entity = nameof(Genre),
+                                Property = nameof(Genre.Name),
+                                Localizations = new()
+                                {
+                                    new Localization
+                                    {
+                                        CultureInfo = EN,
+                                        Value = actor
+                                    },
+                                    new Localization
+                                    {
+                                        CultureInfo = RU,
+                                        Value = $"На русском {actor}"
+                                    }
+                                }
+                            }
+                        },
                         Role = 1,
                         IsDirector = false
                     });
@@ -110,12 +130,32 @@ public class OmdbRepository : IOmdbRepository
         }
 
         var directorResponse = omdbResponse.Director?.Trim();
-        var existingDirector = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name == directorResponse);
+        var existingDirector = await _context.FilmEmployees.FirstOrDefaultAsync(f => f.Name.Localizations.Any(x => x.Value == directorResponse));
         if (existingDirector == null)
         {
             filmEmployees.Add(new FilmEmployeeRole
             {
-                FilmEmployee = new FilmEmployee { Name = directorResponse },
+                FilmEmployee = new FilmEmployee
+                {
+                    Name = new LocalizationSet
+                    {
+                        Entity = nameof(Genre),
+                        Property = nameof(Genre.Name),
+                        Localizations = new()
+                                {
+                                    new Localization
+                                    {
+                                        CultureInfo = EN,
+                                        Value = directorResponse
+                                    },
+                                    new Localization
+                                    {
+                                        CultureInfo = RU,
+                                        Value = $"На русском {directorResponse}"
+                                    }
+                                }
+                    }
+                },
                 Role = 1,
                 IsDirector = true
             });

@@ -171,17 +171,17 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
 
         // By country
         if (!string.IsNullOrEmpty(filter.Country))
-            query = query.Where(q => q.Country.Name.ToLower().Contains(filter.Country.ToLower()));
+            query = query.Where(q => q.Country.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null);
 
         // By actors
         if (!string.IsNullOrEmpty(filter.Actor))
             query = query.Where(q => q.Employees
-                .Any(e => !e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(filter.Actor.ToLower())));
+                .Any(e => !e.IsDirector && e.FilmEmployee.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null));
 
         // By director
         if (!string.IsNullOrEmpty(filter.Director))
             query = query.Where(q => q.Employees
-                .Any(e => e.IsDirector && e.FilmEmployee.Name.ToLower().Contains(filter.Director.ToLower())));
+                .Any(e => e.IsDirector && e.FilmEmployee.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null));
 
         return query;
     }
@@ -192,8 +192,8 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             string searchValue = filter.Search.Value.ToLower();
             query = query.Where(f => f.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(searchValue)) != null ||  
                                      f.PublishDate.Value.Year.ToString().Contains(searchValue) ||
-                                     f.Country.Name.ToLower().Contains(searchValue) ||
-                                     f.Employees.Any(e => e.FilmEmployee.Name.ToLower().Contains(searchValue)));
+                                     f.Country.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null ||
+                                     f.Employees.Any(e => e.FilmEmployee.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null));
         }
 
         return query;
@@ -212,7 +212,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             {
                 case "country":
                 case "countryFlagLink":
-                    orderBy = f => f.Country.Name;
+                    orderBy = f => f.Country.Name.Localizations.FirstOrDefault(x => x.CultureInfo == culture).Value;
                     break;
                 case "imdbRating":
                     orderBy = f => f.IMDBRating;
