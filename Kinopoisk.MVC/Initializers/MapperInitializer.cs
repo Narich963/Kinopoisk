@@ -2,6 +2,7 @@
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.MVC.Models;
+using System.Globalization;
 
 namespace Kinopoisk.MVC.Initializers;
 
@@ -54,7 +55,9 @@ public class MapperInitializer : Profile
     {
         CreateMap<Film, FilmDTO>()
             .ForMember(dest => dest.Description,
-                opt => opt.MapFrom(src => src.Description.Localizations.FirstOrDefault(l => l.CultureInfo == System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName).Value))
+                opt => opt.MapFrom(src => src.Description.Localizations.FirstOrDefault(x => x.CultureInfo == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value))
+            .ForMember(dest => dest.Name,
+                opt => opt.MapFrom(src => src.Name.Localizations.FirstOrDefault(x => x.CultureInfo == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value))
             .ReverseMap();
         CreateMap<FilmsViewModel, FilmDTO>()
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => StringDurationToNumber(src.Duration)))

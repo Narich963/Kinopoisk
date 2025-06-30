@@ -7,19 +7,16 @@ public class Film
 {
     public int Id { get; set; }
     public string? Poster { get; set; }
-
-    [MaxLength(50)]
-    public string Name { get; set; }
-
-    //[MaxLength(500)]
-    //public string? Description { get; set; }
     public DateTime? PublishDate { get; set; }
     public double Duration { get; set; }
     public double? IMDBRating { get; set; }
     public double SitesRating { get; set; } = 0;
 
-    public int DescriptionId { get; set; }
-    public LocalizationSet Description { get; set; }
+    public int? DescriptionId { get; set; }
+    public LocalizationSet? Description { get; set; }
+
+    public int? NameId { get; set; }
+    public LocalizationSet? Name { get; set; }
 
     public int CountryId { get; set; }
     public Country? Country { get; set; }

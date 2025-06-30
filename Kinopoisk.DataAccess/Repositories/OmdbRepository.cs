@@ -26,12 +26,14 @@ public class OmdbRepository : IOmdbRepository
 
         if (releaseDate.HasValue)
         {
-            if (await _context.Films.AnyAsync(f => f.Name == omdbResponse.Title && f.PublishDate == releaseDate.Value))  
+            if (await _context.Films.AnyAsync(f => f.Name.Localizations.FirstOrDefault(f => f.CultureInfo == "en").Value == omdbResponse.Title 
+                && f.PublishDate == releaseDate.Value))  
                 return Result.Failure<Film>("Film already exists in the database.");
         }
         else
         {
-            if (await _context.Films.AnyAsync(f => f.Name == omdbResponse.Title))
+            if (await _context.Films.AnyAsync(f => f.Name.Localizations.FirstOrDefault(f => f.CultureInfo == "en").Value 
+                == omdbResponse.Title))
                 return Result.Failure<Film>("Film already exists in the database.");
         }
 
@@ -108,7 +110,24 @@ public class OmdbRepository : IOmdbRepository
         var durationString = omdbResponse.Runtime.Replace(" min", "").Trim();
         var film = new Film
         {
-            Name = omdbResponse.Title,
+            Name = new LocalizationSet
+            {
+                Entity = "Film",
+                Property = "Name",
+                Localizations = new()
+                {
+                    new Localization
+                    {
+                        CultureInfo = "en",
+                        Value = omdbResponse.Title
+                    },
+                    new Localization
+                    {
+                        CultureInfo = "ru",
+                        Value = omdbResponse.Title
+                    },
+                }
+            },
             PublishDate = DateTime.TryParse(omdbResponse.Released, out var date) ? date : null,
             Description = new LocalizationSet
             {

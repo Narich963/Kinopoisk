@@ -22,7 +22,7 @@ $(document).ready(function () {
             url: `//cdn.datatables.net/plug-ins/2.3.2/i18n/${currentCulture}.json`,
         },
         ajax: {
-            url: '/Films/Index?handler=GetFilms',
+            url: `/Films/Index?handler=GetFilms&culture=${currentCulture}`,
             type: 'POST',
             contentType: 'application/json',
             data: function (d) {
@@ -46,7 +46,7 @@ $(document).ready(function () {
                 }
             },
             { data: 'name' },
-            //{ data: 'description' },
+            { data: 'description' },
             {
                 data: 'publishDate',
                 render: function (data) {

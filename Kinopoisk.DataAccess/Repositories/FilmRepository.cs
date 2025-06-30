@@ -4,6 +4,7 @@ using Kinopoisk.Core.Filters;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Globalization;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
@@ -26,7 +27,10 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
             .Include(f => f.Country)
-            .AsQueryable();
+            .Include(f => f.Description)
+                .ThenInclude(d => d.Localizations)
+            .Include(f => f.Name)
+                .ThenInclude(n => n.Localizations);
 
         query = Filter(filter, query);
         query = Search(filter, query);
@@ -46,7 +50,9 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                 .ThenInclude(a => a.FilmEmployee)
             .Include(f => f.Country)
             .Include(f => f.Description)
-                .ThenInclude(d => d.Localizations);
+                .ThenInclude(d => d.Localizations)
+            .Include(f => f.Name)
+                .ThenInclude(n => n.Localizations);
 
         var filmResult = await base.GetByIdAsync(id, query);
 
@@ -186,7 +192,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     {
         // By name
         if (!string.IsNullOrEmpty(filter.Name))
-            query = query.Where(q => q.Name.ToLower().Contains(filter.Name));
+            query = query.Where(q => q.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null);
 
         // By year
         if (!string.IsNullOrEmpty(filter.Year))
@@ -213,7 +219,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         if (!string.IsNullOrEmpty(filter.Search?.Value))
         {
             string searchValue = filter.Search.Value.ToLower();
-            query = query.Where(f => f.Name.ToLower().Contains(searchValue) ||  
+            query = query.Where(f => f.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(searchValue)) != null ||  
                                      f.PublishDate.Value.Year.ToString().Contains(searchValue) ||
                                      f.Country.Name.ToLower().Contains(searchValue) ||
                                      f.Employees.Any(e => e.FilmEmployee.Name.ToLower().Contains(searchValue)));
@@ -246,6 +252,12 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                         .Where(e => e.IsDirector)
                         .Select(e => e.FilmEmployee.Name)
                         .FirstOrDefault();
+                    break;
+                case "name":
+                    orderBy = f => f.Name.Localizations.FirstOrDefault().Value;
+                    break;
+                case "description":
+                    orderBy = f => f.Description.Localizations.FirstOrDefault().Value;
                     break;
                 default:
                     orderBy = f => EF.Property<Film>(f, ToPascaleCase(columnName));
