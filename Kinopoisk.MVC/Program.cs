@@ -79,7 +79,7 @@ void ConfigurePages()
 void ConfigureDatabase()
 {
     string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseSqlServer(connectionString, m => m.MigrationsAssembly("Kinopoisk.DataAccess")))
+    builder.Services.AddDbContext<KinopoiskContext>(opts => opts.UseLazyLoadingProxies().UseSqlServer(connectionString, m => m.MigrationsAssembly("Kinopoisk.DataAccess")))
         .AddIdentity<User, IdentityRole<int>>(opts =>
         {
             opts.Password.RequireDigit = false;

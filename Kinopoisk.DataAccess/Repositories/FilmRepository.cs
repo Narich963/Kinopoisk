@@ -20,17 +20,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     #region Get Methods
     public async Task<DataTablesResult<Film>> GetPagedAsync(FilmFilter filter, IQueryable<Film> query = null)
     {
-        query = _context.Films
-            .Include(f => f.Genres)
-                .ThenInclude(g => g.Genre)
-            .Include(f => f.Ratings)
-            .Include(f => f.Employees)
-                .ThenInclude(a => a.FilmEmployee)
-            .Include(f => f.Country)
-            .Include(f => f.Description)
-                .ThenInclude(d => d.Localizations)
-            .Include(f => f.Name)
-                .ThenInclude(n => n.Localizations);
+        query = _context.Films;
 
         query = Filter(filter, query);
         query = Search(filter, query);
@@ -41,18 +31,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
 
     public async Task<Result<Film>> GetByIdAsync(int id)
     {
-        var query = _context.Films
-            .Include(f => f.Genres)
-                .ThenInclude(g => g.Genre)
-            .Include(f => f.Comments)
-                .ThenInclude(c => c.User)
-            .Include(f => f.Employees)
-                .ThenInclude(a => a.FilmEmployee)
-            .Include(f => f.Country)
-            .Include(f => f.Description)
-                .ThenInclude(d => d.Localizations)
-            .Include(f => f.Name)
-                .ThenInclude(n => n.Localizations);
+        var query = _context.Films;
 
         var filmResult = await base.GetByIdAsync(id, query);
 
@@ -63,14 +42,6 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     public async Task<IEnumerable<Film>> GetAllAsync()
     {
         var films = await _context.Films
-            .Include(f => f.Genres)
-                .ThenInclude(g => g.Genre)
-            .Include(f => f.Comments)
-                .ThenInclude(c => c.User)
-            .Include(f => f.Ratings)
-            .Include(f => f.Employees)
-                .ThenInclude(a => a.FilmEmployee)
-            .Include(f => f.Country)
             .ToListAsync();
         return films;
     }

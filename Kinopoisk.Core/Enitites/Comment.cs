@@ -11,8 +11,8 @@ public class Comment
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public int FilmId { get; set; }
-    public Film? Film { get; set; }
+    public virtual Film? Film { get; set; }
 
     public int UserId { get; set; }
-    public User? User { get; set; }
+    public virtual User? User { get; set; }
 }

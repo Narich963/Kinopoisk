@@ -11,6 +11,9 @@ public class OmdbRepository : IOmdbRepository
 {
     private readonly KinopoiskContext _context;
 
+    private const string EN = "en";
+    private const string RU = "ru";
+
     public OmdbRepository(KinopoiskContext context)
     {
         _context = context;
@@ -43,12 +46,32 @@ public class OmdbRepository : IOmdbRepository
         {
             foreach (var genre in genresResponse)
             {
-                var existingGenre = await _context.Genres.FirstOrDefaultAsync(g => g.Name == genre);
+                var existingGenre = await _context.Genres.FirstOrDefaultAsync(g => g.Name.Localizations.Any(x => x.Value == genre));
                 if (existingGenre == null)
                 {
                     genres.Add(new FilmGenre
                     {
-                        Genre = new Genre { Name = genre }
+                        Genre = new Genre
+                        {
+                            Name = new LocalizationSet
+                            {
+                                Entity = nameof(Genre),
+                                Property = nameof(Genre.Name),
+                                Localizations = new()
+                                {
+                                    new Localization
+                                    {
+                                        CultureInfo = EN,
+                                        Value = genre
+                                    },
+                                    new Localization
+                                    {
+                                        CultureInfo = RU,
+                                        Value = $"На русском {genre}"
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
                 else
@@ -112,18 +135,18 @@ public class OmdbRepository : IOmdbRepository
         {
             Name = new LocalizationSet
             {
-                Entity = "Film",
-                Property = "Name",
+                Entity = nameof(Film),
+                Property = nameof(Film.Name),
                 Localizations = new()
                 {
                     new Localization
                     {
-                        CultureInfo = "en",
+                        CultureInfo = EN,
                         Value = omdbResponse.Title
                     },
                     new Localization
                     {
-                        CultureInfo = "ru",
+                        CultureInfo = RU,
                         Value = omdbResponse.Title
                     },
                 }
@@ -131,19 +154,19 @@ public class OmdbRepository : IOmdbRepository
             PublishDate = DateTime.TryParse(omdbResponse.Released, out var date) ? date : null,
             Description = new LocalizationSet
             {
-                Entity = "Film",
-                Property = "Description",
+                Entity = nameof(Film),
+                Property = nameof(Film.Description),
                 Localizations = new List<Localization>()
                 {
                     new Localization
                     {
-                        CultureInfo = "en",
+                        CultureInfo = EN,
                         Value = omdbResponse.Plot
                     },
                     new Localization
                     {
-                        CultureInfo = "ru",
-                        Value = $"Тут должно быть на русском: {omdbResponse.Plot}"
+                        CultureInfo = RU,
+                        Value = $"На русском: {omdbResponse.Plot}"
                     },
                 }
             },

@@ -6,8 +6,8 @@ public class FilmEmployeeRole
     public bool IsDirector { get; set; }
 
     public int FilmEmployeeID { get; set; }
-    public FilmEmployee? FilmEmployee { get; set; }
+    public virtual FilmEmployee? FilmEmployee { get; set; }
 
     public int FilmId { get; set; }
-    public Film? Film { get; set; }
+    public virtual Film? Film { get; set; }
 }

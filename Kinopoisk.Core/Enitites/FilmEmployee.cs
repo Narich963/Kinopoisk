@@ -9,7 +9,7 @@ public class FilmEmployee
     [MaxLength(50)]
     public string Name { get; set; }
 
-    public List<FilmEmployeeRole> ActorRoles { get; set; }
+    public virtual List<FilmEmployeeRole> ActorRoles { get; set; }
 
     public FilmEmployee()
     {

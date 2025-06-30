@@ -7,5 +7,5 @@ public class Localization
     public string Value { get; set; }
 
     public int LocalizationSetId { get; set; }
-    public LocalizationSet? LocalizationSet { get; set; }
+    public virtual LocalizationSet? LocalizationSet { get; set; }
 }

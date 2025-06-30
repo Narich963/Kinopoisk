@@ -36,7 +36,10 @@ public class MapperInitializer : Profile
 
     private void CreateGenresMap()
     {
-        CreateMap<GenreDTO, Genre>().ReverseMap();
+        CreateMap<Genre, GenreDTO>()
+            .ForMember(dest => dest.Name,
+                opt => opt.MapFrom(src => src.Name.Localizations.FirstOrDefault(x => x.CultureInfo == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value))
+            .ReverseMap();
         CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
 
         CreateMap<FilmGenreDTO, FilmGenre>().ReverseMap();

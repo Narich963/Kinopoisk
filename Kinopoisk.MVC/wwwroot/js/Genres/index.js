@@ -16,7 +16,7 @@ $(document).ready(function () {
         serverSide: true,
         processing: true,
         ajax: {
-            url: '/Genres/Index?handler=GetGenres',
+            url: `/Genres/Index?handler=GetGenres&culture=${currentCulture}`,
             type: 'POST',
             contentType: 'application/json',
             data: function (d) {

@@ -6,5 +6,5 @@ public class LocalizationSet
     public string Entity { get; set; }
     public string Property { get; set; }
 
-    public List<Localization> Localizations { get; set; } = new();
+    public virtual List<Localization> Localizations { get; set; } = new();
 }
