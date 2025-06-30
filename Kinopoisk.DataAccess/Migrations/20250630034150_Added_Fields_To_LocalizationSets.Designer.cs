@@ -4,6 +4,7 @@ using Kinopoisk.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kinopoisk.DataAccess.Migrations
 {
     [DbContext(typeof(KinopoiskContext))]
-    partial class KinopoiskContextModelSnapshot : ModelSnapshot
+    [Migration("20250630034150_Added_Fields_To_LocalizationSets")]
+    partial class Added_Fields_To_LocalizationSets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

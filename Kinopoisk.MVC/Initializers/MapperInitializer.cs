@@ -52,7 +52,10 @@ public class MapperInitializer : Profile
     }
     private void CreateFilmsMap()
     {
-        CreateMap<FilmDTO, Film>().ReverseMap();
+        CreateMap<Film, FilmDTO>()
+            .ForMember(dest => dest.Description,
+                opt => opt.MapFrom(src => src.Description.Localizations.FirstOrDefault(l => l.CultureInfo == System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName).Value))
+            .ReverseMap();
         CreateMap<FilmsViewModel, FilmDTO>()
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => StringDurationToNumber(src.Duration)))
             .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.Actors.Concat(new[] { src.Director })))

@@ -46,7 +46,7 @@ $(document).ready(function () {
                 }
             },
             { data: 'name' },
-            { data: 'description' },
+            //{ data: 'description' },
             {
                 data: 'publishDate',
                 render: function (data) {

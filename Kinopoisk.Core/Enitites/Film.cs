@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Kinopoisk.Core.Enitites.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Kinopoisk.Core.Enitites;
 
@@ -10,12 +11,15 @@ public class Film
     [MaxLength(50)]
     public string Name { get; set; }
 
-    [MaxLength(500)]
-    public string? Description { get; set; }
+    //[MaxLength(500)]
+    //public string? Description { get; set; }
     public DateTime? PublishDate { get; set; }
     public double Duration { get; set; }
     public double? IMDBRating { get; set; }
     public double SitesRating { get; set; } = 0;
+
+    public int DescriptionId { get; set; }
+    public LocalizationSet Description { get; set; }
 
     public int CountryId { get; set; }
     public Country? Country { get; set; }

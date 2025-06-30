@@ -3,6 +3,7 @@ using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Kinopoisk.Core.Enitites.Localization;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
@@ -109,7 +110,24 @@ public class OmdbRepository : IOmdbRepository
         {
             Name = omdbResponse.Title,
             PublishDate = DateTime.TryParse(omdbResponse.Released, out var date) ? date : null,
-            Description = omdbResponse.Plot,
+            Description = new LocalizationSet
+            {
+                Entity = "Film",
+                Property = "Description",
+                Localizations = new List<Localization>()
+                {
+                    new Localization
+                    {
+                        CultureInfo = "en",
+                        Value = omdbResponse.Plot
+                    },
+                    new Localization
+                    {
+                        CultureInfo = "ru",
+                        Value = $"Тут должно быть на русском: {omdbResponse.Plot}"
+                    },
+                }
+            },
             Poster = omdbResponse.Poster,
             IMDBRating = double.TryParse(omdbResponse.imdbRating, out var rating) ? rating : (double?)null,
             Employees = filmEmployees,

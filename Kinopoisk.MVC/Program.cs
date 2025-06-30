@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
 using Serilog;
 using System.Globalization;
+using Microsoft.EntityFrameworkCore.Proxies;
 
 var builder = WebApplication.CreateBuilder(args);
 

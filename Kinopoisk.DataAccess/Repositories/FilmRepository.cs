@@ -44,7 +44,9 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                 .ThenInclude(c => c.User)
             .Include(f => f.Employees)
                 .ThenInclude(a => a.FilmEmployee)
-            .Include(f => f.Country);
+            .Include(f => f.Country)
+            .Include(f => f.Description)
+                .ThenInclude(d => d.Localizations);
 
         var filmResult = await base.GetByIdAsync(id, query);
 

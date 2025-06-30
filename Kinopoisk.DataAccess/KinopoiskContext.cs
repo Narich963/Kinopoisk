@@ -1,4 +1,5 @@
 ﻿using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Enitites.Localization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,10 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<User> Users { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<FilmGenre> FilmGenres { get; set; }
+
+    public DbSet<Localization> Localizations { get; set; }
+    public DbSet<LocalizationSet> LocalizationSets { get; set; }
+    public DbSet<Culture> Cultures { get; set; }
 
     public KinopoiskContext(DbContextOptions<KinopoiskContext> opts) : base(opts)
     {
