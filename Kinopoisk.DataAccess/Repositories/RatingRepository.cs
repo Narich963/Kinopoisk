@@ -23,7 +23,7 @@ public class RatingRepository : GenericRepository<Rating, DataTablesRequestModel
         if (film == null)
             return Result.Failure<double>("Film not found");
 
-        film.SitesRating = film.Ratings.Count == 0 
+        film.SitesRating = film.Ratings.Count == 0
             ? 0
             : Math.Round(film.Ratings.Sum(r => r.Value) / film.Ratings.Count, 1);
         return Result.Success(film.SitesRating);

@@ -20,7 +20,6 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     public DbSet<Localization> Localizations { get; set; }
     public DbSet<LocalizationSet> LocalizationSets { get; set; }
-    //public DbSet<Culture> Cultures { get; set; }
 
     public KinopoiskContext(DbContextOptions<KinopoiskContext> opts) : base(opts)
     {
@@ -34,6 +33,18 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
         builder.Entity<FilmEmployeeRole>()
             .HasKey(ar => new { ar.FilmEmployeeID, ar.FilmId });
 
+        builder.Entity<FilmEmployeeRole>()
+            .HasOne(f => f.Film)
+            .WithMany(f => f.Employees)
+            .HasForeignKey(f => f.FilmId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<FilmGenre>()
+            .HasOne(fg => fg.Film)
+            .WithMany(f => f.Genres)
+            .HasForeignKey(fg => fg.FilmId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.Entity<Rating>()
             .HasKey(r => new { r.UserId, r.FilmId });
 
@@ -42,5 +53,8 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
 
         builder.Entity<LocalizationSet>().ToTable("LocalizationSets");
         builder.Entity<Country>().ToTable("Countries");
+        builder.Entity<Genre>().ToTable("Genres");
+        builder.Entity<Film>().ToTable("Films");
+        builder.Entity<FilmEmployee>().ToTable("FilmEmployees");
     }
 }

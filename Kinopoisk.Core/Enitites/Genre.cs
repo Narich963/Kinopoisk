@@ -1,16 +1,10 @@
 ﻿using Kinopoisk.Core.Enitites.Localization;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using Kinopoisk.Core.Enums;
 
 namespace Kinopoisk.Core.Enitites;
 
-public class Genre
+public class Genre : LocalizationSet
 {
-    public int Id { get; set; }
-
-    public int NameId { get; set; }
-    public virtual LocalizationSet Name { get; set; }
-
     public virtual List<FilmGenre> Films { get; set; }
     public Genre()
     {

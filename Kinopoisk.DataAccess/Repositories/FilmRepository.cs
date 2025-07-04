@@ -165,7 +165,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
     {
         // By name
         if (!string.IsNullOrEmpty(filter.Name))
-            query = query.Where(q => q.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null);
+            query = query.Where(q => q.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName).ToLower().Contains(filter.Name));
 
         // By year
         if (!string.IsNullOrEmpty(filter.Year))
@@ -178,12 +178,12 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         // By actors
         if (!string.IsNullOrEmpty(filter.Actor))
             query = query.Where(q => q.Employees
-                .Any(e => !e.IsDirector && e.FilmEmployee.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null));
+                .Any(e => !e.IsDirector && e.FilmEmployee.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName).ToLower().Contains(filter.Name)));
 
         // By director
         if (!string.IsNullOrEmpty(filter.Director))
             query = query.Where(q => q.Employees
-                .Any(e => e.IsDirector && e.FilmEmployee.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null));
+                .Any(e => e.IsDirector && e.FilmEmployee.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName).ToLower().Contains(filter.Name)));
 
         return query;
     }
@@ -192,10 +192,10 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
         if (!string.IsNullOrEmpty(filter.Search?.Value))
         {
             string searchValue = filter.Search.Value.ToLower();
-            query = query.Where(f => f.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(searchValue)) != null ||  
+            query = query.Where(f => f.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName).ToLower().Contains(searchValue) ||
                                      f.PublishDate.Value.Year.ToString().Contains(searchValue) ||
                                      f.Country.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName).ToLower().Contains(searchValue) ||
-                                     f.Employees.Any(e => e.FilmEmployee.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null));
+                                     f.Employees.Any(e => e.FilmEmployee.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName).ToLower().Contains(searchValue)));
         }
 
         return query;
@@ -225,14 +225,14 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                 case "director.filmEmployee.name":
                     orderBy = f => f.Employees
                         .Where(e => e.IsDirector)
-                        .Select(e => e.FilmEmployee.Name)
+                        .Select(e => e.FilmEmployee.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName))
                         .FirstOrDefault();
                     break;
                 case "name":
-                    orderBy = f => f.Name.Localizations.FirstOrDefault(x => x.Culture == Core.Enums.CultureEnum.En).Value;
+                    orderBy = f => f.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName);
                     break;
                 case "description":
-                    orderBy = f => f.Description.Localizations.FirstOrDefault(x => x.Culture == Core.Enums.CultureEnum.En).Value;
+                    orderBy = f => f.GetLocalizationValue(PropertyEnum.Description, CultureInfo.CurrentCulture.TwoLetterISOLanguageName);
                     break;
                 default:
                     orderBy = f => EF.Property<Film>(f, ToPascaleCase(columnName));

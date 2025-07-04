@@ -45,7 +45,7 @@ public class MapperInitializer : Profile
     {
         CreateMap<Genre, GenreDTO>()
             .ForMember(dest => dest.Name,
-                opt => opt.MapFrom(src => MapLocalization(src.Name)))
+                opt => opt.MapFrom(src => src.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName)))
             .ReverseMap();
         CreateMap<GenreViewModel, GenreDTO>().ReverseMap();
 
@@ -57,7 +57,7 @@ public class MapperInitializer : Profile
     {
         CreateMap<FilmEmployee, FilmEmployeeDTO>()
             .ForMember(dest => dest.Name,
-                opt => opt.MapFrom(src => MapLocalization(src.Name)))
+                opt => opt.MapFrom(src => src.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName)))
             .ReverseMap();
         CreateMap<FilmEmployeeViewModel, FilmEmployeeDTO>().ReverseMap();
 
@@ -68,9 +68,9 @@ public class MapperInitializer : Profile
     {
         CreateMap<Film, FilmDTO>()
             .ForMember(dest => dest.Description,
-                opt => opt.MapFrom(src => MapLocalization(src.Description)))
+                opt => opt.MapFrom(src => src.GetLocalizationValue(PropertyEnum.Description, CultureInfo.CurrentCulture.TwoLetterISOLanguageName)))
             .ForMember(dest => dest.Name,
-                opt => opt.MapFrom(src => MapLocalization(src.Name)))
+                opt => opt.MapFrom(src => src.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName)))
             .ReverseMap();
         CreateMap<FilmsViewModel, FilmDTO>()
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => StringDurationToNumber(src.Duration)))

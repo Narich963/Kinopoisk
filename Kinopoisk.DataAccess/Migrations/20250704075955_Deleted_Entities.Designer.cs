@@ -4,6 +4,7 @@ using Kinopoisk.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kinopoisk.DataAccess.Migrations
 {
     [DbContext(typeof(KinopoiskContext))]
-    partial class KinopoiskContextModelSnapshot : ModelSnapshot
+    [Migration("20250704075955_Deleted_Entities")]
+    partial class Deleted_Entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,108 +52,9 @@ namespace Kinopoisk.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FilmId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.FilmEmployeeRole", b =>
-                {
-                    b.Property<int>("FilmEmployeeID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FilmId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDirector")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
-                    b.HasKey("FilmEmployeeID", "FilmId");
-
-                    b.HasIndex("FilmId");
-
-                    b.ToTable("FilmEmployeeRoles");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.FilmGenre", b =>
-                {
-                    b.Property<int>("FilmId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("FilmId", "GenreId");
-
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("FilmGenres");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Localization.Localization", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Culture")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LocalizationSetId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Property")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocalizationSetId");
-
-                    b.ToTable("Localizations");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Localization.LocalizationSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LocalizationSets", (string)null);
-
-                    b.UseTptMappingStrategy();
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Rating", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FilmId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
-                    b.HasKey("UserId", "FilmId");
-
-                    b.HasIndex("FilmId");
-
-                    b.ToTable("Ratings");
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Kinopoisk.Core.Enitites.User", b =>
@@ -354,142 +258,13 @@ namespace Kinopoisk.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Country", b =>
-                {
-                    b.HasBaseType("Kinopoisk.Core.Enitites.Localization.LocalizationSet");
-
-                    b.Property<string>("IsoCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.ToTable("Countries", (string)null);
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Film", b =>
-                {
-                    b.HasBaseType("Kinopoisk.Core.Enitites.Localization.LocalizationSet");
-
-                    b.Property<int?>("CountryId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Duration")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("IMDBRating")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Poster")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PublishDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("SitesRating")
-                        .HasColumnType("float");
-
-                    b.HasIndex("CountryId");
-
-                    b.ToTable("Films", (string)null);
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.FilmEmployee", b =>
-                {
-                    b.HasBaseType("Kinopoisk.Core.Enitites.Localization.LocalizationSet");
-
-                    b.ToTable("FilmEmployees", (string)null);
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Genre", b =>
-                {
-                    b.HasBaseType("Kinopoisk.Core.Enitites.Localization.LocalizationSet");
-
-                    b.ToTable("Genres", (string)null);
-                });
-
             modelBuilder.Entity("Kinopoisk.Core.Enitites.Comment", b =>
                 {
-                    b.HasOne("Kinopoisk.Core.Enitites.Film", "Film")
-                        .WithMany("Comments")
-                        .HasForeignKey("FilmId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Kinopoisk.Core.Enitites.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Film");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.FilmEmployeeRole", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.FilmEmployee", "FilmEmployee")
-                        .WithMany("ActorRoles")
-                        .HasForeignKey("FilmEmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kinopoisk.Core.Enitites.Film", "Film")
-                        .WithMany("Employees")
-                        .HasForeignKey("FilmId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Film");
-
-                    b.Navigation("FilmEmployee");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.FilmGenre", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Film", "Film")
-                        .WithMany("Genres")
-                        .HasForeignKey("FilmId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Kinopoisk.Core.Enitites.Genre", "Genre")
-                        .WithMany("Films")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Film");
-
-                    b.Navigation("Genre");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Localization.Localization", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", "LocalizationSet")
-                        .WithMany("Localizations")
-                        .HasForeignKey("LocalizationSetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LocalizationSet");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Rating", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Film", "Film")
-                        .WithMany("Ratings")
-                        .HasForeignKey("FilmId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kinopoisk.Core.Enitites.User", "User")
-                        .WithMany("Ratings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Film");
 
                     b.Navigation("User");
                 });
@@ -545,84 +320,9 @@ namespace Kinopoisk.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Country", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", null)
-                        .WithOne()
-                        .HasForeignKey("Kinopoisk.Core.Enitites.Country", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Film", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Country", "Country")
-                        .WithMany("Films")
-                        .HasForeignKey("CountryId");
-
-                    b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", null)
-                        .WithOne()
-                        .HasForeignKey("Kinopoisk.Core.Enitites.Film", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.FilmEmployee", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", null)
-                        .WithOne()
-                        .HasForeignKey("Kinopoisk.Core.Enitites.FilmEmployee", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Genre", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", null)
-                        .WithOne()
-                        .HasForeignKey("Kinopoisk.Core.Enitites.Genre", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Localization.LocalizationSet", b =>
-                {
-                    b.Navigation("Localizations");
-                });
-
             modelBuilder.Entity("Kinopoisk.Core.Enitites.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Ratings");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Country", b =>
-                {
-                    b.Navigation("Films");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Film", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Employees");
-
-                    b.Navigation("Genres");
-
-                    b.Navigation("Ratings");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.FilmEmployee", b =>
-                {
-                    b.Navigation("ActorRoles");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Genre", b =>
-                {
-                    b.Navigation("Films");
                 });
 #pragma warning restore 612, 618
         }
