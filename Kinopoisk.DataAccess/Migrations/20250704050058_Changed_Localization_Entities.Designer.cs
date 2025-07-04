@@ -4,6 +4,7 @@ using Kinopoisk.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kinopoisk.DataAccess.Migrations
 {
     [DbContext(typeof(KinopoiskContext))]
-    partial class KinopoiskContextModelSnapshot : ModelSnapshot
+    [Migration("20250704050058_Changed_Localization_Entities")]
+    partial class Changed_Localization_Entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,9 +67,6 @@ namespace Kinopoisk.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CountryId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("DescriptionId")
                         .HasColumnType("int");
 
@@ -89,8 +89,6 @@ namespace Kinopoisk.DataAccess.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.HasIndex("DescriptionId");
 
@@ -210,8 +208,6 @@ namespace Kinopoisk.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LocalizationSets", (string)null);
-
-                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Kinopoisk.Core.Enitites.Rating", b =>
@@ -433,18 +429,6 @@ namespace Kinopoisk.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Country", b =>
-                {
-                    b.HasBaseType("Kinopoisk.Core.Enitites.Localization.LocalizationSet");
-
-                    b.Property<string>("IsoCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.ToTable("Countries", (string)null);
-                });
-
             modelBuilder.Entity("Kinopoisk.Core.Enitites.Comment", b =>
                 {
                     b.HasOne("Kinopoisk.Core.Enitites.Film", "Film")
@@ -466,10 +450,6 @@ namespace Kinopoisk.DataAccess.Migrations
 
             modelBuilder.Entity("Kinopoisk.Core.Enitites.Film", b =>
                 {
-                    b.HasOne("Kinopoisk.Core.Enitites.Country", "Country")
-                        .WithMany("Films")
-                        .HasForeignKey("CountryId");
-
                     b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", "Description")
                         .WithMany()
                         .HasForeignKey("DescriptionId");
@@ -477,8 +457,6 @@ namespace Kinopoisk.DataAccess.Migrations
                     b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", "Name")
                         .WithMany()
                         .HasForeignKey("NameId");
-
-                    b.Navigation("Country");
 
                     b.Navigation("Description");
 
@@ -626,15 +604,6 @@ namespace Kinopoisk.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Country", b =>
-                {
-                    b.HasOne("Kinopoisk.Core.Enitites.Localization.LocalizationSet", null)
-                        .WithOne()
-                        .HasForeignKey("Kinopoisk.Core.Enitites.Country", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Kinopoisk.Core.Enitites.Film", b =>
                 {
                     b.Navigation("Comments");
@@ -666,11 +635,6 @@ namespace Kinopoisk.DataAccess.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Ratings");
-                });
-
-            modelBuilder.Entity("Kinopoisk.Core.Enitites.Country", b =>
-                {
-                    b.Navigation("Films");
                 });
 #pragma warning restore 612, 618
         }

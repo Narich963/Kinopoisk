@@ -3,7 +3,6 @@ using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.DataAccess;
-using Kinopoisk.DataAccess.DataSeeding;
 using Kinopoisk.DataAccess.Repositories;
 using Kinopoisk.MVC.Hubs;
 using Kinopoisk.MVC.Initializers;
@@ -14,7 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
 using Serilog;
 using System.Globalization;
-using Microsoft.EntityFrameworkCore.Proxies;
+using Kinopoisk.DataAccess.DataSeeding;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -128,7 +128,12 @@ void ConfigureLocalization()
     {
         DefaultRequestCulture = new("en"),
         SupportedCultures = supportedCultures,
-        SupportedUICultures = supportedCultures
+        SupportedUICultures = supportedCultures,
+        RequestCultureProviders =
+        {
+            new QueryStringRequestCultureProvider(),
+            new CookieRequestCultureProvider()
+        }
     };
     app.UseRequestLocalization(options);
 }

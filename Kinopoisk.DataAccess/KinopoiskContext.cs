@@ -20,7 +20,7 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     public DbSet<Localization> Localizations { get; set; }
     public DbSet<LocalizationSet> LocalizationSets { get; set; }
-    public DbSet<Culture> Cultures { get; set; }
+    //public DbSet<Culture> Cultures { get; set; }
 
     public KinopoiskContext(DbContextOptions<KinopoiskContext> opts) : base(opts)
     {
@@ -39,5 +39,8 @@ public class KinopoiskContext : IdentityDbContext<User, IdentityRole<int>, int>
 
         builder.Entity<FilmGenre>()
             .HasKey(fg => new { fg.FilmId, fg.GenreId });
+
+        builder.Entity<LocalizationSet>().ToTable("LocalizationSets");
+        builder.Entity<Country>().ToTable("Countries");
     }
 }

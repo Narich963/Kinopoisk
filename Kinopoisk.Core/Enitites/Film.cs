@@ -18,7 +18,7 @@ public class Film
     public int? NameId { get; set; }
     public virtual LocalizationSet? Name { get; set; }
 
-    public int CountryId { get; set; }
+    public int? CountryId { get; set; }
     public virtual Country? Country { get; set; }
     public virtual List<FilmGenre> Genres { get; set; }
     public virtual List<Comment> Comments { get; set; }

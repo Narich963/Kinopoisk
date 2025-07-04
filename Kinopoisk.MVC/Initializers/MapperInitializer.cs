@@ -2,8 +2,10 @@
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.Enitites;
 using Kinopoisk.Core.Enitites.Localization;
+using Kinopoisk.Core.Enums;
 using Kinopoisk.MVC.Models;
 using System.Globalization;
+using Kinopoisk.DataAccess.Extensions;
 
 namespace Kinopoisk.MVC.Initializers;
 
@@ -31,7 +33,7 @@ public class MapperInitializer : Profile
     {
         CreateMap<Country, CountryDTO>()
             .ForMember(dest => dest.Name,
-                opt => opt.MapFrom(src => MapLocalization(src.Name)))
+                opt => opt.MapFrom(src => src.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName)))
             .ReverseMap();
 
         CreateMap<CountryViewModel, CountryDTO>()
@@ -106,6 +108,6 @@ public class MapperInitializer : Profile
     private string MapLocalization(LocalizationSet localizationSet)
     {
         return localizationSet.Localizations
-            .FirstOrDefault(x => x.CultureInfo == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value;
+            .FirstOrDefault(x => x.Culture.ToString() == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).Value;
     }
 }

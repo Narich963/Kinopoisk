@@ -5,6 +5,8 @@ using Kinopoisk.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Globalization;
+using Kinopoisk.DataAccess.Extensions;
+using Kinopoisk.Core.Enums;
 
 namespace Kinopoisk.DataAccess.Repositories;
 
@@ -171,7 +173,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
 
         // By country
         if (!string.IsNullOrEmpty(filter.Country))
-            query = query.Where(q => q.Country.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null);
+            query = query.Where(q => q.Country.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName).ToLower().Contains(filter.Country));
 
         // By actors
         if (!string.IsNullOrEmpty(filter.Actor))
@@ -192,7 +194,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             string searchValue = filter.Search.Value.ToLower();
             query = query.Where(f => f.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(searchValue)) != null ||  
                                      f.PublishDate.Value.Year.ToString().Contains(searchValue) ||
-                                     f.Country.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null ||
+                                     f.Country.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName).ToLower().Contains(searchValue) ||
                                      f.Employees.Any(e => e.FilmEmployee.Name.Localizations.FirstOrDefault(n => n.Value.ToLower().Contains(filter.Name)) != null));
         }
 
@@ -212,7 +214,7 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
             {
                 case "country":
                 case "countryFlagLink":
-                    orderBy = f => f.Country.Name.Localizations.FirstOrDefault(x => x.CultureInfo == culture).Value;
+                    orderBy = f => f.Country.GetLocalizationValue(PropertyEnum.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName);
                     break;
                 case "imdbRating":
                     orderBy = f => f.IMDBRating;
@@ -227,10 +229,10 @@ public class FilmRepository : GenericRepository<Film, FilmFilter>, IFilmReposito
                         .FirstOrDefault();
                     break;
                 case "name":
-                    orderBy = f => f.Name.Localizations.FirstOrDefault(x => x.CultureInfo == culture).Value;
+                    orderBy = f => f.Name.Localizations.FirstOrDefault(x => x.Culture == Core.Enums.CultureEnum.En).Value;
                     break;
                 case "description":
-                    orderBy = f => f.Description.Localizations.FirstOrDefault(x => x.CultureInfo == culture).Value;
+                    orderBy = f => f.Description.Localizations.FirstOrDefault(x => x.Culture == Core.Enums.CultureEnum.En).Value;
                     break;
                 default:
                     orderBy = f => EF.Property<Film>(f, ToPascaleCase(columnName));
