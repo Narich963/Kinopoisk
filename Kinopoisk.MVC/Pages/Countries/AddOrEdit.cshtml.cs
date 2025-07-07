@@ -1,8 +1,10 @@
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
+using Kinopoisk.Core.DTO.Localization;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
+using Kinopoisk.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,12 +16,14 @@ namespace Kinopoisk.MVC.Pages.Countries;
 public class AddOrEditModel : PageModel
 {
     private readonly ICountryService _countryService;
+    private readonly LocalizationService _localizationService;
     private readonly IMapper _mapper;
 
-    public AddOrEditModel(ICountryService countryService, IMapper mapper)
+    public AddOrEditModel(ICountryService countryService, IMapper mapper, LocalizationService localizationService)
     {
         _countryService = countryService;
         _mapper = mapper;
+        _localizationService = localizationService;
     }
 
     [BindProperty]  
@@ -44,6 +48,11 @@ public class AddOrEditModel : PageModel
 
         Country.IsNew = !id.HasValue;
 
+        if (!Country.IsNew.Value)
+        {
+            Country.NameLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetLocalizations(Country.Id));
+        }
+
         return Page();
     }
     public async Task<IActionResult> OnPostAsync()
@@ -58,6 +67,9 @@ public class AddOrEditModel : PageModel
             result = await _countryService.AddAsync(genre);
         else
             result = await _countryService.UpdateAsync(genre);
+
+        var localizationDtos = _mapper.Map<List<LocalizationDTO>>(Country.NameLocalizations);
+        await _localizationService.UpdateLocalizations(localizationDtos, result.Value.Id);
 
         if (result.IsFailure)
         {

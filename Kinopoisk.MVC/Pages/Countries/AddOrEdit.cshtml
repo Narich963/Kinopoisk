@@ -15,9 +15,17 @@
                 <div class="card-body">
                     <form method="post">
                         <div class="mb-3">
-                            <label asp-for="Country.Name" class="form-label"></label>
+                            @* <label asp-for="Country.Name" class="form-label"></label>
                             <input asp-for="Country.Name" class="form-control" />
-                            <span asp-validation-for="Country.Name" class="text-danger"></span>
+                            <span asp-validation-for="Country.Name" class="text-danger"></span> *@
+                            @for (int i = 0; i < Model.Country.NameLocalizations.Count(); i++)
+                            {
+                                <label asp-for="Country.Name" class="form-label"></label>
+                                <label class="form-label">@Model.Country.NameLocalizations[i].Culture.ToString()</label>
+                                <input asp-for="Country.NameLocalizations[i].Value" class="form-control" />
+                                <input asp-for="Country.NameLocalizations[i].Culture" type="hidden"/>
+                                <span asp-validation-for="Country.NameLocalizations[i].Value" class="text-danger"></span>
+                            }
                         </div>
                         <div class="mb-3">
                             <label asp-for="Country.IsoCode" class="form-label"></label>

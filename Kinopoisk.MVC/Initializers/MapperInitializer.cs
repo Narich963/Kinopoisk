@@ -6,6 +6,7 @@ using Kinopoisk.Core.Enums;
 using Kinopoisk.MVC.Models;
 using System.Globalization;
 using Kinopoisk.DataAccess.Extensions;
+using Kinopoisk.Core.DTO.Localization;
 
 namespace Kinopoisk.MVC.Initializers;
 
@@ -19,10 +20,18 @@ public class MapperInitializer : Profile
         CreateGenresMap();
         CreateCountriesMap();
         CreateRatingsMap();
+        CreateLocalizationMap();
 
         CreateMap<UserDTO, User>().ReverseMap();
     }
 
+    private void CreateLocalizationMap()
+    {
+        CreateMap<Localization, LocalizationDTO>()
+            .ReverseMap();
+        CreateMap<LocalizationDTO, LocalizationViewModel>()
+            .ReverseMap();
+    }
     private void CreateRatingsMap()
     {
         CreateMap<RatingDTO, Rating>().ReverseMap();

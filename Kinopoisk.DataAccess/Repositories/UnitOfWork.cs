@@ -1,4 +1,5 @@
 ﻿using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Enitites.Localization;
 using Kinopoisk.Core.Interfaces.Repositories;
 using Kinopoisk.MVC.Models;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +20,8 @@ public class UnitOfWork : IUnitOfWork
         {
             { typeof(Film), new FilmRepository(_context) },
             { typeof(Comment), new CommentRepository(_context) },
-            { typeof(Rating), new RatingRepository(_context)}
+            { typeof(Rating), new RatingRepository(_context)},
+            { typeof(Localization), new LocalizationRepository(context) }
         };
     }
     public UserManager<User> UserManager => _userManager;

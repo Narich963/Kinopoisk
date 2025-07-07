@@ -114,6 +114,8 @@ void ConfigureServices()
     builder.Services.AddTransient<IOmdbService, OmdbService>();
     builder.Services.AddTransient<IOmdbRepository, OmdbRepository>();
     builder.Services.AddTransient<IDocumentService, DocumentService>();
+    builder.Services.AddTransient<ILocalizationRepository, LocalizationRepository>();
+    builder.Services.AddTransient<ILocalizationService, LocalizationService>();
 
     QuestPDF.Settings.License = LicenseType.Community;
 }
