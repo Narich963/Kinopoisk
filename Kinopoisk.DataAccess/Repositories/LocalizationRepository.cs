@@ -33,8 +33,8 @@ public class LocalizationRepository : ILocalizationRepository
 
         if (localizations.Count > existingLocalizations.Count)
         {
-            var localizationsToAdd = localizations.Except(existingLocalizations);
-            await _context.AddAsync(localizationsToAdd);
+            var localizationsToAdd = localizations.Except(existingLocalizations).ToList();
+            await _context.AddRangeAsync(localizationsToAdd);
         }
         foreach (var loc in existingLocalizations)
         {

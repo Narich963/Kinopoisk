@@ -2,6 +2,7 @@ using AutoMapper;
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
 using Kinopoisk.Core.DTO.Localization;
+using Kinopoisk.Core.Enums;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Services;
@@ -16,10 +17,10 @@ namespace Kinopoisk.MVC.Pages.Countries;
 public class AddOrEditModel : PageModel
 {
     private readonly ICountryService _countryService;
-    private readonly LocalizationService _localizationService;
+    private readonly ILocalizationService _localizationService;
     private readonly IMapper _mapper;
 
-    public AddOrEditModel(ICountryService countryService, IMapper mapper, LocalizationService localizationService)
+    public AddOrEditModel(ICountryService countryService, IMapper mapper, ILocalizationService localizationService)
     {
         _countryService = countryService;
         _mapper = mapper;
@@ -51,6 +52,10 @@ public class AddOrEditModel : PageModel
         if (!Country.IsNew.Value)
         {
             Country.NameLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetLocalizations(Country.Id));
+        }
+        else
+        {
+            Country.NameLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetEmptyLocalizations(PropertyEnum.Name));
         }
 
         return Page();

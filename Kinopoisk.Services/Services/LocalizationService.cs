@@ -27,6 +27,19 @@ public class LocalizationService : ILocalizationService
         var dtos = _mapper.Map<List<LocalizationDTO>>(localizations);
         return dtos;
     }
+    public async Task<IEnumerable<LocalizationDTO>> GetEmptyLocalizations(PropertyEnum property)
+    {
+        var emptyLocalizations = new List<LocalizationDTO>();
+        foreach (var culture in Enum.GetValues(typeof(CultureEnum)) as CultureEnum[])
+        {
+            emptyLocalizations.Add(new LocalizationDTO
+            {
+                Culture = culture,
+                Property = property
+            });
+        }
+        return emptyLocalizations;
+    }
     public async Task UpdateLocalizations(List<LocalizationDTO> localizationsDTO, int localizationSetId)
     {
         var localizations = _mapper.Map<List<Localization>>(localizationsDTO);
