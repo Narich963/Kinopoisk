@@ -15,9 +15,14 @@
                 <div class="card-body">
                     <form method="post">
                         <div class="mb-3">
-                            <label asp-for="Genre.Name" class="form-label"></label>
-                            <input asp-for="Genre.Name" class="form-control" />
-                            <span asp-validation-for="Genre.Name" class="text-danger"></span>
+                            @for (int i = 0; i < Model.Genre.NameLocalizations.Count(); i++)
+                            {
+                                <label asp-for="Genre.Name" class="form-label"></label>
+                                <label class="form-label">@Model.Genre.NameLocalizations[i].Culture.ToString()</label>
+                                <input asp-for="Genre.NameLocalizations[i].Value" class="form-control" />
+                                <input asp-for="Genre.NameLocalizations[i].Culture" type="hidden" />
+                                <span asp-validation-for="Genre.NameLocalizations[i].Value" class="text-danger"></span>
+                            }
                         </div>
 
                         <input type="hidden" asp-for="Genre.Id" />

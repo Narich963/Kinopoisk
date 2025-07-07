@@ -1,6 +1,9 @@
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
+using Kinopoisk.Core.DTO.Localization;
+using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Enums;
 using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +16,14 @@ namespace Kinopoisk.MVC.Pages.Genres;
 public class AddOrEditModel : PageModel
 {
     private readonly IGenreService _genreService;
+    private readonly ILocalizationService _localizationService;
     private readonly IMapper _mapper;
 
-    public AddOrEditModel(IGenreService genreService, IMapper mapper)
+    public AddOrEditModel(IGenreService genreService, IMapper mapper, ILocalizationService localizationService)
     {
         _genreService = genreService;
         _mapper = mapper;
+        _localizationService = localizationService;
     }
 
     [BindProperty]
@@ -43,6 +48,11 @@ public class AddOrEditModel : PageModel
 
         Genre.IsNew = !id.HasValue;
 
+        if (!Genre.IsNew.Value)
+            Genre.NameLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetLocalizations(Genre.Id));
+        else
+            Genre.NameLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetEmptyLocalizations(PropertyEnum.Name));
+
         return Page();
     }
     public async Task<IActionResult> OnPostAsync()
@@ -57,6 +67,9 @@ public class AddOrEditModel : PageModel
             result = await _genreService.AddAsync(genre);
         else
             result = await _genreService.UpdateAsync(genre);
+
+        var localizationDtos = _mapper.Map<List<LocalizationDTO>>(Genre.NameLocalizations);
+        await _localizationService.UpdateLocalizations(localizationDtos, result.Value.Id);
 
         if (result.IsFailure)
         {
