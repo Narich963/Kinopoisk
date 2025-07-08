@@ -1,6 +1,10 @@
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Kinopoisk.Core.DTO;
+using Kinopoisk.Core.DTO.Localization;
+using Kinopoisk.Core.Enitites;
+using Kinopoisk.Core.Enums;
+using Kinopoisk.Core.Interfaces.Services;
 using Kinopoisk.MVC.Models;
 using Kinopoisk.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +17,14 @@ namespace Kinopoisk.MVC.Pages.Films;
 public class AddOrEditModel : PageModel
 {
     private readonly IFilmService _filmService;
+    private readonly ILocalizationService _localizationService;
     private readonly IMapper _mapper;
 
-    public AddOrEditModel(IFilmService filmService, IMapper mapper)
+    public AddOrEditModel(IFilmService filmService, IMapper mapper, ILocalizationService localizationService)
     {
         _filmService = filmService;
         _mapper = mapper;
+        _localizationService = localizationService;
     }
 
     [BindProperty]
@@ -43,6 +49,16 @@ public class AddOrEditModel : PageModel
 
         Film.IsNew = !id.HasValue;
 
+        if (!Film.IsNew.Value)
+        {
+            Film.NameLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetLocalizations(Film.Id, PropertyEnum.Name));
+            Film.DescriptionLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetLocalizations(Film.Id, PropertyEnum.Description));
+        }
+        else
+        {
+            Film.NameLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetEmptyLocalizations(PropertyEnum.Name));
+            Film.DescriptionLocalizations = _mapper.Map<List<LocalizationViewModel>>(await _localizationService.GetEmptyLocalizations(PropertyEnum.Description));
+        }
         return Page();
     }
     public async Task<IActionResult> OnPostAsync()
@@ -52,6 +68,12 @@ public class AddOrEditModel : PageModel
 
         var film = _mapper.Map<FilmDTO>(Film);
         var result = await _filmService.AddOrEditAsync(film, Film.IsNew);
+
+        var nameLocalizations = _mapper.Map<List<LocalizationDTO>>(Film.NameLocalizations);
+        await _localizationService.UpdateLocalizations(nameLocalizations, result.Value.Id);
+
+        var descriptionLocalizations = _mapper.Map<List<LocalizationDTO>>(Film.DescriptionLocalizations);
+        await _localizationService.UpdateLocalizations(descriptionLocalizations, result.Value.Id);
 
         if (result.IsFailure)
         {

@@ -1,4 +1,5 @@
 ﻿@page "{id?}"
+@using Kinopoisk.Core.Enums
 @model Kinopoisk.MVC.Pages.Films.AddOrEditModel
 @{
     var isNew = Model.Film.IsNew ?? true;
@@ -19,9 +20,14 @@
                 <div class="card-body">
                     <form method="post">
                         <div class="mb-3">
-                            <label asp-for="Film.Name" class="form-label"></label>
-                            <input asp-for="Film.Name" class="form-control" />
-                            <span asp-validation-for="Film.Name" class="text-danger"></span>
+                            @for (int i = 0; i < Model.Film.NameLocalizations.Count(); i++)
+                            {
+                                <label asp-for="Film.Name" class="form-label"></label>
+                                <label class="form-label">@Model.Film.NameLocalizations[i].Culture.ToString()</label>
+                                <input asp-for="Film.NameLocalizations[i].Value" class="form-control" />
+                                <input asp-for="Film.NameLocalizations[i].Culture" type="hidden" />
+                                <span asp-validation-for="Film.NameLocalizations[i].Value" class="text-danger"></span>
+                            }
                         </div>
                         <div class="mb-3">
                             <label asp-for="Film.Poster" class="form-label"></label>
@@ -29,9 +35,15 @@
                             <span asp-validation-for="Film.Poster" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="Film.Description" class="form-label"></label>
-                            <textarea asp-for="Film.Description" class="form-control" rows="5"></textarea>
-                            <span asp-validation-for="Film.Description" class="text-danger"></span>
+                            @for (int i = 0; i < Model.Film.DescriptionLocalizations.Count(); i++)
+                            {
+                                <label asp-for="Film.Description" class="form-label"></label>
+                                <label class="form-label">@Model.Film.DescriptionLocalizations[i].Culture.ToString()</label>
+                                <input asp-for="Film.DescriptionLocalizations[i].Value" class="form-control" />
+                                <input asp-for="Film.DescriptionLocalizations[i].Culture" type="hidden"/>
+                                <input asp-for="Film.DescriptionLocalizations[i].Property" type="hidden" value="@PropertyEnum.Description"/>
+                                <span asp-validation-for="Film.DescriptionLocalizations[i].Value" class="text-danger"></span>
+                            }
                         </div>
                         <div class="mb-3">
                             <label asp-for="Film.PublishDate" class="form-label"></label>
