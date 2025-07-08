@@ -133,8 +133,8 @@ void ConfigureLocalization()
         SupportedUICultures = supportedCultures,
         RequestCultureProviders =
         {
-            new QueryStringRequestCultureProvider(),
-            new CookieRequestCultureProvider()
+            new CookieRequestCultureProvider(),
+            new QueryStringRequestCultureProvider()
         }
     };
     app.UseRequestLocalization(options);
